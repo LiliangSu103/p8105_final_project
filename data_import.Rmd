@@ -1,0 +1,56 @@
+---
+title: "data_import"
+author: "Liliang Su"
+date: "2025-11-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+crash
+```{r}
+crash_df = read_csv("./data/Motor_Vehicle_Collisions_-_Crashes_20251102.csv", na = c("NA",".","")) |>
+  janitor::clean_names() |> 
+  
+  # Keep Manhattan records
+  filter(borough == "MANHATTAN") |>
+  
+  # Separate the crash_date column (creates character columns)
+  separate(
+    crash_date,
+    into = c("month", "day", "year"),
+    sep = "/"
+  ) |>
+  
+  # filter for the specified range (2016-2025)
+  mutate(year = as.numeric(year)) |>
+  filter(year %in% 2021:2025) |>
+  
+  relocate(year, month, day, crash_time, collision_id)
+
+write_csv(crash_df, "./data/crashes_20251102_filtered.csv")
+```
+
+vehicle
+```{r}
+vehicle_df = read_csv("./data/Motor_Vehicle_Collisions_-_Vehicles_20251102.csv", na = c("NA",".","")) |>
+  janitor::clean_names() |> 
+  semi_join(crash_df, by = "collision_id")
+
+write_csv(vehicle_df, "./data/Vehicle_20251102_filtered.csv")
+
+```
+
+person
+```{r}
+person_df = read_csv("./data/Motor_Vehicle_Collisions_-_Person_20251102.csv", na = c("NA",".","")) |>
+  janitor::clean_names() |> 
+  semi_join(crash_df, by = "collision_id")
+
+write_csv(person_df, "./data/person_20251102_filtered.csv")
+
+```
