@@ -1,0 +1,19 @@
+---
+title: "data_clean"
+author: "Liliang Su"
+date: "2025-11-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+read_csv("./data/crash_20251031_filtered.csv") |> str()
+read_csv("./data/person_20251031_filtered.csv") |> str()
+read_csv("./data/vehicle_20251031_filtered.csv") |> str()
+
+```
+
