@@ -1,0 +1,101 @@
+Project Proposal: Motor Vehicle Collisions in Manhattan
+================
+Liliang Su
+2025-11-05
+
+## 1. Group Members
+
+| Name          | UNI    |
+|:--------------|:-------|
+| Liliang Su    | ls4236 |
+| Anny Ding     | cd3591 |
+| Haohua Chen   | hc3654 |
+| Chenhao Zheng | cz2955 |
+| Duan Yan      | yd2865 |
+
+## 2. Tentative Project Title
+
+Motor Vehicle Collisions in Manhattan: Identifying Peak Risk Times and
+Temporal Hotspots for Traffic Incidents
+
+## 3. Motivation for this Project
+
+- The preliminary data structure indicates a rich dataset of traffic
+  incidents with precise temporal markers (`year`, `month`, `day`,
+  `crash_time`). The primary motivation is to leverage this granularity
+  to understand when incidents are most likely to occur.
+
+- By identifying high-risk time windows (e.g., specific hours, days of
+  the week, or seasonal patterns), we can provide actionable insights
+  for traffic management, public safety messaging, and resource
+  allocation to potentially reduce future crashes. The goal is to move
+  beyond simple incident counts and uncover meaningful, predictive
+  temporal patterns.
+
+## 4. Intended Final Products
+
+- **Comprehensive R Markdown Report**: A fully reproducible report
+  detailing data cleaning, robust temporal aggregation, statistical
+  findings, and interpretation of peak risk times.
+
+- **Interactive Visualization**: A web application displaying key
+  visualizations that allow a user (e.g., a city planner) to dynamically
+  filter incident frequency by year, month, day of the week, and hour of
+  the day.
+
+- **Develop Predictive Tools**: Create a model that can forecast the
+  likelihood of a crash at a given time, enabling law enforcement and
+  emergency services to optimize resource deployment and implement
+  targeted prevention campaigns.
+
+## 5. Anticipated Data Sources
+
+- **Primary Data source**:
+
+- 3 NYC Motor Vehicle Collisions related dataset (Crashes, Vehicles,
+  Person) collected from [NYC Open
+  Data](https://data.cityofnewyork.us/browse?sortBy=relevance&pageSize=20&limitTo=datasets&q=NYC+Traffic+Accidents&page=1).
+
+- We only focus on Manhattan observations in recent 5 years (01/01/2021
+  – 10/31/2025)
+
+- **Anticipated Auxilary Data**:
+
+  - Weather Data in Manhattan
+  - Personal Income Data in Manhattan
+
+## 6. Planned Analyses / Visualizations / Coding Challenges
+
+- Planned Analyses / Visualizations
+
+  - **Temporal Heatmaps**: Visualize crash counts by hour of day vs. day
+    of week to pinpoint rush-hour risk.
+
+  - **Seasonal Trends**: Time-series plots of monthly crash totals to
+    identify seasonal peaks.
+
+  - **Spatial Clustering**: Generating kernel density maps (heatmaps) to
+    highlight high-density crash locations (hotspots).
+
+- Coding Challenges
+
+  - **Data Wrangling**: Converting the separate `year`, `month`, `day`,
+    and `crash_time` columns into a single, cohesive datetime object for
+    efficient analysis, and generating features like “Day of Week” and
+    “Is Weekend”.
+
+  - **Integration Different Data Source**: Successfully integrate
+    multiple datasets to produce effective visualizations.
+
+  - **Time-Series Modeling** (Tentative): Implementing and validating a
+    time-series model (e.g., ARIMA or a generalized linear model) to
+    predict future crash counts.
+
+## 6. Planned Timeline
+
+| Week | Focus_Area | Key_Deliverables |
+|:---|:---|:---|
+| Week1 | Data Preparation and tidy up | Convert year/month/day/time into a single datetime object and clean the dataset |
+| Week2 | Temporal Analysis and visualization | Heatmaps (Hour vs. Day) and time-series plots to identify high-risk time windows and seasonal patterns. Successfully integrate the first external dataset (e.g., weather). |
+| Week3 | Spatial and Multivariate Analysis | Generate spatial crash hotspot maps (if location data is present). Explanatory Visualizations: Analyze the relationship between crash frequency/severity and external factors (e.g., weather, road type). |
+| Week4 | Synthesis and Final Repor | Synthesize all findings and visualizations. Conclusions: Draft clear, actionable policy and safety recommendations. Submit the final, polished R Markdown report. |
