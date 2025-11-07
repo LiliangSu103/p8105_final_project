@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r, echo = FALSE}
 tibble(
-  Name = c("Liliang Su", "Anny Ding", "Haohua Chen", "Chenhao Zheng", "Duan Yan"),
+  Name = c("Liliang Su", "Anny Ding", "Haohua Chen", "Chenhao Zheng", "Yan Duan"),
   UNI = c("ls4236", "cd3591", "hc3654", "cz2955", "yd2865")
 ) |> 
   knitr::kable()

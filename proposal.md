@@ -11,7 +11,7 @@ Liliang Su
 | Anny Ding     | cd3591 |
 | Haohua Chen   | hc3654 |
 | Chenhao Zheng | cz2955 |
-| Duan Yan      | yd2865 |
+| Yan Duan      | yd2865 |
 
 ## 2. Tentative Project Title
 
