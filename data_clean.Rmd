@@ -11,9 +11,20 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
-read_csv("./data/crash_20251031_filtered.csv") |> str()
-read_csv("./data/person_20251031_filtered.csv") |> str()
-read_csv("./data/vehicle_20251031_filtered.csv") |> str()
+crash_df = read_csv("./data/crash_20251031_filtered.csv", na = c("Unspecified", "Does Not Apply", "Unknown", "NA", ".", "")) |> 
+  select(-location, -borough, -starts_with("contributing_factor"), -starts_with("vehicle_type"))
+```
+
+
+```{r}
+person_df = read_csv("./data/person_20251031_filtered.csv", na = c("Unspecified", "Does Not Apply", "Unknown", "NA", ".", "")) |> 
+  select(-unique_id, -crash_date, -crash_time, -person_injury, -vehicle_id, -emotional_status, -bodily_injury, -position_in_vehicle, -ped_location, -ped_action, -complaint, -starts_with("contributing_factor")) |> 
+  filter(ped_role %in% c("Driver", "In-Line Skater", "Passenger", "Pedestrian"))
+```
+
+
+```{r}
+vehicle_df = read_csv("./data/vehicle_20251031_filtered.csv", na = c("Unspecified", "Does Not Apply", "Unknown", "NA", ".", "")) 
 
 ```
 
