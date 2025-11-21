@@ -26,29 +26,50 @@ crash_df = read_csv("./data/Motor_Vehicle_Collisions_-_Crashes_20251031.csv", na
   ) |> 
   mutate(year = as.numeric(year),
          month = as.numeric(month),
-         day = as.numeric(day)) |>
+         day = as.numeric(day),
+         num_injured = number_of_pedestrians_injured + number_of_cyclist_injured + number_of_motorist_injured,
+         num_killed = number_of_pedestrians_killed + number_of_cyclist_killed + number_of_motorist_killed) |>
   # keep data from Jan 1, 2021 up to October 31, 2025. 
   filter(
     year %in% 2021:2025 &
     !(year == 2025 & month == 11),
   ) |> 
   relocate(year, month, day, crash_time, collision_id) |> 
-  select(-location, -borough, -starts_with("contributing_factor"), -starts_with("vehicle_type"))
+  # keep predictors of interests
+  select(-location, -borough, -starts_with("contributing_factor"), -starts_with("vehicle_type"), -starts_with("number_of"))
 ```
 
 
 ```{r}
 person_df = read_csv("./data/Motor_Vehicle_Collisions_-_Person_20251031.csv", na = c("Unspecified", "Does Not Apply", "Unknown", "NA", ".", "")) |> 
   janitor::clean_names() |> 
-  select(collision_id, person_id, person_type, person_age, ejection, safety_equipment, ped_role, person_sex) |> 
-  filter(ped_role %in% c("Driver", "Passenger", "Pedestrian"))
+  # keep predictors of interests
+  select(collision_id, unique_id, vehicle_id, person_type, person_age, ejection, safety_equipment, ped_role, person_sex) |> 
+  # keep 3 kinds of main role of interests, which account for 99% person ("registrant" duplicates "driver" most the time)
+  filter(ped_role %in% c("Driver", "Passenger", "Pedestrian")) |> 
+  # use reasonable names
+  rename(person_role = ped_role,
+         person_eje = ejection,
+         person_safe_equip = safety_equipment,
+         person_id = unique_id)
 ```
 
 
 ```{r}
 vehicle_df = read_csv("./data/Motor_Vehicle_Collisions_-_Vehicles_20251031.csv", na = c("Unspecified", "Does Not Apply", "Unknown", "NA", ".", "")) |> 
   janitor::clean_names() |> 
-  select(collision_id, vehicle_id, vehicle_type, vehicle_year, driver_license_status, driver_license_jurisdiction)
+  # keep predictors of interests
+  select(collision_id, unique_id, vehicle_type, vehicle_year, driver_license_status, driver_license_jurisdiction) |> 
+  # the unqiue_id in vehicle_df is actually the vehicle_id in person_df, rename it for data joining
+  rename(vehicle_id = unique_id)
+```
 
+
+```{r}
+collision_df <- crash_df |> 
+  left_join(vehicle_df, by = "collision_id") |> 
+  left_join(person_df, by = c("collision_id", "vehicle_id"))
+
+write_csv(collision_df, "./data/collision_df")
 ```
 
