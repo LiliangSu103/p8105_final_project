@@ -5,8 +5,6 @@ navbar:
   right:
     - text: "About"
       href: 
-    - text: "Map"
-      href: Maps.html
     - text: "Temporal Analysis"
       menu:
       - text: "Temporal Trend Overview (Shiny)"
