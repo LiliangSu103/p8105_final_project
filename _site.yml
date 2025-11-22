@@ -1,0 +1,21 @@
+name: "P8105 final project"
+output_dir: "."
+navbar:
+  title: "Home"
+  right:
+    - text: "About"
+      href: 
+    - text: "Map"
+      href: Maps.html
+    - text: "Temporal Analysis"
+      menu:
+      - text: "Temporal Trend Overview (Shiny)"
+        href: https://ls4236-shiny.shinyapps.io/Temporal_trend_shiny/
+      - text: "Data Analysis"
+        href: 
+      - text: "Predictive Model"
+        href: 
+
+output:
+  html_document: 
+    theme: flatly

@@ -1,0 +1,49 @@
+---
+title: "Map"
+output: 
+  html_document: 
+    code_folding: hide
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(leaflet)
+collision_df = read_csv("./data/collision_df.csv")
+```
+
+## Casualty Overview
+
+```{r}
+pal <- colorNumeric(
+  palette = "Blues",
+  domain = 0:5
+)
+
+collision_df |> 
+  select(collision_id, latitude, longitude, num_casualty, crash_time) |> 
+  distinct(collision_id, .keep_all = TRUE) |> 
+  mutate(
+    labels = str_c("<b> Crash time: ", crash_time, "</b>", 
+               "<br>Number of injured or killed: ", 
+               num_casualty, 
+               sep = "")
+         ) |> 
+  filter(num_casualty > 0 & num_casualty < 6 &
+            latitude < 41 & latitude > 40 & 
+            longitude < -73 & longitude > -75) |> 
+  leaflet() |> 
+  addProviderTiles(providers$CartoDB.Positron) |>  
+  addLegend("bottomright", pal = pal, values = ~num_casualty,
+    title = "Person Casualties",
+    opacity = 1
+  ) |> 
+  addCircleMarkers(
+    ~longitude, ~latitude,
+    color = ~pal(num_casualty),
+    radius = 1,
+    popup = ~labels) 
+
+```
+

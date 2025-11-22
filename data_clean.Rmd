@@ -1,8 +1,10 @@
 ---
-title: "data_clean"
-author: "Liliang Su"
-date: "2025-11-03"
-output: html_document
+title: "clean data"
+output: 
+  html_document: 
+    code_folding: hide
+    toc: true
+    toc_float: true
 ---
 
 ```{r setup, include=FALSE}
@@ -56,7 +58,7 @@ crash_df = read_csv("./data/Motor_Vehicle_Collisions_-_Crashes_20251031.csv", na
   ) |> 
   relocate(collision_id, year, month, day, hour, day_of_week) |> 
   # keep predictors of interests
-  select(-location, -borough, -crash_time,- crash_date_full, -starts_with("contributing_factor"), -starts_with("vehicle_type"), -starts_with("number_of")) |> 
+  select(-location, -borough, -crash_date_full, -starts_with("contributing_factor"), -starts_with("vehicle_type"), -starts_with("number_of")) |> 
   arrange(year, month, day, hour)
 ```
 
@@ -105,6 +107,7 @@ collision_df <- crash_df |>
 write_csv(collision_df, "./data/collision_df.csv")
 ```
 
+Map Overview
 
 ```{r}
 
@@ -139,35 +142,4 @@ collision_df |>
 
 ```
 
-Use geom_bin2d to create a 2D histogram/heatmap.
-
-```{r}
-LAT_MIN <- 40.701134
-LAT_MAX <- 40.87302
-LON_MIN <- -74.01798
-LON_MAX <- -73.9111
-
-manhattan_heatmap =
-  collision_df |>
-  select(collision_id, latitude, longitude, num_casualty, crash_time) |> 
-  distinct(collision_id, .keep_all = TRUE) |> 
-  filter(
-    latitude >= LAT_MIN, latitude <= LAT_MAX,
-    longitude >= LON_MIN, longitude <= LON_MAX
-  ) |>
-  ggplot(aes(x = longitude, y = latitude, weight = num_casualty)) +
-  
-  geom_density_2d_filled(alpha = 0.8) +
-  scale_fill_viridis_d(option = "C", name = "Collision Casualty Density") +
-  coord_cartesian(xlim = c(LON_MIN, LON_MAX), ylim = c(LAT_MIN, LAT_MAX)) +
-    labs(
-    title = "Heatmap of Collision Casualties in Manhattan (2021-2025)",
-    x = "Longitude",
-    y = "Latitude"
-  ) +
-  theme_bw() +
-  theme(plot.title = element_text(hjust = 0.5))
-
-manhattan_heatmap
-```
 
