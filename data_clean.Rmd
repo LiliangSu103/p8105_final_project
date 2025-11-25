@@ -10,21 +10,7 @@ output:
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(leaflet)
-knitr::opts_chunk$set(
-  fig.width = 6,
-  fig.asp = .6,
-  out.width = "90%"
-)
 
-theme_set(theme_minimal() + theme(legend.position = "bottom"))
-
-options(
-  ggplot2.continuous.colour = "viridis",
-  ggplot2.continuous.fill = "viridis"
-)
-
-scale_colour_discrete = scale_colour_viridis_d
-scale_fill_discrete = scale_fill_viridis_d
 ```
 
 Import and clean raw data
@@ -92,11 +78,10 @@ Join the three datasets
 
 ```{r}
 
-# This creates one clean row per person.
-collision_df = person_df |>
-  # start with ALL persons. Join crash details.
-  left_join(crash_df, by = "collision_id") |>
-  # add vehicle details. This join handles occupants (non-NA vehicle_id match) and pedestrians (NA vehicle_id, resulting in NA vehicle columns) correctly.
+# links every person to their crash details using 'collision_id'.
+collision_df = crash_df |>
+  left_join(person_df, by = "collision_id") |> 
+# links drivers/passengers to their vehicle details using both 'collision_id' and 'vehicle_id'
   left_join(vehicle_df, by = c("collision_id", "vehicle_id")) |> 
   relocate(collision_id, vehicle_id, person_id, year, month, day, hour, day_of_week, crash_time, zip_code, latitude, longitude,  num_injured, num_killed, num_casualty, vehicle_type, vehicle_year, driver_license_status, driver_license_jurisdiction, person_type, person_role, person_age, person_sex, person_eje, person_safe_equip)
 

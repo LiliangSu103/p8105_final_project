@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Temporal Data Analysis</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown-header">About</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Temporal Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="https://ls4236-shiny.shinyapps.io/Temporal_trend_shiny/">Temporal Trend Overview (Shiny)</a>
+    </li>
+    <li class="dropdown-header">Data Analysis</li>
+    <li class="dropdown-header">Predictive Model</li>
+  </ul>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Temporal Data Analysis</h1>
+
+</div>
+
+
+<hr />
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This page analyzes vehicle collision data in Manhattan over a 5-year
+period (2021-2025). The dataset provides detailed information on each
+collision event. The goal of this temporal analysis is to understand
+trends over multiple years, seasonal patterns across months, and daily
+peak hours for collisions. We specifically examine the trends across
+three categories: <strong>All Collisions</strong> (In total),
+<strong>Minor Severity</strong> (No injuries/deaths), and <strong>Medium
+Severity</strong> (Injuries involved).</p>
+<hr />
+</div>
+<div id="data-preparation" class="section level2">
+<h2>Data Preparation</h2>
+<p>We begin by loading the cleaned dataset and preparing it for
+visualization and analysis. Because the original dataset contains one
+row per person involved in a collision, we first filter it to retain
+only distinct <code>collision_id</code> values so that our analysis
+reflects the number of collision events rather than the number of
+individuals affected.</p>
+<p>To further support our severity-based analysis, we create a new
+column that classifies each collision into the <strong>All</strong>,
+<strong>Minor</strong>, or <strong>Medium</strong> severity
+categories.</p>
+<pre class="r"><code>collision_df &lt;- read_csv(&quot;./data/collision_df.csv&quot;)
+
+# Clean and Classify
+collision_df_plot = collision_df |&gt; 
+  distinct(collision_id, .keep_all = TRUE) |&gt; 
+  mutate(
+    date = make_date(year, month, day),
+    month = month(date, label = TRUE, abbr = TRUE),
+    hour = as.numeric(hour),
+    # Define Severity
+    severity = case_when(
+      num_killed &gt; 0 ~ &quot;Severe&quot;,
+      num_injured &gt; 0 ~ &quot;Medium&quot;,
+      TRUE ~ &quot;Minor&quot;
+    )
+  )
+
+# Create the &quot;Expanded&quot; Dataset for Plotting
+df_all    &lt;- collision_df_plot |&gt; mutate(type = &quot;All&quot;)
+df_minor  &lt;- collision_df_plot |&gt; filter(severity == &quot;Minor&quot;) |&gt; mutate(type = &quot;Minor&quot;)
+df_medium &lt;- collision_df_plot |&gt; filter(severity == &quot;Medium&quot;) |&gt; mutate(type = &quot;Medium&quot;)
+
+# Combine and set factor levels for consistent ordering
+plot_df &lt;- bind_rows(df_all, df_minor, df_medium) |&gt; 
+  mutate(type = factor(type, levels = c(&quot;All&quot;, &quot;Minor&quot;, &quot;Medium&quot;)))</code></pre>
+<hr />
+</div>
+<div id="visualization" class="section level2">
+<h2>Visualization</h2>
+<div id="long-term-trend" class="section level3">
+<h3>1. Long-Term Trend</h3>
+<p>This chart visualizes the total number of collisions per month from
+the start of 2021 to late 2025. It helps identify if the overall
+frequency of accidents is increasing, decreasing, or stabilizing. We use
+scatter points to show exact monthly counts and smooth lines to
+visualize the underlying trend, distinguishing between
+<strong>All</strong>, <strong>Minor</strong>, or <strong>Medium</strong>
+incidents.</p>
+<pre class="r"><code># Aggregating by Month-Year and Type
+monthly_trend = plot_df |&gt; 
+  mutate(month_year = floor_date(date, &quot;month&quot;)) |&gt; 
+  count(month_year, type, name = &quot;count&quot;)
+
+p1 = monthly_trend |&gt; 
+  ggplot(aes(x = month_year, y = count, color = type, shape = type)) +
+  # Add scatter points
+  geom_point(size = 2, alpha = 0.7) +
+  # Add smooth line (Loess regression)
+  geom_smooth(se = FALSE, method = &quot;loess&quot;, formula = &#39;y ~ x&#39;, span = 0.3, size = 1.2) +
+  # Viridis Colors
+  scale_color_viridis_d(option = &quot;D&quot;, end = 0.8) +
+  # Customizd ticks to show every 3 months
+  scale_x_date(date_breaks = &quot;3 months&quot;, date_labels = &quot;%b %y&quot;) +
+  labs(
+    title = &quot;Monthly Collision Trends by Severity (2021 - 2025)&quot;,
+    x = &quot;Date&quot;,
+    y = &quot;Monthly Collisions&quot;,
+    color = &quot;Category&quot;,
+    shape = &quot;Category&quot;
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, vjust = 0.5, hjust = 0.5),
+  )
+
+p1</code></pre>
+<p><img src="Temporal_data_analysis_files/figure-html/unnamed-chunk-2-1.png" width="90%" /></p>
+<p><strong>Pattern Observed:</strong> The time series reveals a distinct
+upward trend in collision frequency starting from early 2021. This
+likely reflects a “return to normal” in traffic patterns following the
+lower activity levels during the peak of the pandemic.</p>
+<ul>
+<li><strong>Volume Drivers:</strong> The <code>All</code> trend line
+closely mirrors the <code>Minor</code> category, indicating that the
+vast majority of collisions in Manhattan result in property damage
+rather than injury.</li>
+<li><strong>Stability:</strong> While there was a sharp increase
+throughout 2021 and 2022, which is likely driven by the post–COVID-19
+recovery, the trend appears to stabilize in the later years (2023–2025),
+settling into a new “normal” level that remains higher than at the
+beginning of the study period.</li>
+</ul>
+<hr />
+</div>
+<div id="seasonal-analysis-average-daily-collisions"
+class="section level3">
+<h3>2. Seasonal Analysis: Average Daily Collisions</h3>
+<p>To understand seasonality, we calculate the average number of
+collisions that occur per day for each month. This averages out the data
+across all 5 years (e.g., the “January” bar represents the average daily
+collisions for all Januarys in the dataset). Here we use a grid layout
+to compare how the <strong>Minor</strong> and <strong>Medium</strong>
+collisions fluctuate throughout the year independently.</p>
+<pre class="r"><code># Calculate average daily collisions per month per type
+seasonality_df &lt;- plot_df |&gt; 
+  count(type, date, month) |&gt; 
+  group_by(type, month) |&gt; 
+  summarise(avg_daily = mean(n), .groups = &quot;drop&quot;)
+
+p2 &lt;- seasonality_df |&gt; 
+  ggplot(aes(x = month, y = avg_daily, fill = type)) +
+  # position = &quot;dodge&quot; places the bars side-by-side instead of stacking them
+  geom_col(position = &quot;dodge&quot;) +
+  scale_fill_viridis_d(option = &quot;D&quot;, end = 0.8) +
+  labs(
+    title = &quot;Seasonality: Average Daily Collisions by Month&quot;,
+    subtitle = &quot;Side-by-side comparison of categories&quot;,
+    x = &quot;Month&quot;,
+    y = &quot;Avg. Collisions per Day&quot;
+  ) +
+  # Move legend to bottom or top since it&#39;s now crucial for identifying the bars
+  theme(legend.position = &quot;bottom&quot;)
+
+p2</code></pre>
+<p><img src="Temporal_data_analysis_files/figure-html/unnamed-chunk-3-1.png" width="90%" /></p>
+<p><strong>Pattern Observed:</strong> There is a clear seasonal cycle
+dictated by weather and human activity levels.</p>
+<ul>
+<li><strong>Winter Lows:</strong> Both Minor and Medium collisions drop
+significantly in January and February, likely due to reduced outdoor
+activity and more cautious driving during poor weather conditions.</li>
+<li><strong>Summer/Fall Peaks:</strong> Activity rises sharply in the
+spring and sustains a high plateau through the fall. The peak occurs in
+September and October, months often associated with high tourism, school
+re-openings, and pleasant weather encouraging more pedestrians and
+cyclists on the road.</li>
+<li><strong>Severity Consistency:</strong> Interestingly,
+<code>Medium</code> (injury-causing) collisions follow roughly the same
+seasonal shape as <code>Minor</code> collisions, suggesting that injury
+risk rises proportionally with traffic volume rather than being driven
+by specific seasonal road conditions (like ice in winter).</li>
+</ul>
+<hr />
+</div>
+<div id="diurnal-analysis-hourly-trends" class="section level3">
+<h3>3. Diurnal Analysis: Hourly Trends</h3>
+<p>This grid shows the average hourly collision rate for each category.
+It highlights whether <strong>Minor</strong> collisions and
+<strong>Medium</strong> injury-causing accidents follow different daily
+schedules.</p>
+<pre class="r"><code># Calculate average hourly collisions per type
+total_days_recorded = n_distinct(pull(collision_df_plot, date))
+hourly_df = plot_df |&gt; 
+  count(type, hour) |&gt; 
+  mutate(avg_hourly = n / total_days_recorded)
+
+p3 = hourly_df |&gt; 
+  ggplot(aes(x = hour, y = avg_hourly, fill = type)) +
+  geom_col(show.legend = FALSE) +
+  # Use Grid (Facet Wrap)
+  facet_wrap(~type, ncol = 1, scales = &quot;free_y&quot;) +
+  scale_fill_viridis_d(option = &quot;D&quot;, end = 0.8) +
+  scale_x_continuous(breaks = seq(0, 23, 2)) +
+  labs(
+    title = &quot;Diurnal Pattern: Average Collisions by Hour&quot;,
+    subtitle = &quot;Comparison of All, Minor, and Medium categories&quot;,
+    x = &quot;Hour of Day (0-23)&quot;,
+    y = &quot;Avg. Collisions&quot;
+  ) +
+  theme(strip.background = element_rect(fill = &quot;#f0f0f0&quot;))
+
+p3</code></pre>
+<p><img src="Temporal_data_analysis_files/figure-html/unnamed-chunk-4-1.png" width="90%" /></p>
+<p><strong>Pattern Observed:</strong> The data shows a classic “commuter
+profile” with distinct daily rhythms.</p>
+<ul>
+<li><strong>Quiet Hours:</strong> The safest time on the roads is
+consistently between 3:00 AM and 5:00 AM, where collision counts are
+negligible.</li>
+<li><strong>Evening Rush:</strong> While there is a noticeable bump in
+accidents during the morning rush (8:00 AM – 9:00 AM), the most
+dangerous period is consistently the afternoon and evening rush hour
+(2:00 PM – 6:00 PM).</li>
+<li><strong>Comparison:</strong> The peak for “Medium” severity
+incidents sustains well into the evening, implying that while traffic
+volume might drop after 6 PM, the risk of injury per collision might
+remain relevant, possibly due to factors like visibility or
+fatigue.</li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>This temporal analysis of Manhattan vehicle collisions (2021–2025)
+demonstrates that accident frequency is highly predictable and strongly
+correlated with human activity patterns rather than random chance.</p>
+<p>The data suggests a “Volume-Based Risk” model: collisions are most
+frequent when the city is most alive—during the evening rush hours, in
+the warmer autumn months, and in the years following the return of
+regular economic activity. The parallel trends between
+<strong>Minor</strong> and <strong>Medium</strong> incidents suggest
+that interventions aimed at simply reducing overall traffic volume or
+congestion during peak hours (4 PM - 6 PM) and peak months
+(September/October) could effectively reduce both nuisance accidents and
+injury-causing crashes simultaneously.</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
