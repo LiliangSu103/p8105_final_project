@@ -58,7 +58,7 @@ crash_df = read_csv("./data/Motor_Vehicle_Collisions_-_Crashes_20251031.csv", na
   ) |> 
   relocate(collision_id, year, month, day, hour, day_of_week) |> 
   # keep predictors of interests
-  select(-location, -borough, -crash_date_full, -starts_with("contributing_factor"), -starts_with("vehicle_type"), -starts_with("number_of")) |> 
+  select(collision_id, year, month, day, hour, day_of_week, crash_time, zip_code, latitude, longitude,  num_injured, num_killed, num_casualty) |> 
   arrange(year, month, day, hour)
 ```
 
@@ -91,18 +91,14 @@ vehicle_df = read_csv("./data/Motor_Vehicle_Collisions_-_Vehicles_20251031.csv",
 Join the three datasets
 
 ```{r}
-collision_df <- crash_df |> 
-  left_join(vehicle_df, by = "collision_id") |> 
-  # use vehicle_id to assign vehicle information to each person
-  left_join(person_df, by = c("collision_id", "vehicle_id")) |> 
-# each row has information for each involved vehicle with each person's information
-  mutate(
-    severity = case_when(
-      num_killed > 0 ~ "severe",
-      num_injured > 0 ~ "medium",
-      TRUE ~ "minor"
-    )
-  )
+
+# This creates one clean row per person.
+collision_df = person_df |>
+  # start with ALL persons. Join crash details.
+  left_join(crash_df, by = "collision_id") |>
+  # add vehicle details. This join handles occupants (non-NA vehicle_id match) and pedestrians (NA vehicle_id, resulting in NA vehicle columns) correctly.
+  left_join(vehicle_df, by = c("collision_id", "vehicle_id")) |> 
+  relocate(collision_id, vehicle_id, person_id, year, month, day, hour, day_of_week, crash_time, zip_code, latitude, longitude,  num_injured, num_killed, num_casualty, vehicle_type, vehicle_year, driver_license_status, driver_license_jurisdiction, person_type, person_role, person_age, person_sex, person_eje, person_safe_equip)
 
 write_csv(collision_df, "./data/collision_df.csv")
 ```
