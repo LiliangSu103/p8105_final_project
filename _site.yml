@@ -10,7 +10,7 @@ navbar:
       - text: "Temporal Trend Overview (Shiny)"
         href: https://ls4236-shiny.shinyapps.io/Temporal_trend_shiny/
       - text: "Data Analysis"
-        href: 
+        href: Temporal_data_analysis.html
       - text: "Predictive Model"
         href: 
 

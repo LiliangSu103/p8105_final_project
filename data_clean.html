@@ -336,7 +336,9 @@ div.tocify {
     <li>
       <a href="https://ls4236-shiny.shinyapps.io/Temporal_trend_shiny/">Temporal Trend Overview (Shiny)</a>
     </li>
-    <li class="dropdown-header">Data Analysis</li>
+    <li>
+      <a href="Temporal_data_analysis.html">Data Analysis</a>
+    </li>
     <li class="dropdown-header">Predictive Model</li>
   </ul>
 </li>
@@ -391,7 +393,7 @@ div.tocify {
   ) |&gt; 
   relocate(collision_id, year, month, day, hour, day_of_week) |&gt; 
   # keep predictors of interests
-  select(-location, -borough, -crash_date_full, -starts_with(&quot;contributing_factor&quot;), -starts_with(&quot;vehicle_type&quot;), -starts_with(&quot;number_of&quot;)) |&gt; 
+  select(collision_id, year, month, day, hour, day_of_week, crash_time, zip_code, latitude, longitude,  num_injured, num_killed, num_casualty) |&gt; 
   arrange(year, month, day, hour)</code></pre>
 <pre><code>## Warning: One or more parsing issues, call `problems()` on your data frame for
 ## details, e.g.:
@@ -444,18 +446,12 @@ div.tocify {
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <p>Join the three datasets</p>
-<pre class="r"><code>collision_df &lt;- crash_df |&gt; 
-  left_join(vehicle_df, by = &quot;collision_id&quot;) |&gt; 
-  # use vehicle_id to assign vehicle information to each person
-  left_join(person_df, by = c(&quot;collision_id&quot;, &quot;vehicle_id&quot;)) |&gt; 
-# each row has information for each involved vehicle with each person&#39;s information
-  mutate(
-    severity = case_when(
-      num_killed &gt; 0 ~ &quot;severe&quot;,
-      num_injured &gt; 0 ~ &quot;medium&quot;,
-      TRUE ~ &quot;minor&quot;
-    )
-  )
+<pre class="r"><code># links every person to their crash details using &#39;collision_id&#39;.
+collision_df = crash_df |&gt;
+  left_join(person_df, by = &quot;collision_id&quot;) |&gt; 
+# links drivers/passengers to their vehicle details using both &#39;collision_id&#39; and &#39;vehicle_id&#39;
+  left_join(vehicle_df, by = c(&quot;collision_id&quot;, &quot;vehicle_id&quot;)) |&gt; 
+  relocate(collision_id, vehicle_id, person_id, year, month, day, hour, day_of_week, crash_time, zip_code, latitude, longitude,  num_injured, num_killed, num_casualty, vehicle_type, vehicle_year, driver_license_status, driver_license_jurisdiction, person_type, person_role, person_age, person_sex, person_eje, person_safe_equip)
 
 write_csv(collision_df, &quot;./data/collision_df.csv&quot;)</code></pre>
 
