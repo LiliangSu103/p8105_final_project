@@ -11,7 +11,7 @@
 
 
 
-<title>Predictive_model</title>
+<title>Predictive Model</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -361,7 +361,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Predictive_model</h1>
+<h1 class="title toc-ignore">Predictive Model</h1>
 
 </div>
 
@@ -376,9 +376,11 @@ Cross-Validation for robust performance comparison.</p>
 </div>
 <div id="feature-engineering" class="section level2">
 <h2>Feature Engineering</h2>
-<p>We first load the necessary libraries and aggregate the data to the
-daily level, creating all predictor variables, including time features,
-lagged collision counts, and lagged casualty counts.</p>
+<p>We begin by loading the cleaned dataset (the cleaning process is
+documented <a href="data_clean.html">here</a>), aggregating it to the
+daily level, and constructing all predictor variables, including
+time-based features, lagged collision counts, and lagged casualty
+counts.</p>
 <pre class="r"><code># Load the dataset
 df = read_csv(&quot;./data/collision_df.csv&quot;) |&gt; 
   select(collision_id, year, month, day, hour, day_of_week, crash_time, num_casualty) |&gt; 

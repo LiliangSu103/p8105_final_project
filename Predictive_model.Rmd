@@ -1,5 +1,5 @@
 ---
-title: "Predictive_model"
+title: "Predictive Model"
 output: 
   html_document: 
     code_folding: hide
@@ -40,7 +40,7 @@ This page focuses on developing and validating two Linear Regression models to p
 
 ## Feature Engineering
 
-We first load the necessary libraries and aggregate the data to the daily level, creating all predictor variables, including time features, lagged collision counts, and lagged casualty counts.
+We begin by loading the cleaned dataset (the cleaning process is documented [here](data_clean.html)), aggregating it to the daily level, and constructing all predictor variables, including time-based features, lagged collision counts, and lagged casualty counts.
 
 ```{r}
 # Load the dataset

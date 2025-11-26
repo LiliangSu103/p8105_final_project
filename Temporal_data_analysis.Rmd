@@ -40,7 +40,7 @@ This page analyzes vehicle collision data in Manhattan over a 5-year period (202
 
 ## Data Preparation
 
-We begin by loading the cleaned dataset and preparing it for visualization and analysis. Because the original dataset contains one row per person involved in a collision, we first filter it to retain only distinct `collision_id` values so that our analysis reflects the number of collision events rather than the number of individuals affected.
+We begin by loading the cleaned dataset (the cleaning process is documented [here](data_clean.html)) and preparing it for visualization and analysis. Because the original dataset contains one row per person involved in a collision, we first filter it to retain only distinct `collision_id` values so that our analysis reflects the number of collision events rather than the number of individuals affected.
 
 To further support our severity-based analysis, we create a new column that classifies each collision into the **All**, **Minor**, or **Medium** severity categories.
 

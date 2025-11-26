@@ -1,5 +1,5 @@
 ---
-title: "clean data"
+title: "Clean data"
 output: 
   html_document: 
     code_folding: hide
@@ -13,7 +13,7 @@ library(leaflet)
 
 ```
 
-Import and clean raw data
+### Import and clean raw data
 
 ```{r}
 crash_df = read_csv("./data/Motor_Vehicle_Collisions_-_Crashes_20251031.csv", na = c("Unspecified", "Does Not Apply", "Unknown", "NA", ".", "")) |> 
@@ -74,7 +74,7 @@ vehicle_df = read_csv("./data/Motor_Vehicle_Collisions_-_Vehicles_20251031.csv",
 ```
 
 
-Join the three datasets
+### Join the three datasets
 
 ```{r}
 

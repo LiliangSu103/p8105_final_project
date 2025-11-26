@@ -11,7 +11,7 @@
 
 
 
-<title>clean data</title>
+<title>Clean data</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -361,12 +361,13 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">clean data</h1>
+<h1 class="title toc-ignore">Clean data</h1>
 
 </div>
 
 
-<p>Import and clean raw data</p>
+<div id="import-and-clean-raw-data" class="section level3">
+<h3>Import and clean raw data</h3>
 <pre class="r"><code>crash_df = read_csv(&quot;./data/Motor_Vehicle_Collisions_-_Crashes_20251031.csv&quot;, na = c(&quot;Unspecified&quot;, &quot;Does Not Apply&quot;, &quot;Unknown&quot;, &quot;NA&quot;, &quot;.&quot;, &quot;&quot;)) |&gt; 
   janitor::clean_names() |&gt; 
   # Keep only Manhattan records
@@ -446,7 +447,9 @@ div.tocify {
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<p>Join the three datasets</p>
+</div>
+<div id="join-the-three-datasets" class="section level3">
+<h3>Join the three datasets</h3>
 <pre class="r"><code># links every person to their crash details using &#39;collision_id&#39;.
 collision_df = crash_df |&gt;
   left_join(person_df, by = &quot;collision_id&quot;) |&gt; 
@@ -455,6 +458,7 @@ collision_df = crash_df |&gt;
   relocate(collision_id, vehicle_id, person_id, year, month, day, hour, day_of_week, crash_time, zip_code, latitude, longitude,  num_injured, num_killed, num_casualty, vehicle_type, vehicle_year, driver_license_status, driver_license_jurisdiction, person_type, person_role, person_age, person_sex, person_eje, person_safe_equip)
 
 write_csv(collision_df, &quot;./data/collision_df.csv&quot;)</code></pre>
+</div>
 
 
 
