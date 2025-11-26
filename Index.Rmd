@@ -1,9 +1,0 @@
----
-title: "**Vehicle Collision Analysis in Manhattan**"
-subtitle: "from Jan. 2021 to Oct. 2025"
-output: 
-  html_document: 
-    code_folding: hide
----
-
-
