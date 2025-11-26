@@ -339,7 +339,9 @@ div.tocify {
     <li>
       <a href="Temporal_data_analysis.html">Data Analysis</a>
     </li>
-    <li class="dropdown-header">Predictive Model</li>
+    <li>
+      <a href="Predictive_model.html">Predictive Model</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -397,6 +399,7 @@ collision_df_plot = collision_df |&gt;
   mutate(
     date = make_date(year, month, day),
     month = month(date, label = TRUE, abbr = TRUE),
+    day_of_week = factor(day_of_week, levels = c(&quot;Monday&quot;, &quot;Tuesday&quot;, &quot;Wednesday&quot;, &quot;Thursday&quot;, &quot;Friday&quot;, &quot;Saturday&quot;, &quot;Sunday&quot;)),
     hour = as.numeric(hour),
     # Define Severity
     severity = case_when(
@@ -472,9 +475,8 @@ beginning of the study period.</li>
 </ul>
 <hr />
 </div>
-<div id="seasonal-analysis-average-daily-collisions"
-class="section level3">
-<h3>2. Seasonal Analysis: Average Daily Collisions</h3>
+<div id="seasonal-analysis" class="section level3">
+<h3>2. Seasonal Analysis</h3>
 <p>To understand seasonality, we calculate the average number of
 collisions that occur per day for each month. This averages out the data
 across all 5 years (e.g., the “January” bar represents the average daily
@@ -482,12 +484,12 @@ collisions for all Januarys in the dataset). Here we use a grid layout
 to compare how the <strong>Minor</strong> and <strong>Medium</strong>
 collisions fluctuate throughout the year independently.</p>
 <pre class="r"><code># Calculate average daily collisions per month per type
-seasonality_df &lt;- plot_df |&gt; 
+seasonality_df = plot_df |&gt; 
   count(type, date, month) |&gt; 
   group_by(type, month) |&gt; 
   summarise(avg_daily = mean(n), .groups = &quot;drop&quot;)
 
-p2 &lt;- seasonality_df |&gt; 
+p2 = seasonality_df |&gt; 
   ggplot(aes(x = month, y = avg_daily, fill = type)) +
   # position = &quot;dodge&quot; places the bars side-by-side instead of stacking them
   geom_col(position = &quot;dodge&quot;) +
@@ -497,9 +499,7 @@ p2 &lt;- seasonality_df |&gt;
     subtitle = &quot;Side-by-side comparison of categories&quot;,
     x = &quot;Month&quot;,
     y = &quot;Avg. Collisions per Day&quot;
-  ) +
-  # Move legend to bottom or top since it&#39;s now crucial for identifying the bars
-  theme(legend.position = &quot;bottom&quot;)
+  ) 
 
 p2</code></pre>
 <p><img src="Temporal_data_analysis_files/figure-html/unnamed-chunk-3-1.png" width="90%" /></p>
@@ -522,8 +522,50 @@ by specific seasonal road conditions (like ice in winter).</li>
 </ul>
 <hr />
 </div>
-<div id="diurnal-analysis-hourly-trends" class="section level3">
-<h3>3. Diurnal Analysis: Hourly Trends</h3>
+<div id="weekly-analysis" class="section level3">
+<h3>3. Weekly Analysis</h3>
+<p>This part tries to examine the collision patterns across different
+days of the week and reveal the weekly “rhythm” of the city and helps
+identify which days pose the highest risk.</p>
+<pre class="r"><code># Calculate average daily collisions per day of week
+weekly_df = plot_df |&gt; 
+  count(type, date, day_of_week) |&gt; 
+  group_by(type, day_of_week) |&gt; 
+  summarise(avg_daily = mean(n), .groups = &quot;drop&quot;)
+
+p3 = weekly_df |&gt; 
+  ggplot(aes(x = day_of_week, y = avg_daily, fill = type)) +
+  geom_col(position = &quot;dodge&quot;) +
+  scale_fill_viridis_d(option = &quot;D&quot;, end = 0.8) +
+  labs(
+    title = &quot;Weekly Pattern: Average Daily Collisions by Day&quot;,
+    subtitle = &quot;Side-by-side comparison of categories&quot;,
+    x = &quot;Day of Week&quot;,
+    y = &quot;Avg. Collisions per Day&quot;
+  )
+
+p3</code></pre>
+<p><img src="Temporal_data_analysis_files/figure-html/unnamed-chunk-4-1.png" width="90%" /></p>
+<p><strong>Pattern Observed:</strong> The data shows a progressive
+increase in accident frequency throughout the workweek.</p>
+<ul>
+<li><strong>Weekly Build-up:</strong> Collisions are lowest on Sundays
+and Mondays. The numbers steadily rise during the week, peaking on
+Thursday and Friday.</li>
+<li><strong>The “Thursday” Risk:</strong> While Friday has the highest
+total volume (mostly Minor), Thursday actually sees the highest average
+number of Medium (injury-causing) collisions. This suggests that
+Thursday evenings might be a critical period for safety interventions,
+possibly due to a mix of commuter rush and early weekend social
+activity.</li>
+<li><strong>Weekend Split:</strong> Saturdays remain relatively busy
+(comparable to Tuesdays), whereas Sundays show a sharp drop-off,
+consistently appearing as the safest day of the week.</li>
+</ul>
+<hr />
+</div>
+<div id="diurnal-analysis" class="section level3">
+<h3>4. Diurnal Analysis</h3>
 <p>This grid shows the average hourly collision rate for each category.
 It highlights whether <strong>Minor</strong> collisions and
 <strong>Medium</strong> injury-causing accidents follow different daily
@@ -534,7 +576,7 @@ hourly_df = plot_df |&gt;
   count(type, hour) |&gt; 
   mutate(avg_hourly = n / total_days_recorded)
 
-p3 = hourly_df |&gt; 
+p4 = hourly_df |&gt; 
   ggplot(aes(x = hour, y = avg_hourly, fill = type)) +
   geom_col(show.legend = FALSE) +
   # Use Grid (Facet Wrap)
@@ -549,8 +591,8 @@ p3 = hourly_df |&gt;
   ) +
   theme(strip.background = element_rect(fill = &quot;#f0f0f0&quot;))
 
-p3</code></pre>
-<p><img src="Temporal_data_analysis_files/figure-html/unnamed-chunk-4-1.png" width="90%" /></p>
+p4</code></pre>
+<p><img src="Temporal_data_analysis_files/figure-html/unnamed-chunk-5-1.png" width="90%" /></p>
 <p><strong>Pattern Observed:</strong> The data shows a classic “commuter
 profile” with distinct daily rhythms.</p>
 <ul>
@@ -576,14 +618,15 @@ fatigue.</li>
 demonstrates that accident frequency is highly predictable and strongly
 correlated with human activity patterns rather than random chance.</p>
 <p>The data suggests a “Volume-Based Risk” model: collisions are most
-frequent when the city is most alive—during the evening rush hours, in
-the warmer autumn months, and in the years following the return of
-regular economic activity. The parallel trends between
-<strong>Minor</strong> and <strong>Medium</strong> incidents suggest
-that interventions aimed at simply reducing overall traffic volume or
-congestion during peak hours (4 PM - 6 PM) and peak months
-(September/October) could effectively reduce both nuisance accidents and
-injury-causing crashes simultaneously.</p>
+frequent when the city is most alive—during the evening rush hours,
+towards the end of the workweek (Thursday and Friday), in the warmer
+autumn months, and in the years following the return of regular economic
+activity. The parallel trends between <strong>Minor</strong> and
+<strong>Medium</strong> incidents suggest that interventions aimed at
+simply reducing overall traffic volume or congestion during peak
+periods—specifically the 4 PM - 6 PM window and Thursday evenings—could
+effectively reduce both nuisance accidents and injury-causing crashes
+simultaneously.</p>
 </div>
 
 

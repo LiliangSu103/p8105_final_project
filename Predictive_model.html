@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Predictive_model</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown-header">About</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Temporal Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="https://ls4236-shiny.shinyapps.io/Temporal_trend_shiny/">Temporal Trend Overview (Shiny)</a>
+    </li>
+    <li>
+      <a href="Temporal_data_analysis.html">Data Analysis</a>
+    </li>
+    <li>
+      <a href="Predictive_model.html">Predictive Model</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Predictive_model</h1>
+
+</div>
+
+
+<hr />
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This page focuses on developing and validating two Linear Regression
+models to predict daily vehicle collision counts, using Monte Carlo
+Cross-Validation for robust performance comparison.</p>
+<hr />
+</div>
+<div id="feature-engineering" class="section level2">
+<h2>Feature Engineering</h2>
+<p>We first load the necessary libraries and aggregate the data to the
+daily level, creating all predictor variables, including time features,
+lagged collision counts, and lagged casualty counts.</p>
+<pre class="r"><code># Load the dataset
+df = read_csv(&quot;./data/collision_df.csv&quot;) |&gt; 
+  select(collision_id, year, month, day, hour, day_of_week, crash_time, num_casualty) |&gt; 
+  mutate(date = make_date(year, month, day)) |&gt; 
+  distinct(collision_id, date, num_casualty)
+
+daily_data = df |&gt; 
+  group_by(date) |&gt; 
+  summarise(
+    # count collisions
+    collisions = n(),
+    # sum casualties
+    total_casualty = sum(num_casualty, na.rm = TRUE),
+  ) |&gt; 
+  ungroup() |&gt; 
+  # ensure the time series is continuous
+  complete(date = seq(min(date), max(date), by = &quot;day&quot;), 
+           fill = list(collisions = 0, total_casualty = 0)) |&gt; 
+  mutate(
+    # lagged features (set NA/first day&#39;s lag to 0)
+    collisions_lag1 = lag(collisions, n = 1, default = 0), 
+    total_casualty_lag1 = lag(total_casualty, n = 1, default = 0), 
+    # Time features
+    day_num = as.numeric(date),
+    day_of_week = factor(wday(date, label = TRUE), ordered = FALSE),
+    month = factor(month(date, label = TRUE), ordered = FALSE),
+    year = factor(year(date))
+  ) |&gt; 
+  filter(row_number() &gt; 1) # Remove the first row due to arbitrary lag default</code></pre>
+<hr />
+</div>
+<div id="exploratory-data-analysis" class="section level2">
+<h2>Exploratory Data Analysis</h2>
+<p>Before modeling, visualize the daily collision trends over time.</p>
+<pre class="r"><code>ggplot(daily_data, aes(x = date, y = collisions)) +
+  geom_line(color = &quot;dodgerblue&quot;, alpha = 0.7) +
+  geom_smooth(method = &quot;loess&quot;, formula = &#39;y ~ x&#39;, color = &quot;red&quot;, se = FALSE) +
+  labs(title = &quot;Daily Vehicle Collisions in Manhattan&quot;,
+       subtitle = &quot;Blue line: Daily Count | Red line: Smoothed Trend&quot;,
+       x = &quot;Date&quot;,
+       y = &quot;Number of Collisions per day&quot;) +
+  scale_x_date(
+    date_breaks = &quot;1 year&quot;,
+    date_labels = &quot;%Y&quot;
+  )</code></pre>
+<p><img src="Predictive_model_files/figure-html/unnamed-chunk-2-1.png" width="90%" /></p>
+<p>There is an obvious upward trend in the count of collisions per day
+in Manhattan over the last 5 years.</p>
+<hr />
+</div>
+<div id="model-building" class="section level2">
+<h2>Model Building</h2>
+<p>We define two competing linear regression models: a Baseline Model
+that captures seasonal trends, and an Improved Model that incorporates
+lagged information.</p>
+<div id="model-a-baseline-model" class="section level3">
+<h3>Model A: Baseline Model</h3>
+<p>The Baseline Linear Regression Model summary you provided assesses
+the impact of time and seasonal factors on daily collision counts.</p>
+<p><span class="math display">\[\text{Collisions} \sim \text{Trend} +
+\text{DayOfWeek} + \text{Month} + \text{Year}\]</span></p>
+<pre class="r"><code>lm_baseline = lm(collisions ~ day_num + day_of_week + month + year, data = daily_data)
+summary(lm_baseline)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = collisions ~ day_num + day_of_week + month + year, 
+##     data = daily_data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -24.0936  -4.5816  -0.2766   4.3457  27.4542 
+## 
+## Coefficients:
+##                 Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    215.21969  349.49005   0.616 0.538100    
+## day_num         -0.01048    0.01875  -0.559 0.576232    
+## day_of_weekMon   1.73879    0.61628   2.821 0.004836 ** 
+## day_of_weekTue   4.24149    0.61630   6.882 8.20e-12 ***
+## day_of_weekWed   5.14838    0.61630   8.354  &lt; 2e-16 ***
+## day_of_weekThu   6.90599    0.61629  11.206  &lt; 2e-16 ***
+## day_of_weekFri   7.14574    0.61630  11.595  &lt; 2e-16 ***
+## day_of_weekSat   4.22163    0.61629   6.850 1.02e-11 ***
+## monthFeb         1.78986    0.97776   1.831 0.067337 .  
+## monthMar         5.27538    1.35909   3.882 0.000108 ***
+## monthApr         6.71676    1.85778   3.615 0.000308 ***
+## monthMay        11.56887    2.38512   4.850 1.34e-06 ***
+## monthJun        12.85970    2.93269   4.385 1.23e-05 ***
+## monthJul         9.00499    3.48509   2.584 0.009851 ** 
+## monthAug         9.86521    4.05333   2.434 0.015039 *  
+## monthSep        13.90555    4.61666   3.012 0.002632 ** 
+## monthOct        13.82858    5.17984   2.670 0.007663 ** 
+## monthNov        11.85322    5.75427   2.060 0.039557 *  
+## monthDec        11.15707    6.31933   1.766 0.077647 .  
+## year2022         5.34484    6.86082   0.779 0.436063    
+## year2023         8.72380   13.69367   0.637 0.524164    
+## year2024        12.70712   20.54930   0.618 0.536411    
+## year2025        20.25789   27.39315   0.740 0.459689    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 6.917 on 1741 degrees of freedom
+## Multiple R-squared:  0.3107, Adjusted R-squared:  0.302 
+## F-statistic: 35.67 on 22 and 1741 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div id="model-b-improved-model-adding-lagged-variables"
+class="section level3">
+<h3>Model B: Improved Model (Adding Lagged Variables)</h3>
+<p>Based on the Baseline model, the Improved model will include both
+lagged collision counts and lagged casualty counts for maximum
+predictive power.</p>
+<p><span class="math display">\[\text{Collisions} \sim \text{Baseline} +
+\text{Collisions}_{t-1} + \text{Casualties}_{t-1}\]</span></p>
+<pre class="r"><code>lm_lagged = lm(collisions ~ day_num + day_of_week + month + year + collisions_lag1 + total_casualty_lag1, data = daily_data)
+summary(lm_lagged)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = collisions ~ day_num + day_of_week + month + year + 
+##     collisions_lag1 + total_casualty_lag1, data = daily_data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -20.4044  -4.6059  -0.3027   4.3371  26.6575 
+## 
+## Coefficients:
+##                      Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)         242.23670  343.48822   0.705 0.480764    
+## day_num              -0.01218    0.01842  -0.661 0.508798    
+## day_of_weekMon        2.55413    0.61425   4.158 3.36e-05 ***
+## day_of_weekTue        4.66576    0.60883   7.663 2.99e-14 ***
+## day_of_weekWed        5.13098    0.60579   8.470  &lt; 2e-16 ***
+## day_of_weekThu        6.75600    0.60611  11.146  &lt; 2e-16 ***
+## day_of_weekFri        6.62615    0.60919  10.877  &lt; 2e-16 ***
+## day_of_weekSat        3.63980    0.61014   5.966 2.95e-09 ***
+## monthFeb              1.61597    0.96169   1.680 0.093068 .  
+## monthMar              4.53209    1.33970   3.383 0.000733 ***
+## monthApr              5.88443    1.83009   3.215 0.001327 ** 
+## monthMay              9.98708    2.35561   4.240 2.36e-05 ***
+## monthJun             11.16075    2.89255   3.858 0.000118 ***
+## monthJul              8.14776    3.42933   2.376 0.017614 *  
+## monthAug              9.00325    3.98738   2.258 0.024073 *  
+## monthSep             12.29027    4.54297   2.705 0.006890 ** 
+## monthOct             12.45204    5.09570   2.444 0.014639 *  
+## monthNov             10.76866    5.65768   1.903 0.057157 .  
+## monthDec             10.39166    6.21197   1.673 0.094538 .  
+## year2022              5.74003    6.74290   0.851 0.394737    
+## year2023              9.92654   13.45892   0.738 0.460891    
+## year2024             14.53096   20.19693   0.719 0.471952    
+## year2025             22.04129   26.92262   0.819 0.413075    
+## collisions_lag1       0.21300    0.02921   7.292 4.61e-13 ***
+## total_casualty_lag1  -0.06734    0.03963  -1.699 0.089416 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 6.798 on 1739 degrees of freedom
+## Multiple R-squared:  0.335,  Adjusted R-squared:  0.3258 
+## F-statistic: 36.51 on 24 and 1739 DF,  p-value: &lt; 2.2e-16</code></pre>
+<hr />
+</div>
+</div>
+<div id="cross-validation-and-statistical-model-comparison"
+class="section level2">
+<h2>Cross Validation and Statistical Model Comparison</h2>
+<hr />
+<div id="monte-carlo-cross-validation" class="section level3">
+<h3>Monte Carlo Cross-Validation</h3>
+<p>We use 100 iterations of Monte Carlo cross-validation to assess which
+model generalizes better to unseen data.</p>
+<pre class="r"><code># Create 100 Monte Carlo cross-validation splits
+cv_df = crossv_mc(daily_data, n = 100) |&gt; 
+  mutate(
+    train = map(train, as_tibble),
+    test = map(test, as_tibble)
+  )
+
+cv_df = cv_df |&gt; 
+  # fit models
+  mutate(
+    lm_baseline = map(train, \(df) lm(collisions ~ day_num + day_of_week + month + year, data = df)),
+    lm_lagged = map(train, \(df) lm(collisions ~ day_num + day_of_week + month + year + collisions_lag1 + total_casualty_lag1, data = df))
+    ) |&gt; 
+  # evaluate models
+  mutate(
+    rmse_baseline = map2_dbl(lm_baseline, test, rmse),
+    rmse_lagged = map2_dbl(lm_lagged, test, rmse)
+  )</code></pre>
+<p>Then visualize the distribution of RMSE values calculated across the
+100 validation splits. The model with the lower median and tighter
+boxplot is the preferred predictive model.</p>
+<pre class="r"><code># Tidy the RMSE results for plotting
+rmse_comparison = cv_df |&gt; 
+  select(starts_with(&quot;rmse&quot;)) |&gt; 
+  pivot_longer(
+    everything(),
+    names_to = &quot;model&quot;,
+    values_to = &quot;rmse&quot;,
+    names_prefix = &quot;rmse_&quot;
+  )
+
+# Create the Boxplots
+ggplot(rmse_comparison, aes(x = fct_reorder(model, rmse, .fun = median), y = rmse, fill = model)) +
+  geom_boxplot(alpha = 0.7) +
+  labs(
+    title = &quot;Model Performance Comparison (RMSE)&quot;,
+    subtitle = &quot;Monte Carlo Cross-Validation (N=100) on Daily Collisions&quot;,
+    x = &quot;Model Type&quot;,
+    y = &quot;Root Mean Square Error (RMSE)&quot;
+  ) +
+  scale_x_discrete(labels = c(&quot;baseline&quot; = &quot;Baseline Model&quot;, &quot;lagged&quot; = &quot;Imrpoved Model&quot;)) +
+  theme(legend.position = &quot;none&quot;)</code></pre>
+<p><img src="Predictive_model_files/figure-html/unnamed-chunk-6-1.png" width="90%" /></p>
+<p><strong>Interpretation:</strong> The model that consistently
+demonstrates lower RMSE on unseen data is the better choice for
+production forecasting. Based on plot above, the improved Model is
+expected to outperform the baseline, as recent history is a powerful
+predictor of daily collision counts.</p>
+<hr />
+</div>
+<div id="statistical-model-comparison" class="section level3">
+<h3>Statistical Model Comparison</h3>
+<div id="anova-test" class="section level4">
+<h4>ANOVA test</h4>
+<p>We formally compare the Baseline and Imrpoved Models using ANOVA for
+nested comparison and information criteria (AIC/BIC) for model fit
+penalized by complexity.</p>
+<pre class="r"><code># ANOVA test
+anova_test = anova(lm_baseline, lm_lagged)
+anova_test</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: collisions ~ day_num + day_of_week + month + year
+## Model 2: collisions ~ day_num + day_of_week + month + year + collisions_lag1 + 
+##     total_casualty_lag1
+##   Res.Df   RSS Df Sum of Sq      F    Pr(&gt;F)    
+## 1   1741 83308                                  
+## 2   1739 80371  2    2937.1 31.775 2.795e-14 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p><strong>Interpretation:</strong> The ANOVA test compares the residual
+sum of squares (RSS) between the two nested models. If the added terms
+in the Improved Model significantly reduce the RSS, the test yields a
+small p-value (typically <span class="math inline">\(p &lt;
+0.05\)</span>). According to the result, the p-value (<span
+class="math inline">\(2.795 \times 10^{-14}\)</span>) is far less than
+0.05. Hence, We can reject the null hypothesis and conclude that the
+added lag variables (<code>collisions_lag1</code> and
+<code>total_casualty_lag1</code>) provide a statistically significant
+improvement to the model’s ability to explain the variance in
+collisions.</p>
+</div>
+<div id="statistical-metrics" class="section level4">
+<h4>Statistical Metrics</h4>
+<pre class="r"><code># AIC and BIC Comparison
+comparison_metrics &lt;- tibble(
+  Model = c(&quot;Baseline&quot;, &quot;Improved&quot;),
+  Adj_R_Squared = c(
+    pull(broom::glance(lm_baseline), adj.r.squared),
+    pull(broom::glance(lm_lagged), adj.r.squared)
+  ),
+  AIC = c(
+    AIC(lm_baseline),
+    AIC(lm_lagged)
+  ),
+  BIC = c(
+    BIC(lm_baseline),
+    BIC(lm_lagged)
+  )
+)
+
+comparison_metrics |&gt; 
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Model</th>
+<th align="right">Adj_R_Squared</th>
+<th align="right">AIC</th>
+<th align="right">BIC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Baseline</td>
+<td align="right">0.3020101</td>
+<td align="right">11854.16</td>
+<td align="right">11985.57</td>
+</tr>
+<tr class="even">
+<td align="left">Improved</td>
+<td align="right">0.3258438</td>
+<td align="right">11794.85</td>
+<td align="right">11937.21</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Interpretation:</strong></p>
+<ul>
+<li>Adjusted <span class="math inline">\(R^2\)</span> (Higher is
+better): The improved model has a much higher <span
+class="math inline">\(R^2_{adj}\)</span> (0.3258438 vs. 0.3020101),
+indicating it explains over 32.6% of the variance in
+<code>collisions</code>.</li>
+<li>AIC and BIC (Lower is better): The improved model has lower AIC
+(11794.85 vs. 11854.16) and BIC (11937.21 vs. 11985.57). Both criteria
+penalize model complexity, but the improved model’s superior fit easily
+overcomes this penalty, confirming it is the better, more parsimonious
+model.</li>
+</ul>
+<hr />
+</div>
+</div>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>Based on the cross-validation and statistical tests, the Improved
+Model with additional lagged variables is the superior choice for
+predicting daily collision counts.</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,239 @@
+---
+title: "Predictive_model"
+output: 
+  html_document: 
+    code_folding: hide
+    toc: true
+    toc_float: true
+---
+
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(modelr)
+knitr::opts_chunk$set(
+  fig.width = 8,
+  fig.asp = .6,
+  out.width = "90%",
+  warning = FALSE,
+  message = FALSE
+)
+
+theme_set(theme_bw() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
+
+## Introduction
+
+
+This page focuses on developing and validating two Linear Regression models to predict daily vehicle collision counts, using Monte Carlo Cross-Validation for robust performance comparison.
+
+---
+
+## Feature Engineering
+
+We first load the necessary libraries and aggregate the data to the daily level, creating all predictor variables, including time features, lagged collision counts, and lagged casualty counts.
+
+```{r}
+# Load the dataset
+df = read_csv("./data/collision_df.csv") |> 
+  select(collision_id, year, month, day, hour, day_of_week, crash_time, num_casualty) |> 
+  mutate(date = make_date(year, month, day)) |> 
+  distinct(collision_id, date, num_casualty)
+
+daily_data = df |> 
+  group_by(date) |> 
+  summarise(
+    # count collisions
+    collisions = n(),
+    # sum casualties
+    total_casualty = sum(num_casualty, na.rm = TRUE),
+  ) |> 
+  ungroup() |> 
+  # ensure the time series is continuous
+  complete(date = seq(min(date), max(date), by = "day"), 
+           fill = list(collisions = 0, total_casualty = 0)) |> 
+  mutate(
+    # lagged features (set NA/first day's lag to 0)
+    collisions_lag1 = lag(collisions, n = 1, default = 0), 
+    total_casualty_lag1 = lag(total_casualty, n = 1, default = 0), 
+    # Time features
+    day_num = as.numeric(date),
+    day_of_week = factor(wday(date, label = TRUE), ordered = FALSE),
+    month = factor(month(date, label = TRUE), ordered = FALSE),
+    year = factor(year(date))
+  ) |> 
+  filter(row_number() > 1) # Remove the first row due to arbitrary lag default
+```
+
+---
+
+## Exploratory Data Analysis
+
+Before modeling, visualize the daily collision trends over time.
+
+```{r}
+ggplot(daily_data, aes(x = date, y = collisions)) +
+  geom_line(color = "dodgerblue", alpha = 0.7) +
+  geom_smooth(method = "loess", formula = 'y ~ x', color = "red", se = FALSE) +
+  labs(title = "Daily Vehicle Collisions in Manhattan",
+       subtitle = "Blue line: Daily Count | Red line: Smoothed Trend",
+       x = "Date",
+       y = "Number of Collisions per day") +
+  scale_x_date(
+    date_breaks = "1 year",
+    date_labels = "%Y"
+  )
+
+```
+
+There is an obvious upward trend in the count of collisions per day in Manhattan over the last 5 years.
+
+---
+
+## Model Building
+
+We define two competing linear regression models: a Baseline Model that captures seasonal trends, and an Improved Model that incorporates lagged information.
+
+### Model A: Baseline Model
+
+The Baseline Linear Regression Model summary you provided assesses the impact of time and seasonal factors on daily collision counts.
+
+
+$$\text{Collisions} \sim \text{Trend} + \text{DayOfWeek} + \text{Month} + \text{Year}$$
+```{r}
+lm_baseline = lm(collisions ~ day_num + day_of_week + month + year, data = daily_data)
+summary(lm_baseline)
+```
+
+### Model B: Improved Model (Adding Lagged Variables)
+
+Based on the Baseline model, the Improved model will include both lagged collision counts and lagged casualty counts for maximum predictive power.
+
+$$\text{Collisions} \sim \text{Baseline} + \text{Collisions}_{t-1} + \text{Casualties}_{t-1}$$
+```{r}
+lm_lagged = lm(collisions ~ day_num + day_of_week + month + year + collisions_lag1 + total_casualty_lag1, data = daily_data)
+summary(lm_lagged)
+```
+
+---
+
+## Cross Validation and Statistical Model Comparison
+
+---
+
+### Monte Carlo Cross-Validation
+
+We use 100 iterations of Monte Carlo cross-validation to assess which model generalizes better to unseen data.
+
+```{r}
+# Create 100 Monte Carlo cross-validation splits
+cv_df = crossv_mc(daily_data, n = 100) |> 
+  mutate(
+    train = map(train, as_tibble),
+    test = map(test, as_tibble)
+  )
+
+cv_df = cv_df |> 
+  # fit models
+  mutate(
+    lm_baseline = map(train, \(df) lm(collisions ~ day_num + day_of_week + month + year, data = df)),
+    lm_lagged = map(train, \(df) lm(collisions ~ day_num + day_of_week + month + year + collisions_lag1 + total_casualty_lag1, data = df))
+    ) |> 
+  # evaluate models
+  mutate(
+    rmse_baseline = map2_dbl(lm_baseline, test, rmse),
+    rmse_lagged = map2_dbl(lm_lagged, test, rmse)
+  )
+
+```
+
+Then visualize the distribution of RMSE values calculated across the 100 validation splits. The model with the lower median and tighter boxplot is the preferred predictive model.
+
+```{r}
+# Tidy the RMSE results for plotting
+rmse_comparison = cv_df |> 
+  select(starts_with("rmse")) |> 
+  pivot_longer(
+    everything(),
+    names_to = "model",
+    values_to = "rmse",
+    names_prefix = "rmse_"
+  )
+
+# Create the Boxplots
+ggplot(rmse_comparison, aes(x = fct_reorder(model, rmse, .fun = median), y = rmse, fill = model)) +
+  geom_boxplot(alpha = 0.7) +
+  labs(
+    title = "Model Performance Comparison (RMSE)",
+    subtitle = "Monte Carlo Cross-Validation (N=100) on Daily Collisions",
+    x = "Model Type",
+    y = "Root Mean Square Error (RMSE)"
+  ) +
+  scale_x_discrete(labels = c("baseline" = "Baseline Model", "lagged" = "Imrpoved Model")) +
+  theme(legend.position = "none")
+```
+
+**Interpretation:** The model that consistently demonstrates lower RMSE on unseen data is the better choice for production forecasting. Based on plot above, the improved Model is expected to outperform the baseline, as recent history is a powerful predictor of daily collision counts.
+
+---
+
+### Statistical Model Comparison
+
+#### ANOVA test
+
+We formally compare the Baseline and Imrpoved Models using ANOVA for nested comparison and information criteria (AIC/BIC) for model fit penalized by complexity.
+
+
+```{r}
+# ANOVA test
+anova_test = anova(lm_baseline, lm_lagged)
+anova_test
+```
+
+**Interpretation:** The ANOVA test compares the residual sum of squares (RSS) between the two nested models. If the added terms in the Improved Model significantly reduce the RSS, the test yields a small p-value (typically $p < 0.05$). According to the result, the p-value ($2.795 \times 10^{-14}$) is far less than 0.05. Hence, We can reject the null hypothesis and conclude that the added lag variables (`collisions_lag1` and `total_casualty_lag1`) provide a statistically significant improvement to the model's ability to explain the variance in collisions.
+
+
+#### Statistical Metrics
+
+```{r}
+# AIC and BIC Comparison
+comparison_metrics <- tibble(
+  Model = c("Baseline", "Improved"),
+  Adj_R_Squared = c(
+    pull(broom::glance(lm_baseline), adj.r.squared),
+    pull(broom::glance(lm_lagged), adj.r.squared)
+  ),
+  AIC = c(
+    AIC(lm_baseline),
+    AIC(lm_lagged)
+  ),
+  BIC = c(
+    BIC(lm_baseline),
+    BIC(lm_lagged)
+  )
+)
+
+comparison_metrics |> 
+  knitr::kable()
+```
+
+**Interpretation:**
+
+- Adjusted $R^2$ (Higher is better): The improved model has a much higher $R^2_{adj}$ (0.3258438 vs. 0.3020101), indicating it explains over 32.6% of the variance in `collisions`.
+- AIC and BIC (Lower is better): The improved model has lower AIC (11794.85 vs. 11854.16) and BIC (11937.21 vs. 11985.57). Both criteria penalize model complexity, but the improved model's superior fit easily overcomes this penalty, confirming it is the better, more parsimonious model.
+
+---
+
+## Conclusion
+
+Based on the cross-validation and statistical tests, the Improved Model with additional lagged variables is the superior choice for predicting daily collision counts.
+

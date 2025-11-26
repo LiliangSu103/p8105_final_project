@@ -12,7 +12,7 @@ navbar:
       - text: "Data Analysis"
         href: Temporal_data_analysis.html
       - text: "Predictive Model"
-        href: 
+        href: Predictive_model.html
 
 output:
   html_document: 

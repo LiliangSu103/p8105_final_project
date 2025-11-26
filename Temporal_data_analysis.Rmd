@@ -53,6 +53,7 @@ collision_df_plot = collision_df |>
   mutate(
     date = make_date(year, month, day),
     month = month(date, label = TRUE, abbr = TRUE),
+    day_of_week = factor(day_of_week, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")),
     hour = as.numeric(hour),
     # Define Severity
     severity = case_when(
@@ -118,19 +119,19 @@ p1
 
 ---
 
-### 2. Seasonal Analysis: Average Daily Collisions
+### 2. Seasonal Analysis
 
 To understand seasonality, we calculate the average number of collisions that occur per day for each month. This averages out the data across all 5 years (e.g., the "January" bar represents the average daily collisions for all Januarys in the dataset).
 Here we use a grid layout to compare how the **Minor** and **Medium** collisions fluctuate throughout the year independently.
 
 ```{r}
 # Calculate average daily collisions per month per type
-seasonality_df <- plot_df |> 
+seasonality_df = plot_df |> 
   count(type, date, month) |> 
   group_by(type, month) |> 
   summarise(avg_daily = mean(n), .groups = "drop")
 
-p2 <- seasonality_df |> 
+p2 = seasonality_df |> 
   ggplot(aes(x = month, y = avg_daily, fill = type)) +
   # position = "dodge" places the bars side-by-side instead of stacking them
   geom_col(position = "dodge") +
@@ -140,9 +141,7 @@ p2 <- seasonality_df |>
     subtitle = "Side-by-side comparison of categories",
     x = "Month",
     y = "Avg. Collisions per Day"
-  ) +
-  # Move legend to bottom or top since it's now crucial for identifying the bars
-  theme(legend.position = "bottom")
+  ) 
 
 p2
 ```
@@ -155,8 +154,41 @@ p2
 
 ---
 
+### 3. Weekly Analysis
 
-### 3. Diurnal Analysis: Hourly Trends
+This part tries to examine the collision patterns across different days of the week and reveal the weekly "rhythm" of the city and helps identify which days pose the highest risk.
+
+```{r}
+# Calculate average daily collisions per day of week
+weekly_df = plot_df |> 
+  count(type, date, day_of_week) |> 
+  group_by(type, day_of_week) |> 
+  summarise(avg_daily = mean(n), .groups = "drop")
+
+p3 = weekly_df |> 
+  ggplot(aes(x = day_of_week, y = avg_daily, fill = type)) +
+  geom_col(position = "dodge") +
+  scale_fill_viridis_d(option = "D", end = 0.8) +
+  labs(
+    title = "Weekly Pattern: Average Daily Collisions by Day",
+    subtitle = "Side-by-side comparison of categories",
+    x = "Day of Week",
+    y = "Avg. Collisions per Day"
+  )
+
+p3
+```
+
+**Pattern Observed:** The data shows a progressive increase in accident frequency throughout the workweek.
+
+- **Weekly Build-up:** Collisions are lowest on Sundays and Mondays. The numbers steadily rise during the week, peaking on Thursday and Friday.
+- **The "Thursday" Risk:** While Friday has the highest total volume (mostly Minor), Thursday actually sees the highest average number of Medium (injury-causing) collisions. This suggests that Thursday evenings might be a critical period for safety interventions, possibly due to a mix of commuter rush and early weekend social activity.
+- **Weekend Split:** Saturdays remain relatively busy (comparable to Tuesdays), whereas Sundays show a sharp drop-off, consistently appearing as the safest day of the week.
+
+---
+
+
+### 4. Diurnal Analysis
 
 This grid shows the average hourly collision rate for each category. It highlights whether **Minor** collisions and **Medium** injury-causing accidents follow different daily schedules.
 
@@ -167,7 +199,7 @@ hourly_df = plot_df |>
   count(type, hour) |> 
   mutate(avg_hourly = n / total_days_recorded)
 
-p3 = hourly_df |> 
+p4 = hourly_df |> 
   ggplot(aes(x = hour, y = avg_hourly, fill = type)) +
   geom_col(show.legend = FALSE) +
   # Use Grid (Facet Wrap)
@@ -182,7 +214,7 @@ p3 = hourly_df |>
   ) +
   theme(strip.background = element_rect(fill = "#f0f0f0"))
 
-p3
+p4
 ```
 
 **Pattern Observed:** The data shows a classic "commuter profile" with distinct daily rhythms.
@@ -197,4 +229,4 @@ p3
 
 This temporal analysis of Manhattan vehicle collisions (2021–2025) demonstrates that accident frequency is highly predictable and strongly correlated with human activity patterns rather than random chance.
 
-The data suggests a "Volume-Based Risk" model: collisions are most frequent when the city is most alive—during the evening rush hours, in the warmer autumn months, and in the years following the return of regular economic activity. The parallel trends between **Minor** and **Medium** incidents suggest that interventions aimed at simply reducing overall traffic volume or congestion during peak hours (4 PM - 6 PM) and peak months (September/October) could effectively reduce both nuisance accidents and injury-causing crashes simultaneously.
+The data suggests a "Volume-Based Risk" model: collisions are most frequent when the city is most alive—during the evening rush hours, towards the end of the workweek (Thursday and Friday), in the warmer autumn months, and in the years following the return of regular economic activity. The parallel trends between **Minor** and **Medium** incidents suggest that interventions aimed at simply reducing overall traffic volume or congestion during peak periods—specifically the 4 PM - 6 PM window and Thursday evenings—could effectively reduce both nuisance accidents and injury-causing crashes simultaneously.
