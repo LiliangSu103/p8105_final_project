@@ -339,7 +339,9 @@ div.tocify {
     <li>
       <a href="Temporal_data_analysis.html">Data Analysis</a>
     </li>
-    <li class="dropdown-header">Predictive Model</li>
+    <li>
+      <a href="Predictive_model.html">Predictive Model</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -395,12 +397,11 @@ div.tocify {
   # keep predictors of interests
   select(collision_id, year, month, day, hour, day_of_week, crash_time, zip_code, latitude, longitude,  num_injured, num_killed, num_casualty) |&gt; 
   arrange(year, month, day, hour)</code></pre>
-<pre><code>## Warning: One or more parsing issues, call `problems()` on your data frame for
-## details, e.g.:
+<pre><code>## Warning: One or more parsing issues, call `problems()` on your data frame for details, e.g.:
 ##   dat &lt;- vroom(...)
 ##   problems(dat)</code></pre>
 <pre><code>## Rows: 58124 Columns: 29
-## ── Column specification ─────────────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr  (14): CRASH DATE, BOROUGH, LOCATION, ON STREET NAME, CROSS STREET NAME,...
 ## dbl  (12): ZIP CODE, LATITUDE, LONGITUDE, NUMBER OF PERSONS INJURED, NUMBER ...
@@ -421,7 +422,7 @@ div.tocify {
          person_safe_equip = safety_equipment,
          person_id = unique_id)</code></pre>
 <pre><code>## Rows: 189972 Columns: 21
-## ── Column specification ─────────────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr  (16): CRASH_DATE, PERSON_ID, PERSON_TYPE, PERSON_INJURY, EJECTION, EMOT...
 ## dbl   (4): UNIQUE_ID, COLLISION_ID, VEHICLE_ID, PERSON_AGE
@@ -436,7 +437,7 @@ div.tocify {
   # the unqiue_id in vehicle_df is actually the vehicle_id in person_df, rename it for data joining
   rename(vehicle_id = unique_id)</code></pre>
 <pre><code>## Rows: 111199 Columns: 25
-## ── Column specification ─────────────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr  (19): CRASH_DATE, VEHICLE_ID, STATE_REGISTRATION, VEHICLE_TYPE, VEHICLE...
 ## dbl   (4): UNIQUE_ID, COLLISION_ID, VEHICLE_YEAR, VEHICLE_OCCUPANTS

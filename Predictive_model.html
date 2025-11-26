@@ -695,6 +695,19 @@ model.</li>
 <p>Based on the cross-validation and statistical tests, the Improved
 Model with additional lagged variables is the superior choice for
 predicting daily collision counts.</p>
+<ul>
+<li><p>Predictive Power (RMSE): The cross-validated RMSE boxplot
+confirms the Improved Model consistently minimizes out-of-sample error
+compared to the Baseline Model.</p></li>
+<li><p>Statistical Significance (ANOVA): The ANOVA test confirms that
+the addition of lagged features is statistically significant (<span
+class="math inline">\(P &lt; 0.05\)</span>), meaning they capture
+relevant information not covered by the standard time features.</p></li>
+<li><p>Model Parsimony (AIC/BIC): The lower AIC and BIC scores for the
+Improved Model indicate it provides a more efficient fit to the data,
+demonstrating that its increased predictive accuracy justifies its
+higher complexity (more parameters).</p></li>
+</ul>
 </div>
 
 
