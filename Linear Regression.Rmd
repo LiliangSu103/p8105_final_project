@@ -12,8 +12,12 @@ library(purrr)
 library(broom)
 library(modelr)
 library(mgcv)
+library(MASS)
 ```
 
+```{r}
+collision_df = read.csv("data/collision_df.csv")
+```
 
 
 ```{r}
@@ -26,48 +30,66 @@ collision_cleaned_df <- collision_df |>
   filter(vehicle_year > 1950 & vehicle_year <= year) |>
   mutate(day_of_week = factor(day_of_week, 
                          levels = c("Sunday", "Monday", "Tuesday", "Wednesday", 
-                                    "Thursday", "Friday", "Saturday"))
+                                    "Thursday", "Friday", "Saturday")),
+    num_casualty = as.numeric(num_casualty),
+    vehicle_year = as.numeric(vehicle_year),
+    hour_factor = as.factor(hour)
   ) |>mutate(
-    log_casualty = log(num_casualty + 1)
+    sqrt_casualty = sqrt(num_casualty + 1)
+  )
+  
+```
+
+
+```{r}
+glm_nb_fit_A <- glm.nb(num_casualty ~ hour_factor + day_of_week + latitude + longitude + vehicle_year, data = collision_cleaned_df)
+
+```
+
+```{r}
+broom::tidy(glm_nb_fit_A, conf.int = TRUE, exponentiate = TRUE) |> 
+  knitr::kable()
+  
+```
+
+
+
+```{r}
+models_to_compare <- list(
+  model_A_main = num_casualty ~ hour_factor + day_of_week + latitude + longitude + vehicle_year,
+  model_B_interact = num_casualty ~ hour_factor * day_of_week + latitude + longitude + vehicle_year,
+  model_C_control = num_casualty ~ latitude + longitude + vehicle_year 
+)
+```
+
+
+```{r}
+cv_data <- crossv_mc(collision_cleaned_df, n = 100, test = 0.20)
+```
+
+```{r}
+cv_results <- cv_data |>
+  mutate(model_form = list(models_to_compare)) |>
+  unnest(model_form) |>
+  mutate(
+    fit = map2(model_form, train, 
+               ~MASS::glm.nb(.x, data = as_tibble(.y))
+    )
   )
 ```
 
 
-```{r}
-
-
-casualty_model <- lm(num_casualty ~ hour + day_of_week + latitude + longitude + vehicle_year, data = collision_cleaned_df)
-
-collision_cleaned_df |> 
-  ggplot(aes(x = num_casualty))+
-           geom_histogram(fill = "darkblue")
-         
-
-plot(casualty_model)
-```
-```{r}
-casualty_model <- lm(log_casualty ~ hour + day_of_week + latitude + longitude + vehicle_year, data = collision_cleaned_df)
-
-collision_cleaned_df |> 
-  ggplot(aes(x = log_casualty))+
-           geom_histogram(fill = "darkblue")
-```
-
-
 
 ```{r}
-bootstrap_fits <- collision_cleaned_df |>
-  bootstrap(n = 5000) |>
-  mutate(
-    df = map(strap, as_tibble),
-    fits = map(df, \(df) lm(casualty_formula, data = df))
+final_comparison_summary <- cv_results |>
+  group_by(model_form) |>
+  summarize(
+    Mean_CV_RMSE = mean(rmse),
+    Std_Error = sd(rmse) / sqrt(n()),
+    .groups = 'drop'
   ) |>
-  mutate(
-    tidied = map(fits, ~ broom::tidy(.x, conf.int = TRUE))
-  )
+  arrange(Mean_CV_RMSE)
 ```
-
-
 
 
 
