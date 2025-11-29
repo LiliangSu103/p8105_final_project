@@ -1,0 +1,75 @@
+---
+title: "Linear Regression"
+output: html_document
+---
+
+
+```{r}
+library(dplyr)
+library(tidyverse)
+library(rsample)
+library(purrr)
+library(broom)
+library(modelr)
+library(mgcv)
+```
+
+
+
+```{r}
+collision_cleaned_df <- collision_df |>
+  drop_na(num_casualty, hour, day_of_week, latitude, longitude, vehicle_year) |>
+  mutate(
+    num_casualty = as.numeric(num_casualty),
+    vehicle_year = as.numeric(vehicle_year)
+  ) |>
+  filter(vehicle_year > 1950 & vehicle_year <= year) |>
+  mutate(day_of_week = factor(day_of_week, 
+                         levels = c("Sunday", "Monday", "Tuesday", "Wednesday", 
+                                    "Thursday", "Friday", "Saturday"))
+  ) |>mutate(
+    log_casualty = log(num_casualty + 1)
+  )
+```
+
+
+```{r}
+
+
+casualty_model <- lm(num_casualty ~ hour + day_of_week + latitude + longitude + vehicle_year, data = collision_cleaned_df)
+
+collision_cleaned_df |> 
+  ggplot(aes(x = num_casualty))+
+           geom_histogram(fill = "darkblue")
+         
+
+plot(casualty_model)
+```
+```{r}
+casualty_model <- lm(log_casualty ~ hour + day_of_week + latitude + longitude + vehicle_year, data = collision_cleaned_df)
+
+collision_cleaned_df |> 
+  ggplot(aes(x = log_casualty))+
+           geom_histogram(fill = "darkblue")
+```
+
+
+
+```{r}
+bootstrap_fits <- collision_cleaned_df |>
+  bootstrap(n = 5000) |>
+  mutate(
+    df = map(strap, as_tibble),
+    fits = map(df, \(df) lm(casualty_formula, data = df))
+  ) |>
+  mutate(
+    tidied = map(fits, ~ broom::tidy(.x, conf.int = TRUE))
+  )
+```
+
+
+
+
+
+
+
