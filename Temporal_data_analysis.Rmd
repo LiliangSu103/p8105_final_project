@@ -45,7 +45,7 @@ We begin by loading the cleaned dataset (the cleaning process is documented [her
 To further support our severity-based analysis, we create a new column that classifies each collision into the **All**, **Minor**, or **Medium** severity categories.
 
 ```{r, message=FALSE}
-collision_df <- read_csv("./data/collision_df.csv")
+collision_df = read_csv("./data/collision_df.csv")
 
 # Clean and Classify
 collision_df_plot = collision_df |> 
@@ -63,13 +63,13 @@ collision_df_plot = collision_df |>
     )
   )
 
-# Create the "Expanded" Dataset for Plotting
-df_all    <- collision_df_plot |> mutate(type = "All")
-df_minor  <- collision_df_plot |> filter(severity == "Minor") |> mutate(type = "Minor")
-df_medium <- collision_df_plot |> filter(severity == "Medium") |> mutate(type = "Medium")
+# Create the longer Dataset for Plotting
+df_all    = collision_df_plot |> mutate(type = "All")
+df_minor  = collision_df_plot |> filter(severity == "Minor") |> mutate(type = "Minor")
+df_medium = collision_df_plot |> filter(severity == "Medium") |> mutate(type = "Medium")
 
 # Combine and set factor levels for consistent ordering
-plot_df <- bind_rows(df_all, df_minor, df_medium) |> 
+plot_df = bind_rows(df_all, df_minor, df_medium) |> 
   mutate(type = factor(type, levels = c("All", "Minor", "Medium")))
 ```
 

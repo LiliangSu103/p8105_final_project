@@ -206,7 +206,7 @@ anova_test
 
 ```{r}
 # AIC and BIC Comparison
-comparison_metrics <- tibble(
+comparison_metrics = tibble(
   Model = c("Baseline", "Improved"),
   Adj_R_Squared = c(
     pull(broom::glance(lm_baseline), adj.r.squared),

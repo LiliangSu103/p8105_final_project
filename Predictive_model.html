@@ -633,7 +633,7 @@ collisions.</p>
 <div id="statistical-metrics" class="section level4">
 <h4>Statistical Metrics</h4>
 <pre class="r"><code># AIC and BIC Comparison
-comparison_metrics &lt;- tibble(
+comparison_metrics = tibble(
   Model = c(&quot;Baseline&quot;, &quot;Improved&quot;),
   Adj_R_Squared = c(
     pull(broom::glance(lm_baseline), adj.r.squared),

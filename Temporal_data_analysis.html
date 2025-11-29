@@ -392,7 +392,7 @@ individuals affected.</p>
 column that classifies each collision into the <strong>All</strong>,
 <strong>Minor</strong>, or <strong>Medium</strong> severity
 categories.</p>
-<pre class="r"><code>collision_df &lt;- read_csv(&quot;./data/collision_df.csv&quot;)
+<pre class="r"><code>collision_df = read_csv(&quot;./data/collision_df.csv&quot;)
 
 # Clean and Classify
 collision_df_plot = collision_df |&gt; 
@@ -410,13 +410,13 @@ collision_df_plot = collision_df |&gt;
     )
   )
 
-# Create the &quot;Expanded&quot; Dataset for Plotting
-df_all    &lt;- collision_df_plot |&gt; mutate(type = &quot;All&quot;)
-df_minor  &lt;- collision_df_plot |&gt; filter(severity == &quot;Minor&quot;) |&gt; mutate(type = &quot;Minor&quot;)
-df_medium &lt;- collision_df_plot |&gt; filter(severity == &quot;Medium&quot;) |&gt; mutate(type = &quot;Medium&quot;)
+# Create the longer Dataset for Plotting
+df_all    = collision_df_plot |&gt; mutate(type = &quot;All&quot;)
+df_minor  = collision_df_plot |&gt; filter(severity == &quot;Minor&quot;) |&gt; mutate(type = &quot;Minor&quot;)
+df_medium = collision_df_plot |&gt; filter(severity == &quot;Medium&quot;) |&gt; mutate(type = &quot;Medium&quot;)
 
 # Combine and set factor levels for consistent ordering
-plot_df &lt;- bind_rows(df_all, df_minor, df_medium) |&gt; 
+plot_df = bind_rows(df_all, df_minor, df_medium) |&gt; 
   mutate(type = factor(type, levels = c(&quot;All&quot;, &quot;Minor&quot;, &quot;Medium&quot;)))</code></pre>
 <hr />
 </div>
