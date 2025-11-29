@@ -1,0 +1,55 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+---
+title: "Environment"
+output: html_document
+---
+```{r}
+library(tidyverse)
+```
+
+
+```{r}
+
+geo_df <- read.csv("data/Zip Codes.csv") |> 
+  janitor::clean_names() |> 
+  select(zip_code, county, neighborhood)
+  
+
+collision_df <- read.csv("data/collision_df.csv") |> 
+  janitor::clean_names()
+```
+
+```{r}
+collision_geo_df <- 
+collision_df |> 
+  left_join(geo_df, by = "zip_code") |> 
+  select(-vehicle_year, -driver_license_jurisdiction)
+```
+
+```{r}
+ 
+collision_geo_df |> 
+  count(neighborhood, name = "number") |>
+  mutate(
+    prop = number / base::sum(number)
+  ) |> 
+  arrange(desc(number)) |> 
+  knitr::kable(digits = 2)
+
+collision_geo_df |> 
+  drop_na(person_role, person_sex) |> 
+  ggplot(aes(x = fct_reorder(neighborhood, neighborhood, .fun = length), fill = person_sex))+
+  geom_bar(position = "dodge")+
+
+  facet_wrap(~ person_role, scales = "free_y") +
+  labs(title = "Collision Counts by Neighborhood, Grouped by Sex",
+       x = "Neighborhood (Sorted by Count)",
+       y = "Number of Collisions") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+```
