@@ -49,8 +49,8 @@ mutate(datetime_hour = floor_date(datetime, "hour")) %>%
 count(datetime_hour, name = "num_crash") %>%
 mutate(
 hour = hour(datetime_hour),
-weekday = wday(datetime_hour, label = TRUE, abbr = FALSE),
-month = month(datetime_hour, label = TRUE, abbr = FALSE),
+weekday = wday(datetime_hour, label = TRUE, abbr = FALSE, locale = "en_US"),
+month = month(datetime_hour, label = TRUE, abbr = FALSE, locale = "en_US"),
 year = year(datetime_hour),
 weekend = ifelse(weekday %in% c("Saturday","Sunday"), 1, 0)
 )

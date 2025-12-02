@@ -315,8 +315,8 @@ mutate(datetime_hour = floor_date(datetime, &quot;hour&quot;)) %&gt;%
 count(datetime_hour, name = &quot;num_crash&quot;) %&gt;%
 mutate(
 hour = hour(datetime_hour),
-weekday = wday(datetime_hour, label = TRUE, abbr = FALSE),
-month = month(datetime_hour, label = TRUE, abbr = FALSE),
+weekday = wday(datetime_hour, label = TRUE, abbr = FALSE, locale = &quot;en_US&quot;),
+month = month(datetime_hour, label = TRUE, abbr = FALSE, locale = &quot;en_US&quot;),
 year = year(datetime_hour),
 weekend = ifelse(weekday %in% c(&quot;Saturday&quot;,&quot;Sunday&quot;), 1, 0)
 )</code></pre>
