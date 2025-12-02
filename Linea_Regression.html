@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+<meta name="date" content="2025-12-02" />
+
+<title>Linear Regression</title>
+
+<script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown-header">About</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Temporal Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="https://ls4236-shiny.shinyapps.io/Temporal_trend_shiny/">Temporal Trend Overview (Shiny)</a>
+    </li>
+    <li>
+      <a href="Temporal_data_analysis.html">Data Analysis</a>
+    </li>
+    <li>
+      <a href="Predictive_model.html">Predictive Model</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Linear Regression</h1>
+<h4 class="date">2025-12-02</h4>
+
+</div>
+
+
+<div id="download-data" class="section level2">
+<h2>Download Data</h2>
+<pre class="r"><code>Data&lt;-read_csv(&quot;./Data/collision_df.csv&quot;)</code></pre>
+<pre><code>## Rows: 112451 Columns: 25
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr   (9): day_of_week, vehicle_type, driver_license_status, driver_license_...
+## dbl  (15): collision_id, vehicle_id, person_id, year, month, day, hour, zip_...
+## time  (1): crash_time
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div id="data.tidy" class="section level2">
+<h2>data.tidy</h2>
+<pre class="r"><code>Data_clean &lt;- Data %&gt;%
+mutate(
+crash_time = as.character(crash_time),
+crash_time = ifelse(nchar(crash_time) == 5, paste0(crash_time, &quot;:00&quot;), crash_time),
+datetime = ymd_hms(paste(year, month, day, crash_time)),
+hour = hour(datetime),
+weekday = wday(datetime, label = TRUE, abbr = FALSE),
+month = month(datetime, label = TRUE, abbr = FALSE),
+weekend = ifelse(weekday %in% c(&quot;Saturday&quot;,&quot;Sunday&quot;), 1, 0),
+date = date(datetime)
+) %&gt;%
+drop_na(datetime)</code></pre>
+</div>
+<div id="hourly-accident-statistics" class="section level2">
+<h2>Hourly Accident Statistics</h2>
+<pre class="r"><code>hourly_df &lt;- Data_clean %&gt;%
+mutate(datetime_hour = floor_date(datetime, &quot;hour&quot;)) %&gt;%
+count(datetime_hour, name = &quot;num_crash&quot;) %&gt;%
+mutate(
+hour = hour(datetime_hour),
+weekday = wday(datetime_hour, label = TRUE, abbr = FALSE),
+month = month(datetime_hour, label = TRUE, abbr = FALSE),
+year = year(datetime_hour),
+weekend = ifelse(weekday %in% c(&quot;Saturday&quot;,&quot;Sunday&quot;), 1, 0)
+)</code></pre>
+</div>
+<div id="linear-regression-models" class="section level2">
+<h2>Linear Regression Models</h2>
+<pre class="r"><code>ggplot(hourly_df, aes(hour, num_crash)) +
+geom_point(alpha = 0.2) +
+geom_smooth(method = &quot;loess&quot;) +
+labs(
+title = &quot;Number of accidents by time of day&quot;,
+x = &quot;Hour&quot;,
+y = &quot;Number of incidents&quot;
+)</code></pre>
+<pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
+<p><img src="Linea_Regression_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>hour_weekday_heat &lt;- hourly_df %&gt;%
+group_by(weekday, hour) %&gt;%
+summarise(mean_crash = mean(num_crash), .groups = &quot;drop&quot;)
+
+ggplot(hour_weekday_heat, aes(hour, weekday, fill = mean_crash)) +
+geom_tile() +
+scale_fill_viridis_c() +
+labs(title = &quot;Day × Hour Accident Heat Map&quot;, x = &quot;Hour&quot;, y = &quot;Day&quot;, fill = &quot;Average number of accidents&quot;)</code></pre>
+<p><img src="Linea_Regression_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
+<p>Ans: fit1: base model: hour, weekday, month. fit2: add the
+interaction between hour and weekday. fit3: add the year variable.</p>
+<p>Conclusion: Multiple incidents primarily occurred during the morning
+rush hour starting at 7 a.m. and continuing until 7 p.m., with
+particularly high concentrations during the morning and evening peak
+periods. The period from noon to 2 p.m. also showed significant
+activity, likely due to midday commuting patterns.</p>
+</div>
+<div id="cross-validation" class="section level2">
+<h2>Cross Validation</h2>
+<pre class="r"><code>set.seed(123)
+
+cv_splits &lt;- vfold_cv(hourly_df, v = 10)
+
+model_spec &lt;- linear_reg() %&gt;%
+set_engine(&quot;lm&quot;)
+
+wf1 &lt;- workflow() %&gt;%
+add_formula(num_crash ~ hour + weekday + month) %&gt;%
+add_model(model_spec)
+
+wf2 &lt;- workflow() %&gt;%
+add_formula(num_crash ~ hour * weekday + month) %&gt;%
+add_model(model_spec)
+
+wf3 &lt;- workflow() %&gt;%
+add_formula(num_crash ~ hour + weekday + month + year) %&gt;%
+add_model(model_spec)
+
+cv1 &lt;- fit_resamples(wf1, cv_splits, control = control_resamples(save_pred = TRUE))
+cv2 &lt;- fit_resamples(wf2, cv_splits, control = control_resamples(save_pred = TRUE))
+cv3 &lt;- fit_resamples(wf3, cv_splits, control = control_resamples(save_pred = TRUE))
+
+cv1_metrics &lt;- collect_metrics(cv1)
+cv2_metrics &lt;- collect_metrics(cv2)
+cv3_metrics &lt;- collect_metrics(cv3)
+
+cv1_metrics</code></pre>
+<pre><code>## # A tibble: 2 × 6
+##   .metric .estimator   mean     n std_err .config        
+##   &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;          
+## 1 rmse    standard   3.02      10 0.0596  pre0_mod0_post0
+## 2 rsq     standard   0.0202    10 0.00161 pre0_mod0_post0</code></pre>
+<pre class="r"><code>cv2_metrics</code></pre>
+<pre><code>## # A tibble: 2 × 6
+##   .metric .estimator   mean     n std_err .config        
+##   &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;          
+## 1 rmse    standard   3.02      10 0.0595  pre0_mod0_post0
+## 2 rsq     standard   0.0210    10 0.00177 pre0_mod0_post0</code></pre>
+<pre class="r"><code>cv3_metrics</code></pre>
+<pre><code>## # A tibble: 2 × 6
+##   .metric .estimator   mean     n std_err .config        
+##   &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;          
+## 1 rmse    standard   3.02      10 0.0598  pre0_mod0_post0
+## 2 rsq     standard   0.0214    10 0.00166 pre0_mod0_post0</code></pre>
+<p>Ans: Among the three models, fit3 (containing hour + weekday + month
++ year) is the optimal model. Although the improvement is modest, it
+achieves the best performance on cross-validation metrics. Among the
+three candidate models, model 3 (hour + weekday + month + year) is
+selected as the optimal model. This conclusion is based on
+cross-validation performance. Specifically, model 3 attains the lowest
+average RMSE and the highest average R² across the 10 folds, indicating
+slightly better predictive accuracy and explanatory power compared with
+models 1 and 2. Although the improvement is modest, the performance
+gains are consistent across folds, suggesting that the inclusion of the
+year term provides additional predictive value without increasing model
+variance. Therefore, model 3 is the best-performing model among the
+three.</p>
+</div>
+<div id="bootstrap" class="section level2">
+<h2>Bootstrap</h2>
+<pre class="r"><code>boot_df &lt;- hourly_df %&gt;%
+rsample::bootstraps(times = 1000) %&gt;%
+mutate(
+model = map(splits, ~ lm(num_crash ~ hour + weekday + month, data = analysis(.x))),
+coef = map(model, broom::tidy)
+) %&gt;%
+unnest(coef)
+
+boot_df %&gt;%
+filter(term == &quot;hour&quot;) %&gt;%
+ggplot(aes(x = estimate)) +
+geom_density(fill = &quot;steelblue&quot;, alpha = 0.5) +
+geom_vline(xintercept = 0, color = &quot;red&quot;, linetype = &quot;dashed&quot;) +
+labs(title = &quot;Bootstrap Distribution: Hourly Coefficient&quot;, x = &quot;Hourly coefficient estimation&quot;, y = &quot;Density&quot;)</code></pre>
+<p><img src="Linea_Regression_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Ans: The hourly coefficient is approximately 0.04–0.055, meaning that
+for every additional hour, the average number of accidents increases by
+about 0.04–0.055 incidents. Based on 1,000 bootstrap resamples, the
+estimated coefficient for hour is highly stable and concentrates within
+the range 0.04–0.055. This indicates a small but consistent positive
+relationship between the time of day and the number of crashes. In
+practical terms, each additional hour is associated with an increase of
+approximately 0.04–0.055 accidents on average, holding other variables
+constant. The tight bootstrap distribution suggests that the effect is
+statistically reliable, even if the magnitude is modest.</p>
+</div>
+<div id="spatial-heat-map-incident-hotspots" class="section level2">
+<h2>Spatial Heat Map (Incident Hotspots)</h2>
+<pre class="r"><code>manhattan_df &lt;- Data_clean %&gt;%
+filter(latitude &gt;= 40.7 &amp; latitude &lt;= 40.88,
+longitude &gt;= -74.02 &amp; longitude &lt;= -73.93)
+
+
+ggplot(manhattan_df, aes(x = longitude, y = latitude)) +
+stat_density_2d(aes(fill = ..level..), geom = &quot;polygon&quot;, contour = TRUE) +
+scale_fill_viridis_c(option = &quot;plasma&quot;) +
+coord_fixed() +
+labs(title = &quot;Manhattan Incident Hotspot Map&quot;, x = &quot;Longitude&quot;, y = &quot;Latitude&quot;, fill = &quot;Density&quot;)</code></pre>
+<pre><code>## Warning: The dot-dot notation (`..level..`) was deprecated in ggplot2 3.4.0.
+## ℹ Please use `after_stat(level)` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.</code></pre>
+<p><img src="Linea_Regression_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
