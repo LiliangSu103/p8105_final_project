@@ -1,0 +1,127 @@
+---
+title: "Non_Temporal"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+```
+
+
+```{r}
+
+geo_df <- read.csv("data/Zip Codes.csv") |> 
+  janitor::clean_names() |> 
+  select(zip_code, county, neighborhood)
+  
+
+collision_df <- read.csv("data/collision_df.csv") |> 
+  janitor::clean_names()
+```
+
+```{r}
+collision_geo_df <- 
+collision_df |> 
+  left_join(geo_df, by = "zip_code") |> 
+  select(-vehicle_year, -driver_license_jurisdiction) |> 
+  drop_na()
+```
+
+```{r}
+# Type
+
+collision_geo_df |> 
+  count(person_type, name = "number") |> 
+  mutate(prop = number / base::sum(number))
+
+# Age
+
+collision_geo_df |> 
+  count(person_age, name = "number") |> 
+  mutate(prop = number / base::sum(number)) 
+
+# Sex 
+
+collision_geo_df |> 
+  count(person_sex, name = "number") |> 
+  mutate(prop = number / base::sum(number))
+
+# Role
+
+collision_geo_df |> 
+  count(person_role, name = "number") |> 
+  mutate(prop = number / base::sum(number))
+
+# Eje
+
+collision_geo_df |> 
+  count(person_eje, name = "number") |> 
+  mutate(prop = number / base::sum(number))
+
+# Safe equip
+
+collision_geo_df |> 
+  count(person_safe_equip, name = "number") |> 
+  mutate(prop = number / base::sum(number))
+```
+
+
+
+```{r}
+# reset age
+
+collision_reage_df <-  collision_geo_df|>
+  filter(person_age >= 0 , person_age <= 140) |> 
+  mutate(
+    age_group = case_when(
+      person_age >= 0 & person_age <= 19 ~ "Pre young",
+      person_age >= 20 & person_age <= 39 ~ "Young Age",
+      person_age >= 40 & person_age <= 64 ~ "Middle Age",
+      person_age >= 65 ~ "Old Age"
+  ))
+
+collision_reage_df |> 
+  group_by(age_group) |> 
+  summarise(n = n()) |> 
+  ggplot(aes(x = forcats::fct_reorder(age_group, n), y = n)) +
+  geom_col(fill = "darkblue")+
+  labs(title = "Collision Count by Age Group",
+       x = "Age Group (Sorted by Count)",
+       y = "Total Number of People Involved (Count)")+
+  geom_text(aes(label = n), vjust = -0.5, size = 4)
+  
+```
+
+
+I set up a filter which only keeps the age: 0 <= person_age <= 140. Then I created a new variable age_group separate to six age group: Pre age are 0 - 19, young age are 20-39, middle age are 40-64, and old age begins around 65.
+After the graph we can see the most of the crash are happened to the Young age, secondly are the Middle age. 
+
+
+
+```{r}
+ 
+collision_geo_df |> 
+  count(neighborhood, name = "number") |>
+  mutate(
+    prop = number / base::sum(number)
+  ) |> 
+  arrange(desc(number)) |> 
+  knitr::kable(digits = 2)
+
+
+# Visualizes the count of collisions by Neighborhood, separated by Person Role (the facet), and grouped within the bars by Person Sex.
+
+collision_geo_df |> 
+  drop_na(person_role, person_sex) |> 
+  ggplot(aes(x = fct_reorder(neighborhood, neighborhood, .fun = length), fill = person_sex))+
+  geom_bar(position = "dodge")+
+  facet_wrap(~ person_role, scales = "free_y") +
+  labs(title = "Collision Counts by Neighborhood, Grouped by Sex",
+       x = "Neighborhood (Sorted by Count)",
+       y = "Number of Collisions") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+```
+
+

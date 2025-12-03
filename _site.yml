@@ -13,6 +13,8 @@ navbar:
         href: Temporal_data_analysis.html
       - text: "Predictive Model"
         href: Predictive_model.html
+    - text: "Non Temporal Analysis"
+      href: Non_Temporal.html
 
 output:
   html_document: 

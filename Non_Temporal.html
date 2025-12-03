@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Non_Temporal</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown-header">About</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Temporal Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="https://ls4236-shiny.shinyapps.io/Temporal_trend_shiny/">Temporal Trend Overview (Shiny)</a>
+    </li>
+    <li>
+      <a href="Temporal_data_analysis.html">Data Analysis</a>
+    </li>
+    <li>
+      <a href="Predictive_model.html">Predictive Model</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="Non_Temporal.html">Non Temporal Analysis</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Non_Temporal</h1>
+
+</div>
+
+
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre class="r"><code>geo_df &lt;- read.csv(&quot;data/Zip Codes.csv&quot;) |&gt; 
+  janitor::clean_names() |&gt; 
+  select(zip_code, county, neighborhood)
+  
+
+collision_df &lt;- read.csv(&quot;data/collision_df.csv&quot;) |&gt; 
+  janitor::clean_names()</code></pre>
+<pre class="r"><code>collision_geo_df &lt;- 
+collision_df |&gt; 
+  left_join(geo_df, by = &quot;zip_code&quot;) |&gt; 
+  select(-vehicle_year, -driver_license_jurisdiction) |&gt; 
+  drop_na()</code></pre>
+<pre class="r"><code># Type
+
+collision_geo_df |&gt; 
+  count(person_type, name = &quot;number&quot;) |&gt; 
+  mutate(prop = number / base::sum(number))</code></pre>
+<pre><code>##       person_type number       prop
+## 1       Bicyclist   3186 0.05058668
+## 2        Occupant  59067 0.93785427
+## 3 Other Motorized    728 0.01155904</code></pre>
+<pre class="r"><code># Age
+
+collision_geo_df |&gt; 
+  count(person_age, name = &quot;number&quot;) |&gt; 
+  mutate(prop = number / base::sum(number)) </code></pre>
+<pre><code>##     person_age number         prop
+## 1         -971      1 1.587780e-05
+## 2         -966      1 1.587780e-05
+## 3         -961      1 1.587780e-05
+## 4         -960      1 1.587780e-05
+## 5         -959      1 1.587780e-05
+## 6         -958      1 1.587780e-05
+## 7         -797      2 3.175561e-05
+## 8         -751      1 1.587780e-05
+## 9         -599      1 1.587780e-05
+## 10        -597      1 1.587780e-05
+## 11        -596      3 4.763341e-05
+## 12        -595      4 6.351122e-05
+## 13        -593      2 3.175561e-05
+## 14        -591      1 1.587780e-05
+## 15           0    125 1.984726e-03
+## 16           1    153 2.429304e-03
+## 17           2    122 1.937092e-03
+## 18           3    149 2.365793e-03
+## 19           4    208 3.302583e-03
+## 20           5    180 2.858005e-03
+## 21           6    182 2.889760e-03
+## 22           7    201 3.191439e-03
+## 23           8    192 3.048538e-03
+## 24           9    245 3.890062e-03
+## 25          10    227 3.604262e-03
+## 26          11    180 2.858005e-03
+## 27          12    145 2.302282e-03
+## 28          13    149 2.365793e-03
+## 29          14    145 2.302282e-03
+## 30          15    136 2.159381e-03
+## 31          16    171 2.715105e-03
+## 32          17    229 3.636017e-03
+## 33          18    386 6.128833e-03
+## 34          19    503 7.986536e-03
+## 35          20    699 1.109859e-02
+## 36          21    875 1.389308e-02
+## 37          22   1153 1.830711e-02
+## 38          23   1371 2.176847e-02
+## 39          24   1471 2.335625e-02
+## 40          25   1651 2.621426e-02
+## 41          26   1647 2.615074e-02
+## 42          27   1697 2.694463e-02
+## 43          28   1699 2.697639e-02
+## 44          29   1703 2.703990e-02
+## 45          30   1940 3.080294e-02
+## 46          31   1746 2.772265e-02
+## 47          32   1811 2.875470e-02
+## 48          33   1725 2.738921e-02
+## 49          34   1690 2.683349e-02
+## 50          35   1662 2.638891e-02
+## 51          36   1627 2.583319e-02
+## 52          37   1607 2.551563e-02
+## 53          38   1445 2.294343e-02
+## 54          39   1475 2.341976e-02
+## 55          40   1366 2.168908e-02
+## 56          41   1283 2.037122e-02
+## 57          42   1232 1.956146e-02
+## 58          43   1241 1.970436e-02
+## 59          44   1195 1.897398e-02
+## 60          45   1184 1.879932e-02
+## 61          46   1133 1.798955e-02
+## 62          47   1113 1.767200e-02
+## 63          48   1050 1.667169e-02
+## 64          49    936 1.486162e-02
+## 65          50    971 1.541735e-02
+## 66          51    926 1.470285e-02
+## 67          52    949 1.506804e-02
+## 68          53    951 1.509979e-02
+## 69          54    951 1.509979e-02
+## 70          55    958 1.521094e-02
+## 71          56    879 1.395659e-02
+## 72          57    898 1.425827e-02
+## 73          58    906 1.438529e-02
+## 74          59    832 1.321033e-02
+## 75          60    803 1.274988e-02
+## 76          61    703 1.116210e-02
+## 77          62    697 1.106683e-02
+## 78          63    593 9.415538e-03
+## 79          64    556 8.828059e-03
+## 80          65    523 8.304092e-03
+## 81          66    456 7.240279e-03
+## 82          67    381 6.049443e-03
+## 83          68    383 6.081199e-03
+## 84          69    264 4.191740e-03
+## 85          70    266 4.223496e-03
+## 86          71    229 3.636017e-03
+## 87          72    210 3.334339e-03
+## 88          73    160 2.540449e-03
+## 89          74    153 2.429304e-03
+## 90          75    142 2.254648e-03
+## 91          76    115 1.825948e-03
+## 92          77     99 1.571903e-03
+## 93          78     79 1.254347e-03
+## 94          79     74 1.174958e-03
+## 95          80     60 9.526683e-04
+## 96          81     55 8.732792e-04
+## 97          82     53 8.415236e-04
+## 98          83     43 6.827456e-04
+## 99          84     29 4.604563e-04
+## 100         85     23 3.651895e-04
+## 101         86     31 4.922119e-04
+## 102         87     17 2.699227e-04
+## 103         88     14 2.222893e-04
+## 104         89     12 1.905337e-04
+## 105         90      8 1.270224e-04
+## 106         91      5 7.938902e-05
+## 107         92      5 7.938902e-05
+## 108         93      2 3.175561e-05
+## 109         94      3 4.763341e-05
+## 110         95      1 1.587780e-05
+## 111         96      2 3.175561e-05
+## 112         97      2 3.175561e-05
+## 113         99     10 1.587780e-04
+## 114        101      2 3.175561e-05
+## 115        102      6 9.526683e-05
+## 116        112      2 3.175561e-05
+## 117        116      1 1.587780e-05
+## 118        121      1 1.587780e-05
+## 119        122      2 3.175561e-05
+## 120        123      5 7.938902e-05
+## 121        124      1 1.587780e-05
+## 122        125      1 1.587780e-05
+## 123        823      1 1.587780e-05
+## 124        955      1 1.587780e-05</code></pre>
+<pre class="r"><code># Sex 
+
+collision_geo_df |&gt; 
+  count(person_sex, name = &quot;number&quot;) |&gt; 
+  mutate(prop = number / base::sum(number))</code></pre>
+<pre><code>##   person_sex number        prop
+## 1          F  16445 0.261110494
+## 2          M  46348 0.735904479
+## 3          U    188 0.002985027</code></pre>
+<pre class="r"><code># Role
+
+collision_geo_df |&gt; 
+  count(person_role, name = &quot;number&quot;) |&gt; 
+  mutate(prop = number / base::sum(number))</code></pre>
+<pre><code>##   person_role number      prop
+## 1      Driver  47872 0.7601023
+## 2   Passenger  15109 0.2398977</code></pre>
+<pre class="r"><code># Eje
+
+collision_geo_df |&gt; 
+  count(person_eje, name = &quot;number&quot;) |&gt; 
+  mutate(prop = number / base::sum(number))</code></pre>
+<pre><code>##          person_eje number         prop
+## 1           Ejected   1319 0.0209428240
+## 2       Not Ejected  61047 0.9692923263
+## 3 Partially Ejected    588 0.0093361490
+## 4           Trapped     27 0.0004287007</code></pre>
+<pre class="r"><code># Safe equip
+
+collision_geo_df |&gt; 
+  count(person_safe_equip, name = &quot;number&quot;) |&gt; 
+  mutate(prop = number / base::sum(number))</code></pre>
+<pre><code>##                           person_safe_equip number         prop
+## 1                          Air Bag Deployed    250 3.969451e-03
+## 2          Air Bag Deployed/Child Restraint      4 6.351122e-05
+## 3                 Air Bag Deployed/Lap Belt     91 1.444880e-03
+## 4         Air Bag Deployed/Lap Belt/Harness    198 3.143805e-03
+## 5                      Child Restraint Only    452 7.176768e-03
+## 6                                   Harness    476 7.557835e-03
+## 7                  Helmet (Motorcycle Only)    875 1.389308e-02
+## 8    Helmet Only (In-Line Skater/Bicyclist)    816 1.295629e-02
+## 9   Helmet/Other (In-Line Skater/Bicyclist)    272 4.318763e-03
+## 10                                 Lap Belt  16541 2.626348e-01
+## 11                       Lap Belt &amp; Harness  31482 4.998650e-01
+## 12                                     None  10690 1.697337e-01
+## 13                                    Other    808 1.282927e-02
+## 14     Pads Only (In-Line Skater/Bicyclist)      7 1.111446e-04
+## 15 Stoppers Only (In-Line Skater/Bicyclist)     19 3.016783e-04</code></pre>
+<pre class="r"><code># reset age
+
+collision_reage_df &lt;-  collision_geo_df|&gt;
+  filter(person_age &gt;= 0 , person_age &lt;= 140) |&gt; 
+  mutate(
+    age_group = case_when(
+      person_age &gt;= 0 &amp; person_age &lt;= 19 ~ &quot;Pre young&quot;,
+      person_age &gt;= 20 &amp; person_age &lt;= 39 ~ &quot;Young Age&quot;,
+      person_age &gt;= 40 &amp; person_age &lt;= 64 ~ &quot;Middle Age&quot;,
+      person_age &gt;= 65 ~ &quot;Old Age&quot;
+  ))
+
+collision_reage_df |&gt; 
+  group_by(age_group) |&gt; 
+  summarise(n = n()) |&gt; 
+  ggplot(aes(x = forcats::fct_reorder(age_group, n), y = n)) +
+  geom_col(fill = &quot;darkblue&quot;)+
+  labs(title = &quot;Collision Count by Age Group&quot;,
+       x = &quot;Age Group (Sorted by Count)&quot;,
+       y = &quot;Total Number of People Involved (Count)&quot;)+
+  geom_text(aes(label = n), vjust = -0.5, size = 4)</code></pre>
+<p><img src="Non_Temporal_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>I set up a filter which only keeps the age: 0 &lt;= person_age &lt;=
+140. Then I created a new variable age_group separate to six age group:
+Pre age are 0 - 19, young age are 20-39, middle age are 40-64, and old
+age begins around 65. After the graph we can see the most of the crash
+are happened to the Young age, secondly are the Middle age.</p>
+<pre class="r"><code>collision_geo_df |&gt; 
+  count(neighborhood, name = &quot;number&quot;) |&gt;
+  mutate(
+    prop = number / base::sum(number)
+  ) |&gt; 
+  arrange(desc(number)) |&gt; 
+  knitr::kable(digits = 2)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">neighborhood</th>
+<th align="right">number</th>
+<th align="right">prop</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Chelsea and Clinton</td>
+<td align="right">12202</td>
+<td align="right">0.19</td>
+</tr>
+<tr class="even">
+<td align="left">East Harlem</td>
+<td align="right">7824</td>
+<td align="right">0.12</td>
+</tr>
+<tr class="odd">
+<td align="left">Gramercy Park and Murray Hill</td>
+<td align="right">7377</td>
+<td align="right">0.12</td>
+</tr>
+<tr class="even">
+<td align="left">Inwood and Washington Heights</td>
+<td align="right">6988</td>
+<td align="right">0.11</td>
+</tr>
+<tr class="odd">
+<td align="left">Central Harlem</td>
+<td align="right">6813</td>
+<td align="right">0.11</td>
+</tr>
+<tr class="even">
+<td align="left">Lower East Side</td>
+<td align="right">6463</td>
+<td align="right">0.10</td>
+</tr>
+<tr class="odd">
+<td align="left">Greenwich Village and Soho</td>
+<td align="right">5344</td>
+<td align="right">0.08</td>
+</tr>
+<tr class="even">
+<td align="left">Upper East Side</td>
+<td align="right">4147</td>
+<td align="right">0.07</td>
+</tr>
+<tr class="odd">
+<td align="left">Upper West Side</td>
+<td align="right">3341</td>
+<td align="right">0.05</td>
+</tr>
+<tr class="even">
+<td align="left">Lower Manhattan</td>
+<td align="right">2482</td>
+<td align="right">0.04</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># Visualizes the count of collisions by Neighborhood, separated by Person Role (the facet), and grouped within the bars by Person Sex.
+
+collision_geo_df |&gt; 
+  drop_na(person_role, person_sex) |&gt; 
+  ggplot(aes(x = fct_reorder(neighborhood, neighborhood, .fun = length), fill = person_sex))+
+  geom_bar(position = &quot;dodge&quot;)+
+  facet_wrap(~ person_role, scales = &quot;free_y&quot;) +
+  labs(title = &quot;Collision Counts by Neighborhood, Grouped by Sex&quot;,
+       x = &quot;Neighborhood (Sorted by Count)&quot;,
+       y = &quot;Number of Collisions&quot;) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
+<p><img src="Non_Temporal_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
