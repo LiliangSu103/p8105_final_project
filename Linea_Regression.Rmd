@@ -94,7 +94,7 @@ Conclusion: Multiple incidents primarily occurred during the morning rush hour s
 ```{r}
 set.seed(123)
 
-cv_splits <- vfold_cv(hourly_df, v = 10)
+cv_splits <- vfold_cv(hourly_df, v = 2)
 
 model_spec <- linear_reg() %>%
 set_engine("lm")
@@ -131,7 +131,7 @@ Ans: Among the three models, fit3 (containing hour + weekday + month + year) is 
 
 ```{r}
 boot_df <- hourly_df %>%
-rsample::bootstraps(times = 1000) %>%
+rsample::bootstraps(times = 3) %>%
 mutate(
 model = map(splits, ~ lm(num_crash ~ hour + weekday + month, data = analysis(.x))),
 coef = map(model, broom::tidy)

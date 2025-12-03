@@ -3,12 +3,11 @@ title: "Untitled"
 output: html_document
 ---
 
----
-title: "Environment"
-output: html_document
----
+
+
 ```{r}
 library(tidyverse)
+library(ggmap)
 ```
 
 
