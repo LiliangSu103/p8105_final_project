@@ -3,8 +3,9 @@ title: "Non_Temporal"
 output: html_document
 ---
 
-```{r}
+```{r setup, include=FALSE}
 library(tidyverse)
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
 
@@ -16,15 +17,15 @@ geo_df <- read.csv("data/Zip Codes.csv") |>
   
 
 collision_df <- read.csv("data/collision_df.csv") |> 
-  janitor::clean_names()
+  janitor::clean_names() |> 
+  drop_na()
 ```
 
 ```{r}
 collision_geo_df <- 
 collision_df |> 
   left_join(geo_df, by = "zip_code") |> 
-  select(-vehicle_year, -driver_license_jurisdiction) |> 
-  drop_na()
+  select(-vehicle_year, -driver_license_jurisdiction)
 ```
 
 ```{r}
@@ -63,6 +64,13 @@ collision_geo_df |>
 collision_geo_df |> 
   count(person_safe_equip, name = "number") |> 
   mutate(prop = number / base::sum(number))
+
+# Safe equip
+
+vehicletype <- collision_geo_df |> 
+  count(vehicle_type, name = "number") |> 
+  mutate(prop = number / base::sum(number))
+
 ```
 
 
@@ -74,12 +82,22 @@ collision_reage_df <-  collision_geo_df|>
   filter(person_age >= 0 , person_age <= 140) |> 
   mutate(
     age_group = case_when(
-      person_age >= 0 & person_age <= 19 ~ "Pre young",
+      person_age >= 0 & person_age <= 19 ~ "Children/Teens",
       person_age >= 20 & person_age <= 39 ~ "Young Age",
       person_age >= 40 & person_age <= 64 ~ "Middle Age",
       person_age >= 65 ~ "Old Age"
   ))
 
+
+collision_reage_df<- collision_reage_df |>
+  mutate(
+    severity_3level = case_when(
+      num_casualty == 0 ~ "low",              
+      num_casualty %in% c(1, 2) ~ "middle",    
+      num_casualty >= 3 ~ "high",              
+      TRUE ~ NA_character_
+    )
+  )
 collision_reage_df |> 
   group_by(age_group) |> 
   summarise(n = n()) |> 
@@ -89,12 +107,126 @@ collision_reage_df |>
        x = "Age Group (Sorted by Count)",
        y = "Total Number of People Involved (Count)")+
   geom_text(aes(label = n), vjust = -0.5, size = 4)
+
+
   
 ```
 
 
 I set up a filter which only keeps the age: 0 <= person_age <= 140. Then I created a new variable age_group separate to six age group: Pre age are 0 - 19, young age are 20-39, middle age are 40-64, and old age begins around 65.
 After the graph we can see the most of the crash are happened to the Young age, secondly are the Middle age. 
+
+
+
+
+```{r}
+collision_reage_df |>
+  filter(!is.na(age_group)) |>
+  group_by(age_group, severity_3level) |>
+  summarise(n = n(), .groups = 'drop') |>
+  ungroup() |>
+  group_by(age_group) |>
+  mutate(prop = n / sum(n)) |>
+  mutate(
+    age_group = factor(
+      age_group,
+      levels = c("Children/Teens", "Young Age", "Middle Age", "Old Age")
+    )
+  ) |>
+  ggplot(aes(x = severity_3level, y = age_group, fill = prop)) +
+  geom_tile(color = "darkblue", linewidth = 0.5) +
+  scale_fill_viridis_c(
+    option = "magma",
+    labels = scales::percent,
+    direction = -1
+  ) +
+  geom_text(aes(label = scales::percent(prop, accuracy = 0.1)), color = "grey", size = 3) +
+  labs(
+    title = "Proportional Heatmap of Collision Severity by Age Group",
+    x = "Collision Severity",
+    y = "Age Group",
+    fill = "Proportion"
+  ) +
+  scale_x_discrete(limits = c("low", "middle", "high")) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+```
+
+
+
+
+```{r}
+# Person Ejected and Person_Safe_Equip regroup
+
+collision_popcar_df <- collision_reage_df |>
+  filter(vehicle_type == "Sedan" | vehicle_type == "Station Wagon/Sport Utility Vehicle"| vehicle_type == "Taxi") |> 
+  mutate(
+    ejected_binary = case_when(
+      person_eje %in% c("Ejected", "Partially Ejected", "Trapped") ~1,
+      person_eje == "Not Ejected" ~ 0,
+    )
+  ) |>
+  mutate(
+    seatbelt_used = case_when(
+      person_safe_equip %in% c(
+        "Lap Belt", 
+        "Harness", 
+        "Lap Belt & Harness",
+        "Air Bag Deployed/Lap Belt", 
+        "Air Bag Deployed/Lap Belt/Harness",
+        "Child Restraint Only",
+        "Air Bag Deployed/Child Restraint"
+      ) ~ 1, 
+      person_safe_equip %in% c("None") ~ 0
+    )
+  ) |> 
+  drop_na() 
+
+collision_popcar_df|> 
+  group_by(seatbelt_used) |> 
+  summarise(n = n()) |> 
+  knitr::kable()
+
+```
+
+
+```{r}
+logistic_fit <- 
+  glm(ejected_binary ~ seatbelt_used, 
+  data = collision_popcar_df, 
+  family = binomial()
+)
+
+broom::tidy(logistic_fit, exponentiate = TRUE)
+```
+
+
+
+
+
+```{r}
+collision_popcar_df <- collision_popcar_df |> 
+  select(vehicle_id, person_id, num_injured, num_killed, num_casualty, vehicle_type, driver_license_status, person_role, person_age, person_sex,age_group,seatbelt_used, ejected_binary)
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -123,5 +255,4 @@ collision_geo_df |>
 
 
 ```
-
 

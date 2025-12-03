@@ -32,6 +32,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -245,8 +247,7 @@ $(document).ready(function () {
         
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown-header">About</li>
-<li class="dropdown">
+        <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Temporal Analysis
      
@@ -267,6 +268,12 @@ $(document).ready(function () {
 <li>
   <a href="Non_Temporal.html">Non Temporal Analysis</a>
 </li>
+<li>
+  <a href="https://github.com/LiliangSu103/p8105_final_project/tree/main">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -281,240 +288,190 @@ $(document).ready(function () {
 </div>
 
 
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre class="r"><code>geo_df &lt;- read.csv(&quot;data/Zip Codes.csv&quot;) |&gt; 
-  janitor::clean_names() |&gt; 
-  select(zip_code, county, neighborhood)
-  
-
-collision_df &lt;- read.csv(&quot;data/collision_df.csv&quot;) |&gt; 
-  janitor::clean_names()</code></pre>
-<pre class="r"><code>collision_geo_df &lt;- 
-collision_df |&gt; 
-  left_join(geo_df, by = &quot;zip_code&quot;) |&gt; 
-  select(-vehicle_year, -driver_license_jurisdiction) |&gt; 
-  drop_na()</code></pre>
-<pre class="r"><code># Type
-
-collision_geo_df |&gt; 
-  count(person_type, name = &quot;number&quot;) |&gt; 
-  mutate(prop = number / base::sum(number))</code></pre>
-<pre><code>##       person_type number       prop
-## 1       Bicyclist   3186 0.05058668
-## 2        Occupant  59067 0.93785427
-## 3 Other Motorized    728 0.01155904</code></pre>
-<pre class="r"><code># Age
-
-collision_geo_df |&gt; 
-  count(person_age, name = &quot;number&quot;) |&gt; 
-  mutate(prop = number / base::sum(number)) </code></pre>
+<pre><code>##       person_type number         prop
+## 1       Bicyclist     31 0.0005349439
+## 2        Occupant  57845 0.9981880932
+## 3 Other Motorized     74 0.0012769629</code></pre>
 <pre><code>##     person_age number         prop
-## 1         -971      1 1.587780e-05
-## 2         -966      1 1.587780e-05
-## 3         -961      1 1.587780e-05
-## 4         -960      1 1.587780e-05
-## 5         -959      1 1.587780e-05
-## 6         -958      1 1.587780e-05
-## 7         -797      2 3.175561e-05
-## 8         -751      1 1.587780e-05
-## 9         -599      1 1.587780e-05
-## 10        -597      1 1.587780e-05
-## 11        -596      3 4.763341e-05
-## 12        -595      4 6.351122e-05
-## 13        -593      2 3.175561e-05
-## 14        -591      1 1.587780e-05
-## 15           0    125 1.984726e-03
-## 16           1    153 2.429304e-03
-## 17           2    122 1.937092e-03
-## 18           3    149 2.365793e-03
-## 19           4    208 3.302583e-03
-## 20           5    180 2.858005e-03
-## 21           6    182 2.889760e-03
-## 22           7    201 3.191439e-03
-## 23           8    192 3.048538e-03
-## 24           9    245 3.890062e-03
-## 25          10    227 3.604262e-03
-## 26          11    180 2.858005e-03
-## 27          12    145 2.302282e-03
-## 28          13    149 2.365793e-03
-## 29          14    145 2.302282e-03
-## 30          15    136 2.159381e-03
-## 31          16    171 2.715105e-03
-## 32          17    229 3.636017e-03
-## 33          18    386 6.128833e-03
-## 34          19    503 7.986536e-03
-## 35          20    699 1.109859e-02
-## 36          21    875 1.389308e-02
-## 37          22   1153 1.830711e-02
-## 38          23   1371 2.176847e-02
-## 39          24   1471 2.335625e-02
-## 40          25   1651 2.621426e-02
-## 41          26   1647 2.615074e-02
-## 42          27   1697 2.694463e-02
-## 43          28   1699 2.697639e-02
-## 44          29   1703 2.703990e-02
-## 45          30   1940 3.080294e-02
-## 46          31   1746 2.772265e-02
-## 47          32   1811 2.875470e-02
-## 48          33   1725 2.738921e-02
-## 49          34   1690 2.683349e-02
-## 50          35   1662 2.638891e-02
-## 51          36   1627 2.583319e-02
-## 52          37   1607 2.551563e-02
-## 53          38   1445 2.294343e-02
-## 54          39   1475 2.341976e-02
-## 55          40   1366 2.168908e-02
-## 56          41   1283 2.037122e-02
-## 57          42   1232 1.956146e-02
-## 58          43   1241 1.970436e-02
-## 59          44   1195 1.897398e-02
-## 60          45   1184 1.879932e-02
-## 61          46   1133 1.798955e-02
-## 62          47   1113 1.767200e-02
-## 63          48   1050 1.667169e-02
-## 64          49    936 1.486162e-02
-## 65          50    971 1.541735e-02
-## 66          51    926 1.470285e-02
-## 67          52    949 1.506804e-02
-## 68          53    951 1.509979e-02
-## 69          54    951 1.509979e-02
-## 70          55    958 1.521094e-02
-## 71          56    879 1.395659e-02
-## 72          57    898 1.425827e-02
-## 73          58    906 1.438529e-02
-## 74          59    832 1.321033e-02
-## 75          60    803 1.274988e-02
-## 76          61    703 1.116210e-02
-## 77          62    697 1.106683e-02
-## 78          63    593 9.415538e-03
-## 79          64    556 8.828059e-03
-## 80          65    523 8.304092e-03
-## 81          66    456 7.240279e-03
-## 82          67    381 6.049443e-03
-## 83          68    383 6.081199e-03
-## 84          69    264 4.191740e-03
-## 85          70    266 4.223496e-03
-## 86          71    229 3.636017e-03
-## 87          72    210 3.334339e-03
-## 88          73    160 2.540449e-03
-## 89          74    153 2.429304e-03
-## 90          75    142 2.254648e-03
-## 91          76    115 1.825948e-03
-## 92          77     99 1.571903e-03
-## 93          78     79 1.254347e-03
-## 94          79     74 1.174958e-03
-## 95          80     60 9.526683e-04
-## 96          81     55 8.732792e-04
-## 97          82     53 8.415236e-04
-## 98          83     43 6.827456e-04
-## 99          84     29 4.604563e-04
-## 100         85     23 3.651895e-04
-## 101         86     31 4.922119e-04
-## 102         87     17 2.699227e-04
-## 103         88     14 2.222893e-04
-## 104         89     12 1.905337e-04
-## 105         90      8 1.270224e-04
-## 106         91      5 7.938902e-05
-## 107         92      5 7.938902e-05
-## 108         93      2 3.175561e-05
-## 109         94      3 4.763341e-05
-## 110         95      1 1.587780e-05
-## 111         96      2 3.175561e-05
-## 112         97      2 3.175561e-05
-## 113         99     10 1.587780e-04
-## 114        101      2 3.175561e-05
-## 115        102      6 9.526683e-05
-## 116        112      2 3.175561e-05
-## 117        116      1 1.587780e-05
-## 118        121      1 1.587780e-05
-## 119        122      2 3.175561e-05
-## 120        123      5 7.938902e-05
-## 121        124      1 1.587780e-05
-## 122        125      1 1.587780e-05
-## 123        823      1 1.587780e-05
-## 124        955      1 1.587780e-05</code></pre>
-<pre class="r"><code># Sex 
-
-collision_geo_df |&gt; 
-  count(person_sex, name = &quot;number&quot;) |&gt; 
-  mutate(prop = number / base::sum(number))</code></pre>
+## 1         -971      1 1.725626e-05
+## 2         -966      1 1.725626e-05
+## 3         -961      1 1.725626e-05
+## 4         -960      1 1.725626e-05
+## 5         -959      1 1.725626e-05
+## 6         -958      1 1.725626e-05
+## 7         -797      1 1.725626e-05
+## 8         -751      1 1.725626e-05
+## 9         -599      1 1.725626e-05
+## 10        -597      1 1.725626e-05
+## 11        -596      3 5.176877e-05
+## 12        -595      3 5.176877e-05
+## 13        -593      2 3.451251e-05
+## 14        -591      1 1.725626e-05
+## 15           0    121 2.088007e-03
+## 16           1    151 2.605695e-03
+## 17           2    118 2.036238e-03
+## 18           3    145 2.502157e-03
+## 19           4    205 3.537532e-03
+## 20           5    179 3.088870e-03
+## 21           6    184 3.175151e-03
+## 22           7    202 3.485764e-03
+## 23           8    190 3.278689e-03
+## 24           9    250 4.314064e-03
+## 25          10    228 3.934426e-03
+## 26          11    181 3.123382e-03
+## 27          12    145 2.502157e-03
+## 28          13    146 2.519413e-03
+## 29          14    138 2.381363e-03
+## 30          15    119 2.053494e-03
+## 31          16    144 2.484901e-03
+## 32          17    200 3.451251e-03
+## 33          18    329 5.677308e-03
+## 34          19    415 7.161346e-03
+## 35          20    583 1.006040e-02
+## 36          21    760 1.311475e-02
+## 37          22   1025 1.768766e-02
+## 38          23   1219 2.103538e-02
+## 39          24   1306 2.253667e-02
+## 40          25   1477 2.548749e-02
+## 41          26   1489 2.569456e-02
+## 42          27   1525 2.631579e-02
+## 43          28   1508 2.602243e-02
+## 44          29   1526 2.633305e-02
+## 45          30   1701 2.935289e-02
+## 46          31   1586 2.736842e-02
+## 47          32   1640 2.830026e-02
+## 48          33   1580 2.726488e-02
+## 49          34   1527 2.635030e-02
+## 50          35   1492 2.574633e-02
+## 51          36   1473 2.541846e-02
+## 52          37   1462 2.522865e-02
+## 53          38   1303 2.248490e-02
+## 54          39   1361 2.348576e-02
+## 55          40   1249 2.155306e-02
+## 56          41   1174 2.025884e-02
+## 57          42   1142 1.970664e-02
+## 58          43   1134 1.956859e-02
+## 59          44   1111 1.917170e-02
+## 60          45   1088 1.877481e-02
+## 61          46   1056 1.822261e-02
+## 62          47   1055 1.820535e-02
+## 63          48    981 1.692839e-02
+## 64          49    885 1.527179e-02
+## 65          50    919 1.585850e-02
+## 66          51    864 1.490940e-02
+## 67          52    880 1.518550e-02
+## 68          53    881 1.520276e-02
+## 69          54    888 1.532355e-02
+## 70          55    903 1.558240e-02
+## 71          56    815 1.406385e-02
+## 72          57    852 1.470233e-02
+## 73          58    850 1.466782e-02
+## 74          59    791 1.364970e-02
+## 75          60    767 1.323555e-02
+## 76          61    687 1.185505e-02
+## 77          62    667 1.150992e-02
+## 78          63    576 9.939603e-03
+## 79          64    544 9.387403e-03
+## 80          65    518 8.938740e-03
+## 81          66    444 7.661777e-03
+## 82          67    368 6.350302e-03
+## 83          68    378 6.522865e-03
+## 84          69    257 4.434858e-03
+## 85          70    259 4.469370e-03
+## 86          71    222 3.830889e-03
+## 87          72    206 3.554789e-03
+## 88          73    149 2.571182e-03
+## 89          74    151 2.605695e-03
+## 90          75    139 2.398619e-03
+## 91          76    111 1.915444e-03
+## 92          77     97 1.673857e-03
+## 93          78     77 1.328732e-03
+## 94          79     71 1.225194e-03
+## 95          80     62 1.069888e-03
+## 96          81     56 9.663503e-04
+## 97          82     54 9.318378e-04
+## 98          83     44 7.592752e-04
+## 99          84     28 4.831752e-04
+## 100         85     22 3.796376e-04
+## 101         86     29 5.004314e-04
+## 102         87     17 2.933563e-04
+## 103         88     14 2.415876e-04
+## 104         89     12 2.070751e-04
+## 105         90      6 1.035375e-04
+## 106         91      5 8.628128e-05
+## 107         92      4 6.902502e-05
+## 108         93      2 3.451251e-05
+## 109         94      4 6.902502e-05
+## 110         95      1 1.725626e-05
+## 111         96      2 3.451251e-05
+## 112         97      2 3.451251e-05
+## 113         99      9 1.553063e-04
+## 114        101      2 3.451251e-05
+## 115        102      6 1.035375e-04
+## 116        112      1 1.725626e-05
+## 117        116      1 1.725626e-05
+## 118        121      1 1.725626e-05
+## 119        122      2 3.451251e-05
+## 120        123      4 6.902502e-05
+## 121        823      1 1.725626e-05
+## 122        955      1 1.725626e-05</code></pre>
 <pre><code>##   person_sex number        prop
-## 1          F  16445 0.261110494
-## 2          M  46348 0.735904479
-## 3          U    188 0.002985027</code></pre>
-<pre class="r"><code># Role
-
-collision_geo_df |&gt; 
-  count(person_role, name = &quot;number&quot;) |&gt; 
-  mutate(prop = number / base::sum(number))</code></pre>
+## 1          F  15692 0.270785160
+## 2          M  42076 0.726074202
+## 3          U    182 0.003140638</code></pre>
 <pre><code>##   person_role number      prop
-## 1      Driver  47872 0.7601023
-## 2   Passenger  15109 0.2398977</code></pre>
-<pre class="r"><code># Eje
-
-collision_geo_df |&gt; 
-  count(person_eje, name = &quot;number&quot;) |&gt; 
-  mutate(prop = number / base::sum(number))</code></pre>
+## 1      Driver  43101 0.7437619
+## 2   Passenger  14849 0.2562381</code></pre>
 <pre><code>##          person_eje number         prop
-## 1           Ejected   1319 0.0209428240
-## 2       Not Ejected  61047 0.9692923263
-## 3 Partially Ejected    588 0.0093361490
-## 4           Trapped     27 0.0004287007</code></pre>
-<pre class="r"><code># Safe equip
-
-collision_geo_df |&gt; 
-  count(person_safe_equip, name = &quot;number&quot;) |&gt; 
-  mutate(prop = number / base::sum(number))</code></pre>
+## 1           Ejected    292 0.0050388266
+## 2       Not Ejected  57416 0.9907851596
+## 3 Partially Ejected    217 0.0037446074
+## 4           Trapped     25 0.0004314064</code></pre>
 <pre><code>##                           person_safe_equip number         prop
-## 1                          Air Bag Deployed    250 3.969451e-03
-## 2          Air Bag Deployed/Child Restraint      4 6.351122e-05
-## 3                 Air Bag Deployed/Lap Belt     91 1.444880e-03
-## 4         Air Bag Deployed/Lap Belt/Harness    198 3.143805e-03
-## 5                      Child Restraint Only    452 7.176768e-03
-## 6                                   Harness    476 7.557835e-03
-## 7                  Helmet (Motorcycle Only)    875 1.389308e-02
-## 8    Helmet Only (In-Line Skater/Bicyclist)    816 1.295629e-02
-## 9   Helmet/Other (In-Line Skater/Bicyclist)    272 4.318763e-03
-## 10                                 Lap Belt  16541 2.626348e-01
-## 11                       Lap Belt &amp; Harness  31482 4.998650e-01
-## 12                                     None  10690 1.697337e-01
-## 13                                    Other    808 1.282927e-02
-## 14     Pads Only (In-Line Skater/Bicyclist)      7 1.111446e-04
-## 15 Stoppers Only (In-Line Skater/Bicyclist)     19 3.016783e-04</code></pre>
-<pre class="r"><code># reset age
-
-collision_reage_df &lt;-  collision_geo_df|&gt;
-  filter(person_age &gt;= 0 , person_age &lt;= 140) |&gt; 
-  mutate(
-    age_group = case_when(
-      person_age &gt;= 0 &amp; person_age &lt;= 19 ~ &quot;Pre young&quot;,
-      person_age &gt;= 20 &amp; person_age &lt;= 39 ~ &quot;Young Age&quot;,
-      person_age &gt;= 40 &amp; person_age &lt;= 64 ~ &quot;Middle Age&quot;,
-      person_age &gt;= 65 ~ &quot;Old Age&quot;
-  ))
-
-collision_reage_df |&gt; 
-  group_by(age_group) |&gt; 
-  summarise(n = n()) |&gt; 
-  ggplot(aes(x = forcats::fct_reorder(age_group, n), y = n)) +
-  geom_col(fill = &quot;darkblue&quot;)+
-  labs(title = &quot;Collision Count by Age Group&quot;,
-       x = &quot;Age Group (Sorted by Count)&quot;,
-       y = &quot;Total Number of People Involved (Count)&quot;)+
-  geom_text(aes(label = n), vjust = -0.5, size = 4)</code></pre>
-<p><img src="Non_Temporal_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+## 1                          Air Bag Deployed    251 4.331320e-03
+## 2          Air Bag Deployed/Child Restraint      4 6.902502e-05
+## 3                 Air Bag Deployed/Lap Belt     91 1.570319e-03
+## 4         Air Bag Deployed/Lap Belt/Harness    196 3.382226e-03
+## 5                      Child Restraint Only    452 7.799827e-03
+## 6                                   Harness    463 7.989646e-03
+## 7                  Helmet (Motorcycle Only)    595 1.026747e-02
+## 8    Helmet Only (In-Line Skater/Bicyclist)     47 8.110440e-04
+## 9   Helmet/Other (In-Line Skater/Bicyclist)     21 3.623814e-04
+## 10                                 Lap Belt  16205 2.796376e-01
+## 11                       Lap Belt &amp; Harness  31124 5.370837e-01
+## 12                                     None   7801 1.346160e-01
+## 13                                    Other    692 1.194133e-02
+## 14 Stoppers Only (In-Line Skater/Bicyclist)      8 1.380500e-04</code></pre>
+<p><img src="Non_Temporal_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>I set up a filter which only keeps the age: 0 &lt;= person_age &lt;=
 140. Then I created a new variable age_group separate to six age group:
 Pre age are 0 - 19, young age are 20-39, middle age are 40-64, and old
 age begins around 65. After the graph we can see the most of the crash
 are happened to the Young age, secondly are the Middle age.</p>
-<pre class="r"><code>collision_geo_df |&gt; 
-  count(neighborhood, name = &quot;number&quot;) |&gt;
-  mutate(
-    prop = number / base::sum(number)
-  ) |&gt; 
-  arrange(desc(number)) |&gt; 
-  knitr::kable(digits = 2)</code></pre>
+<p><img src="Non_Temporal_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<table>
+<thead>
+<tr class="header">
+<th align="right">seatbelt_used</th>
+<th align="right">n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0</td>
+<td align="right">6039</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="right">39197</td>
+</tr>
+</tbody>
+</table>
+<pre><code>## # A tibble: 2 × 5
+##   term          estimate std.error statistic   p.value
+##   &lt;chr&gt;            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)    0.00349     0.219    -25.9  1.02e-147
+## 2 seatbelt_used  0.733       0.240     -1.29 1.96e-  1</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -526,68 +483,65 @@ are happened to the Young age, secondly are the Middle age.</p>
 <tbody>
 <tr class="odd">
 <td align="left">Chelsea and Clinton</td>
-<td align="right">12202</td>
+<td align="right">10908</td>
 <td align="right">0.19</td>
 </tr>
 <tr class="even">
 <td align="left">East Harlem</td>
-<td align="right">7824</td>
-<td align="right">0.12</td>
+<td align="right">7399</td>
+<td align="right">0.13</td>
 </tr>
 <tr class="odd">
 <td align="left">Gramercy Park and Murray Hill</td>
-<td align="right">7377</td>
-<td align="right">0.12</td>
+<td align="right">6550</td>
+<td align="right">0.11</td>
 </tr>
 <tr class="even">
 <td align="left">Inwood and Washington Heights</td>
-<td align="right">6988</td>
+<td align="right">6534</td>
 <td align="right">0.11</td>
 </tr>
 <tr class="odd">
 <td align="left">Central Harlem</td>
-<td align="right">6813</td>
+<td align="right">6294</td>
 <td align="right">0.11</td>
 </tr>
 <tr class="even">
 <td align="left">Lower East Side</td>
-<td align="right">6463</td>
+<td align="right">5702</td>
 <td align="right">0.10</td>
 </tr>
 <tr class="odd">
 <td align="left">Greenwich Village and Soho</td>
-<td align="right">5344</td>
-<td align="right">0.08</td>
+<td align="right">4928</td>
+<td align="right">0.09</td>
 </tr>
 <tr class="even">
 <td align="left">Upper East Side</td>
-<td align="right">4147</td>
-<td align="right">0.07</td>
+<td align="right">3728</td>
+<td align="right">0.06</td>
 </tr>
 <tr class="odd">
 <td align="left">Upper West Side</td>
-<td align="right">3341</td>
+<td align="right">3016</td>
 <td align="right">0.05</td>
 </tr>
 <tr class="even">
 <td align="left">Lower Manhattan</td>
-<td align="right">2482</td>
+<td align="right">2267</td>
 <td align="right">0.04</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="right">624</td>
+<td align="right">0.01</td>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code># Visualizes the count of collisions by Neighborhood, separated by Person Role (the facet), and grouped within the bars by Person Sex.
-
-collision_geo_df |&gt; 
-  drop_na(person_role, person_sex) |&gt; 
-  ggplot(aes(x = fct_reorder(neighborhood, neighborhood, .fun = length), fill = person_sex))+
-  geom_bar(position = &quot;dodge&quot;)+
-  facet_wrap(~ person_role, scales = &quot;free_y&quot;) +
-  labs(title = &quot;Collision Counts by Neighborhood, Grouped by Sex&quot;,
-       x = &quot;Neighborhood (Sorted by Count)&quot;,
-       y = &quot;Number of Collisions&quot;) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
-<p><img src="Non_Temporal_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre><code>## Warning: `fct_reorder()` removing 624 missing values.
+## ℹ Use `.na_rm = TRUE` to silence this message.
+## ℹ Use `.na_rm = FALSE` to preserve NAs.</code></pre>
+<p><img src="Non_Temporal_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 
 
 
