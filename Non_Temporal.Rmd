@@ -1,10 +1,15 @@
 ---
-title: "Non_Temporal"
-output: html_document
+title: "Non Temporal Analysis"
+output: 
+  html_document: 
+    code_folding: hide
+    toc: true
+    toc_float: true
 ---
 
 ```{r setup, include=FALSE}
 library(tidyverse)
+library(patchwork) 
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
@@ -18,7 +23,8 @@ geo_df <- read.csv("data/Zip Codes.csv") |>
 
 collision_df <- read.csv("data/collision_df.csv") |> 
   janitor::clean_names() |> 
-  drop_na()
+  drop_na() |> 
+  mutate(person_role = as.factor(person_role))
 ```
 
 ```{r}
@@ -28,52 +34,62 @@ collision_df |>
   select(-vehicle_year, -driver_license_jurisdiction)
 ```
 
+## Basic statistics: 
+
 ```{r}
-# Type
-
-collision_geo_df |> 
-  count(person_type, name = "number") |> 
-  mutate(prop = number / base::sum(number))
-
 # Age
 
 collision_geo_df |> 
-  count(person_age, name = "number") |> 
-  mutate(prop = number / base::sum(number)) 
+  filter(person_age < 0 | person_age >= 140) |> 
+  summarise(n = n()) |> 
+  knitr::kable(
+    caption = "Table 1: Count of Outlier Ages (Less than 0 or 140+)",
+    col.names = c("Outlier Count")
+  )
 
 # Sex 
 
 collision_geo_df |> 
   count(person_sex, name = "number") |> 
-  mutate(prop = number / base::sum(number))
+  mutate(prop = number / base::sum(number))|> 
+  knitr::kable(
+    caption = "Table 2: Distribution of Person Sex in Collision Incidents",
+    col.names = c("Sex", "Count", "Proportion"),
+    digits = 3
+  )
 
 # Role
 
 collision_geo_df |> 
+  mutate(person_role = as.factor(person_role)) |> 
   count(person_role, name = "number") |> 
-  mutate(prop = number / base::sum(number))
+  mutate(prop = number / base::sum(number))|> 
+  knitr::kable(
+    caption = "Table 3: Distribution of Person Roles in Collision Incidents",
+    col.names = c("Role", "Count", "Proportion"),
+    digits = 3
+  )
 
 # Eje
 
 collision_geo_df |> 
   count(person_eje, name = "number") |> 
-  mutate(prop = number / base::sum(number))
+  mutate(prop = number / base::sum(number))|> 
+  knitr::kable(
+    caption = "Table 4: Distribution of Ejection Status (Eje)",
+    col.names = c("Ejection Status", "Count", "Proportion"),
+    digits = 3
+  )
 
-# Safe equip
 
-collision_geo_df |> 
-  count(person_safe_equip, name = "number") |> 
-  mutate(prop = number / base::sum(number))
-
-# Safe equip
-
-vehicletype <- collision_geo_df |> 
-  count(vehicle_type, name = "number") |> 
-  mutate(prop = number / base::sum(number))
 
 ```
 
+#### Table 1,2,3 and 4 Comment: Initial Data Review and Distribution Summary
+Initial data cleaning involved removing 21 records with implausible ages (less than 0 or greater than 140) to ensure data validity for subsequent age-based analysis. The fundamental distributions of the filtered dataset reveal clear patterns: Males are significantly overrepresented in collision incidents, constituting 72.6% of individuals compared to 27.1% for females. Furthermore, the majority of involved persons were recorded as Drivers (74.4%), followed by Passengers (25.6%). Analysis of safety outcomes shows that the event of ejection or entrapment is extremely rare, accounting for only about 1% of total records; the overwhelming majority of individuals (99.1%) were recorded as Not Ejected. This rarity confirms that the subsequent logistic regression model addresses a high-risk, low-frequency event.
 
+
+## Age Analysis:
 
 ```{r}
 # reset age
@@ -89,21 +105,21 @@ collision_reage_df <-  collision_geo_df|>
   ))
 
 
-collision_reage_df<- collision_reage_df |>
+collision_reage_casualty_df<- collision_reage_df |>
   mutate(
-    severity_3level = case_when(
+    casualty_level = case_when(
       num_casualty == 0 ~ "low",              
       num_casualty %in% c(1, 2) ~ "middle",    
       num_casualty >= 3 ~ "high",              
       TRUE ~ NA_character_
     )
   )
-collision_reage_df |> 
+collision_reage_casualty_df |> 
   group_by(age_group) |> 
   summarise(n = n()) |> 
   ggplot(aes(x = forcats::fct_reorder(age_group, n), y = n)) +
   geom_col(fill = "darkblue")+
-  labs(title = "Collision Count by Age Group",
+  labs(title = "Figure 1: Collision Count by Age Group",
        x = "Age Group (Sorted by Count)",
        y = "Total Number of People Involved (Count)")+
   geom_text(aes(label = n), vjust = -0.5, size = 4)
@@ -112,17 +128,15 @@ collision_reage_df |>
   
 ```
 
-
-I set up a filter which only keeps the age: 0 <= person_age <= 140. Then I created a new variable age_group separate to six age group: Pre age are 0 - 19, young age are 20-39, middle age are 40-64, and old age begins around 65.
-After the graph we can see the most of the crash are happened to the Young age, secondly are the Middle age. 
-
+#### Figure 1 Comment: 
+During data cleaning, a filter was applied to the person_age variable to retain only plausible ages (0 <= person_age <= 140), removing outliers. The filtered data was then grouped into four categories—Children/Teens (0 - 19), Young Age (20 - 39), Middle Age (40 - 64), and Old Age (65+)—to create the age_group variable. The subsequent analysis showed that the largest proportion of individuals involved in collision incidents fall into the Young Age group, followed by the Middle Age group, highlighting that peak driving and working ages carry the highest risk exposure.
 
 
 
 ```{r}
-collision_reage_df |>
+collision_reage_casualty_df |>
   filter(!is.na(age_group)) |>
-  group_by(age_group, severity_3level) |>
+  group_by(age_group, casualty_level) |>
   summarise(n = n(), .groups = 'drop') |>
   ungroup() |>
   group_by(age_group) |>
@@ -133,7 +147,7 @@ collision_reage_df |>
       levels = c("Children/Teens", "Young Age", "Middle Age", "Old Age")
     )
   ) |>
-  ggplot(aes(x = severity_3level, y = age_group, fill = prop)) +
+  ggplot(aes(x = casualty_level, y = age_group, fill = prop)) +
   geom_tile(color = "darkblue", linewidth = 0.5) +
   scale_fill_viridis_c(
     option = "magma",
@@ -142,28 +156,143 @@ collision_reage_df |>
   ) +
   geom_text(aes(label = scales::percent(prop, accuracy = 0.1)), color = "grey", size = 3) +
   labs(
-    title = "Proportional Heatmap of Collision Severity by Age Group",
-    x = "Collision Severity",
+    title = "Figure 2: Proportional Heatmap of Casualty Level by Age Group",
+    x = "Casualty Level",
     y = "Age Group",
     fill = "Proportion"
   ) +
   scale_x_discrete(limits = c("low", "middle", "high")) +
   theme_minimal() +
   theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.title = element_text(hjust = 0.5),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank()
   )
 
 ```
 
+#### Figure 2 Comment: 
+The analysis of proportional collision severity across age groups reveals distinct risk profiles. The Children/Teens group faces the highest proportional risk for the most severe outcomes, with 6.0 percent of their recorded incidents resulting in high severity (three or more casualties). Conversely, the Old Age group records the lowest proportion of low severity crashes (zero casualties) at 56.5 percent. This lower rate of minor crashes contributes to Old Age having the highest proportional risk for middle severity incidents (one or two casualties) at 39.6 percent. When combining all injury-resulting crashes (middle and high severity), the Old Age group shows the highest overall casualty risk at 43.4 percent, indicating that while Children/Teens face the greatest proportional risk for the worst-case scenario, Old Age individuals are the most likely to sustain any injury or death when involved in a collision.
 
+
+## Geography Analysis:
+
+```{r}
+ 
+collision_geo_df |> 
+  count(neighborhood, name = "Count") |>
+  mutate(
+    Proportion = Count / base::sum(Count)
+  ) |> 
+  arrange(desc(Count)) |> 
+  knitr::kable(
+    caption = "Table 5: Frequency and Proportion of Collisions by Neighborhood (Top 10)",
+    col.names = c("Neighborhood", "Count", "Proportion"),
+    digits = 2
+  )
+
+
+
+
+
+```
+
+#### Table 5 Comment:
+The geographic analysis confirms that collision incidents are heavily concentrated in specific areas. Chelsea and Clinton recorded the highest number of collisions at 10,908, representing 0.19 (or 19%) of the listed incidents. East Harlem (7,399 incidents, 0.13 proportion) and Gramercy Park and Murray Hill (6,550 incidents, 0.11 proportion) follow as high-frequency areas. This unequal distribution of incidents highlights areas that require focused resource allocation for traffic safety interventions, particularly in the top five ranked neighborhoods, which each recorded over 6,294 incidents.
+
+```{r}
+# Visualizes the count of collisions by Neighborhood, separated by Person Role (the facet), and grouped within the bars by Person Sex.
+
+collision_geo_df |> 
+  drop_na(person_role, person_sex) |> 
+  ggplot(aes(x = fct_reorder(neighborhood, neighborhood, .fun = length, .na_rm = TRUE), fill = person_sex))+
+  geom_bar(position = "dodge")+
+  facet_wrap(~ person_role, scales = "free_y") +
+  labs(title = "Figure 3: Collision Counts by Neighborhood, Grouped by Sex",
+       x = "Neighborhood (Sorted by Count)",
+       y = "Number of Collisions") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+#### Figure 3 Comment: 
+The data in Figure 3 confirms the sex imbalance observed in the base statistics (72.6% male overall) and reveals how this distribution changes across crash roles and neighborhoods. Across all neighborhoods, male drivers (M) overwhelmingly dominate the collision counts, though the counts for male and female passengers (F) are much closer, indicating the sex disparity is less pronounced in the passenger role. Geographically, the figure reinforces the findings from Table 5: Chelsea and Clinton consistently record the highest number of collisions for both drivers (over 6,000) and passengers (over 1,000), making it the primary collision hotspot. East Harlem is reliably the second-highest neighborhood for both roles, while Lower Manhattan shows the lowest counts. I think reason for the severe concentration in Chelsea and Clinton is attributable to its role as a high-volume transit corridor with dense commercial traffic intersecting with heavy pedestrian activity, creating numerous high-conflict points.
+
+
+
+```{r}
+neighborhood_data_ready <- collision_reage_casualty_df |>
+  filter(!is.na(neighborhood), neighborhood != "") |>
+  group_by(neighborhood) |>
+  summarise(
+    total_incidents = n(),
+    high_casualty_count = sum(casualty_level == "high", na.rm = TRUE),
+    .groups = 'drop'
+  ) |>
+  filter(total_incidents > 500) |> 
+  mutate(
+    high_casualty_rate = high_casualty_count / total_incidents
+  ) |>
+  mutate(
+    neighborhood = forcats::fct_reorder(neighborhood, high_casualty_rate)
+  )
+max_incidents <- max(neighborhood_data_ready$total_incidents)
+max_rate <- max(neighborhood_data_ready$high_casualty_rate)
+plot_neighborhood_casualty <- neighborhood_data_ready |>
+  ggplot(aes(x = neighborhood, y = high_casualty_rate)) +
+  geom_col(aes(fill = high_casualty_rate), show.legend = FALSE, alpha = 0.9) +
+  geom_text(aes(label = scales::percent(high_casualty_rate, accuracy = 0.1)), hjust = -0.1, size = 3) +
+  
+  coord_flip() + 
+  
+  labs(
+    title = "Figure 4: Neighborhood Ranking by High Level\n Casualty Collision Rate",
+    x = "Neighborhood",
+    y = "High Severity Accident Rate (Incidents with Casualty >= 3)"
+  ) +
+  scale_y_continuous(
+    labels = scales::percent, 
+    limits = c(0, max_rate * 1.25)
+  ) +
+  scale_fill_viridis_c(option = "magma") +
+  
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0, face = "bold", size = 14),
+    plot.subtitle = element_text(hjust = 0, size = 10, color = "grey50"),
+    axis.title = element_text(size = 10, color = "grey30"),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+plot_neighborhood_casualty
+```
+
+
+#### Figure 4 Comment: 
+While Chelsea and Clinton lead in raw volume, Figure 4 reveals a different picture for proportional risk of severe crashes (High Severity Accident Rate, where Casualty >= 3): East Harlem (6.5%) and Inwood and Washington Heights (6.0%) top the ranking. This indicates that although Chelsea and Clinton have the most total accidents, crashes in East Harlem are proportionally more likely to be fatal or result in mass casualties. Lower Manhattan consistently shows the lowest risk in both raw volume (4% total incidents) and proportional severity ($1.5\%$ high severity rate).
+
+## Casualty Analysis:
+
+```{r}
+#Type of car
+
+collision_geo_df |> 
+  count(vehicle_type, name = "number") |> 
+  mutate(prop = number / base::sum(number)) |> 
+  arrange(desc(number)) |> 
+  head(5) |> 
+  knitr::kable(
+    caption = "Table 6: Top 5 Most Frequent Vehicle Types in Collision Data",
+    col.names = c("Vehicle Type", "Count", "Proportion"),
+    digits = 3
+  )
+```
 
 
 ```{r}
 # Person Ejected and Person_Safe_Equip regroup
 
-collision_popcar_df <- collision_reage_df |>
+collision_popcar_df <- collision_reage_casualty_df |>
   filter(vehicle_type == "Sedan" | vehicle_type == "Station Wagon/Sport Utility Vehicle"| vehicle_type == "Taxi") |> 
   mutate(
     ejected_binary = case_when(
@@ -187,12 +316,27 @@ collision_popcar_df <- collision_reage_df |>
   ) |> 
   drop_na() 
 
-collision_popcar_df|> 
-  group_by(seatbelt_used) |> 
-  summarise(n = n()) |> 
-  knitr::kable()
+collision_popcar_df |>
+  group_by(seatbelt_used) |>
+  summarise(Count = n(), .groups = 'drop') |>
+  mutate(Proportion = Count / sum(Count)) |>
+  mutate(
+    Seatbelt_Status = case_when(
+      seatbelt_used == 1 ~ "Used",
+      seatbelt_used == 0 ~ "Not Used",
+      TRUE ~ as.character(seatbelt_used)
+    )
+  ) |>
+  select(Seatbelt_Status, Count, Proportion) |>
+  knitr::kable(
+    caption = "Table 7: Frequency and Proportion of Seatbelt Use in Collisions",
+    col.names = c("Seatbelt Status", "Count", "Proportion"),
+    digits = 3)
 
 ```
+#### Table 6 & Table 7 Comment:
+
+The raw collision data contains a large and heterogeneous collection of vehicle types. Since the core of the subsequent safety study involves analyzing the relationship between seatbelt usage, ejection, and casualty outcomes, it is necessary to focus on the dominant passenger vehicle categories. Therefore, to ensure robust analysis and maintain relevance to typical passenger risk, the dataset was filtered to include only the top three most frequent vehicle types by proportion: Sedan (41.7%), Station Wagon/Sport Utility Vehicle (SUV) (30.2%), and Taxi (8.2%). These three categories account for the vast majority of vehicles and form the basis for all models examining the efficacy of safety features.
 
 
 ```{r}
@@ -202,57 +346,112 @@ logistic_fit <-
   family = binomial()
 )
 
-broom::tidy(logistic_fit, exponentiate = TRUE)
+broom::tidy(logistic_fit, exponentiate = TRUE) |> 
+  knitr::kable(caption = "Table 8: Odds Ratios from Logistic Regression: Ejection Status by Seatbelt Use",
+               digits = 4)
+
+
 ```
-
-
-
 
 
 ```{r}
 collision_popcar_df <- collision_popcar_df |> 
-  select(vehicle_id, person_id, num_injured, num_killed, num_casualty, vehicle_type, driver_license_status, person_role, person_age, person_sex,age_group,seatbelt_used, ejected_binary)
+  select(vehicle_id, person_id, num_injured, num_killed, num_casualty, vehicle_type, driver_license_status, person_role, person_age, person_sex,age_group,seatbelt_used, ejected_binary, casualty_level)
 
 
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 ```{r}
- 
-collision_geo_df |> 
-  count(neighborhood, name = "number") |>
+
+# plot A
+
+predict_data <- data.frame(seatbelt_used = c(0, 1))
+predict_data$predicted_prob <- predict(logistic_fit, newdata = predict_data, type = "response")
+
+plot_seatbelt_ejection <- ggplot(predict_data, aes(x = factor(seatbelt_used), y = predicted_prob, fill = factor(seatbelt_used))) +
+  geom_col(width = 0.6, alpha = 0.9) +
+  geom_text(
+    aes(label = scales::percent(predicted_prob, accuracy = 0.01)),
+    vjust = -0.5, size = 3.5, color = "black"
+  ) +
+  scale_x_discrete(
+    labels = c("0" = "No Seatbelt Used", "1" = "Seatbelt Used")
+  ) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, max(predict_data$predicted_prob) * 1.3)) +
+  scale_fill_manual(values = c("0" = "#E74C3C", "1" = "#2ECC71"), guide = "none") +
+  labs(
+    title = "Figure 5: Predicted Probability\n of Ejection/Entrapment",
+    subtitle = "Based on Univariate Logistic Regression",
+    x = "Seatbelt Use Status",
+    y = "Predicted Probability"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, size = 9, color = "grey50"),
+    axis.title = element_text(size = 9, color = "grey30"),
+    axis.text = element_text(size = 8),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+# Plot 2
+
+ejection_fatal_rate_data <- collision_popcar_df |>
   mutate(
-    prop = number / base::sum(number)
-  ) |> 
-  arrange(desc(number)) |> 
-  knitr::kable(digits = 2)
+    is_fatal = if_else(num_killed >= 1, 1, 0),
+    ejection_status = factor(
+      ejected_binary, 
+      levels = c(0, 1), 
+      labels = c("Not Ejected/Trapped", "Ejected/Trapped")
+    )
+  ) |>
+  group_by(ejection_status) |>
+  summarise(
+    fatal_rate = mean(is_fatal, na.rm = TRUE),
+    .groups = 'drop'
+  )
 
+max_rate <- max(ejection_fatal_rate_data$fatal_rate)
 
-# Visualizes the count of collisions by Neighborhood, separated by Person Role (the facet), and grouped within the bars by Person Sex.
+plot_ejection_fatal_rate <- ejection_fatal_rate_data |>
+  ggplot(aes(x = ejection_status, y = fatal_rate, fill = ejection_status)) +
+  geom_col(show.legend = FALSE, width = 0.6) +
+  geom_text(
+    aes(label = scales::percent(fatal_rate, accuracy = 0.01)), 
+    vjust = -0.5, 
+    size = 3.5, 
+    color = "black"
+  ) +
+  labs(
+    title = "Figure 6: Fatal Incident Rate\n by Ejection Status",
+    subtitle = "Proportion of individuals involved in incidents\n with at least 1 fatality",
+    x = "Ejection Status",
+    y = "Fatal Incident Rate (Proportion)"
+  ) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, max_rate * 1.3)) +
+  scale_fill_manual(values = c("Not Ejected/Trapped" = "#2ECC71", "Ejected/Trapped" = "#E74C3C")) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 12),
+    plot.subtitle = element_text(hjust = 0.5, size = 9, color = "grey50"),
+    axis.title = element_text(size = 9, color = "grey30"),
+    axis.text = element_text(size = 8),
+    panel.grid.major.x = element_blank()
+  )
 
-collision_geo_df |> 
-  drop_na(person_role, person_sex) |> 
-  ggplot(aes(x = fct_reorder(neighborhood, neighborhood, .fun = length), fill = person_sex))+
-  geom_bar(position = "dodge")+
-  facet_wrap(~ person_role, scales = "free_y") +
-  labs(title = "Collision Counts by Neighborhood, Grouped by Sex",
-       x = "Neighborhood (Sorted by Count)",
-       y = "Number of Collisions") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+# combination
 
+composite_plot <- (plot_seatbelt_ejection + plot_ejection_fatal_rate) + 
+  plot_annotation(
+    title = 'Risk Chain Analysis: Safety Equipment to Accident Outcome',
+    theme = theme(plot.title = element_text(size = 14, face = "bold", hjust = 0.5))
+  )
 
+composite_plot
 ```
 
+
+#### Table 8, Figure 5 & Figure 6 Comment: 
+The Logistic Regression (Table 8) indicates that using a seatbelt trends toward reducing the odds of ejection/entrapment by 26.7% (OR equals 0.733), though this effect is not statistically significant (p equals 0.1963). This reduction is visualized in Figure 5, which shows the absolute predicted probability of ejection dropping from 0.35% (No Seatbelt) to 0.26% (Seatbelt Used). Crucially, Figure 6 shows the consequence of that intermediate outcome: if an individual is ejected or trapped, the fatal incident rate is drastically higher at 0.83%, compared to only 0.12% for those not ejected/trapped. This signifies that while seatbelt use provides a small reduction in the absolute probability of the event (ejection), successfully avoiding ejection results in a risk of fatality that is almost seven times lower.

@@ -11,7 +11,7 @@
 
 
 
-<title>Non_Temporal</title>
+<title>Non Temporal Analysis</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -29,7 +29,11 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
@@ -218,7 +222,73 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
 
 
 
@@ -228,6 +298,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -281,203 +361,183 @@ $(document).ready(function () {
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
 
 
-<h1 class="title toc-ignore">Non_Temporal</h1>
+
+<h1 class="title toc-ignore">Non Temporal Analysis</h1>
 
 </div>
 
 
-<pre><code>##       person_type number         prop
-## 1       Bicyclist     31 0.0005349439
-## 2        Occupant  57845 0.9981880932
-## 3 Other Motorized     74 0.0012769629</code></pre>
-<pre><code>##     person_age number         prop
-## 1         -971      1 1.725626e-05
-## 2         -966      1 1.725626e-05
-## 3         -961      1 1.725626e-05
-## 4         -960      1 1.725626e-05
-## 5         -959      1 1.725626e-05
-## 6         -958      1 1.725626e-05
-## 7         -797      1 1.725626e-05
-## 8         -751      1 1.725626e-05
-## 9         -599      1 1.725626e-05
-## 10        -597      1 1.725626e-05
-## 11        -596      3 5.176877e-05
-## 12        -595      3 5.176877e-05
-## 13        -593      2 3.451251e-05
-## 14        -591      1 1.725626e-05
-## 15           0    121 2.088007e-03
-## 16           1    151 2.605695e-03
-## 17           2    118 2.036238e-03
-## 18           3    145 2.502157e-03
-## 19           4    205 3.537532e-03
-## 20           5    179 3.088870e-03
-## 21           6    184 3.175151e-03
-## 22           7    202 3.485764e-03
-## 23           8    190 3.278689e-03
-## 24           9    250 4.314064e-03
-## 25          10    228 3.934426e-03
-## 26          11    181 3.123382e-03
-## 27          12    145 2.502157e-03
-## 28          13    146 2.519413e-03
-## 29          14    138 2.381363e-03
-## 30          15    119 2.053494e-03
-## 31          16    144 2.484901e-03
-## 32          17    200 3.451251e-03
-## 33          18    329 5.677308e-03
-## 34          19    415 7.161346e-03
-## 35          20    583 1.006040e-02
-## 36          21    760 1.311475e-02
-## 37          22   1025 1.768766e-02
-## 38          23   1219 2.103538e-02
-## 39          24   1306 2.253667e-02
-## 40          25   1477 2.548749e-02
-## 41          26   1489 2.569456e-02
-## 42          27   1525 2.631579e-02
-## 43          28   1508 2.602243e-02
-## 44          29   1526 2.633305e-02
-## 45          30   1701 2.935289e-02
-## 46          31   1586 2.736842e-02
-## 47          32   1640 2.830026e-02
-## 48          33   1580 2.726488e-02
-## 49          34   1527 2.635030e-02
-## 50          35   1492 2.574633e-02
-## 51          36   1473 2.541846e-02
-## 52          37   1462 2.522865e-02
-## 53          38   1303 2.248490e-02
-## 54          39   1361 2.348576e-02
-## 55          40   1249 2.155306e-02
-## 56          41   1174 2.025884e-02
-## 57          42   1142 1.970664e-02
-## 58          43   1134 1.956859e-02
-## 59          44   1111 1.917170e-02
-## 60          45   1088 1.877481e-02
-## 61          46   1056 1.822261e-02
-## 62          47   1055 1.820535e-02
-## 63          48    981 1.692839e-02
-## 64          49    885 1.527179e-02
-## 65          50    919 1.585850e-02
-## 66          51    864 1.490940e-02
-## 67          52    880 1.518550e-02
-## 68          53    881 1.520276e-02
-## 69          54    888 1.532355e-02
-## 70          55    903 1.558240e-02
-## 71          56    815 1.406385e-02
-## 72          57    852 1.470233e-02
-## 73          58    850 1.466782e-02
-## 74          59    791 1.364970e-02
-## 75          60    767 1.323555e-02
-## 76          61    687 1.185505e-02
-## 77          62    667 1.150992e-02
-## 78          63    576 9.939603e-03
-## 79          64    544 9.387403e-03
-## 80          65    518 8.938740e-03
-## 81          66    444 7.661777e-03
-## 82          67    368 6.350302e-03
-## 83          68    378 6.522865e-03
-## 84          69    257 4.434858e-03
-## 85          70    259 4.469370e-03
-## 86          71    222 3.830889e-03
-## 87          72    206 3.554789e-03
-## 88          73    149 2.571182e-03
-## 89          74    151 2.605695e-03
-## 90          75    139 2.398619e-03
-## 91          76    111 1.915444e-03
-## 92          77     97 1.673857e-03
-## 93          78     77 1.328732e-03
-## 94          79     71 1.225194e-03
-## 95          80     62 1.069888e-03
-## 96          81     56 9.663503e-04
-## 97          82     54 9.318378e-04
-## 98          83     44 7.592752e-04
-## 99          84     28 4.831752e-04
-## 100         85     22 3.796376e-04
-## 101         86     29 5.004314e-04
-## 102         87     17 2.933563e-04
-## 103         88     14 2.415876e-04
-## 104         89     12 2.070751e-04
-## 105         90      6 1.035375e-04
-## 106         91      5 8.628128e-05
-## 107         92      4 6.902502e-05
-## 108         93      2 3.451251e-05
-## 109         94      4 6.902502e-05
-## 110         95      1 1.725626e-05
-## 111         96      2 3.451251e-05
-## 112         97      2 3.451251e-05
-## 113         99      9 1.553063e-04
-## 114        101      2 3.451251e-05
-## 115        102      6 1.035375e-04
-## 116        112      1 1.725626e-05
-## 117        116      1 1.725626e-05
-## 118        121      1 1.725626e-05
-## 119        122      2 3.451251e-05
-## 120        123      4 6.902502e-05
-## 121        823      1 1.725626e-05
-## 122        955      1 1.725626e-05</code></pre>
-<pre><code>##   person_sex number        prop
-## 1          F  15692 0.270785160
-## 2          M  42076 0.726074202
-## 3          U    182 0.003140638</code></pre>
-<pre><code>##   person_role number      prop
-## 1      Driver  43101 0.7437619
-## 2   Passenger  14849 0.2562381</code></pre>
-<pre><code>##          person_eje number         prop
-## 1           Ejected    292 0.0050388266
-## 2       Not Ejected  57416 0.9907851596
-## 3 Partially Ejected    217 0.0037446074
-## 4           Trapped     25 0.0004314064</code></pre>
-<pre><code>##                           person_safe_equip number         prop
-## 1                          Air Bag Deployed    251 4.331320e-03
-## 2          Air Bag Deployed/Child Restraint      4 6.902502e-05
-## 3                 Air Bag Deployed/Lap Belt     91 1.570319e-03
-## 4         Air Bag Deployed/Lap Belt/Harness    196 3.382226e-03
-## 5                      Child Restraint Only    452 7.799827e-03
-## 6                                   Harness    463 7.989646e-03
-## 7                  Helmet (Motorcycle Only)    595 1.026747e-02
-## 8    Helmet Only (In-Line Skater/Bicyclist)     47 8.110440e-04
-## 9   Helmet/Other (In-Line Skater/Bicyclist)     21 3.623814e-04
-## 10                                 Lap Belt  16205 2.796376e-01
-## 11                       Lap Belt &amp; Harness  31124 5.370837e-01
-## 12                                     None   7801 1.346160e-01
-## 13                                    Other    692 1.194133e-02
-## 14 Stoppers Only (In-Line Skater/Bicyclist)      8 1.380500e-04</code></pre>
-<p><img src="Non_Temporal_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>I set up a filter which only keeps the age: 0 &lt;= person_age &lt;=
-140. Then I created a new variable age_group separate to six age group:
-Pre age are 0 - 19, young age are 20-39, middle age are 40-64, and old
-age begins around 65. After the graph we can see the most of the crash
-are happened to the Young age, secondly are the Middle age.</p>
-<p><img src="Non_Temporal_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<div id="basic-statistics" class="section level2">
+<h2>Basic statistics:</h2>
 <table>
+<caption>Table 1: Count of Outlier Ages (Less than 0 or 140+)</caption>
 <thead>
 <tr class="header">
-<th align="right">seatbelt_used</th>
-<th align="right">n</th>
+<th align="right">Outlier Count</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="right">0</td>
-<td align="right">6039</td>
-</tr>
-<tr class="even">
-<td align="right">1</td>
-<td align="right">39197</td>
+<td align="right">21</td>
 </tr>
 </tbody>
 </table>
-<pre><code>## # A tibble: 2 × 5
-##   term          estimate std.error statistic   p.value
-##   &lt;chr&gt;            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 (Intercept)    0.00349     0.219    -25.9  1.02e-147
-## 2 seatbelt_used  0.733       0.240     -1.29 1.96e-  1</code></pre>
 <table>
+<caption>Table 2: Distribution of Person Sex in Collision
+Incidents</caption>
 <thead>
 <tr class="header">
-<th align="left">neighborhood</th>
-<th align="right">number</th>
-<th align="right">prop</th>
+<th align="left">Sex</th>
+<th align="right">Count</th>
+<th align="right">Proportion</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">F</td>
+<td align="right">15692</td>
+<td align="right">0.271</td>
+</tr>
+<tr class="even">
+<td align="left">M</td>
+<td align="right">42076</td>
+<td align="right">0.726</td>
+</tr>
+<tr class="odd">
+<td align="left">U</td>
+<td align="right">182</td>
+<td align="right">0.003</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Table 3: Distribution of Person Roles in Collision
+Incidents</caption>
+<thead>
+<tr class="header">
+<th align="left">Role</th>
+<th align="right">Count</th>
+<th align="right">Proportion</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Driver</td>
+<td align="right">43101</td>
+<td align="right">0.744</td>
+</tr>
+<tr class="even">
+<td align="left">Passenger</td>
+<td align="right">14849</td>
+<td align="right">0.256</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Table 4: Distribution of Ejection Status (Eje)</caption>
+<thead>
+<tr class="header">
+<th align="left">Ejection Status</th>
+<th align="right">Count</th>
+<th align="right">Proportion</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Ejected</td>
+<td align="right">292</td>
+<td align="right">0.005</td>
+</tr>
+<tr class="even">
+<td align="left">Not Ejected</td>
+<td align="right">57416</td>
+<td align="right">0.991</td>
+</tr>
+<tr class="odd">
+<td align="left">Partially Ejected</td>
+<td align="right">217</td>
+<td align="right">0.004</td>
+</tr>
+<tr class="even">
+<td align="left">Trapped</td>
+<td align="right">25</td>
+<td align="right">0.000</td>
+</tr>
+</tbody>
+</table>
+<div
+id="table-123-and-4-comment-initial-data-review-and-distribution-summary"
+class="section level4">
+<h4>Table 1,2,3 and 4 Comment: Initial Data Review and Distribution
+Summary</h4>
+<p>Initial data cleaning involved removing 21 records with implausible
+ages (less than 0 or greater than 140) to ensure data validity for
+subsequent age-based analysis. The fundamental distributions of the
+filtered dataset reveal clear patterns: Males are significantly
+overrepresented in collision incidents, constituting 72.6% of
+individuals compared to 27.1% for females. Furthermore, the majority of
+involved persons were recorded as Drivers (74.4%), followed by
+Passengers (25.6%). Analysis of safety outcomes shows that the event of
+ejection or entrapment is extremely rare, accounting for only about 1%
+of total records; the overwhelming majority of individuals (99.1%) were
+recorded as Not Ejected. This rarity confirms that the subsequent
+logistic regression model addresses a high-risk, low-frequency
+event.</p>
+</div>
+</div>
+<div id="age-analysis" class="section level2">
+<h2>Age Analysis:</h2>
+<p><img src="Non_Temporal_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<div id="figure-1-comment" class="section level4">
+<h4>Figure 1 Comment:</h4>
+<p>During data cleaning, a filter was applied to the person_age variable
+to retain only plausible ages (0 &lt;= person_age &lt;= 140), removing
+outliers. The filtered data was then grouped into four
+categories—Children/Teens (0 - 19), Young Age (20 - 39), Middle Age (40
+- 64), and Old Age (65+)—to create the age_group variable. The
+subsequent analysis showed that the largest proportion of individuals
+involved in collision incidents fall into the Young Age group, followed
+by the Middle Age group, highlighting that peak driving and working ages
+carry the highest risk exposure.</p>
+<p><img src="Non_Temporal_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+<div id="figure-2-comment" class="section level4">
+<h4>Figure 2 Comment:</h4>
+<p>The analysis of proportional collision severity across age groups
+reveals distinct risk profiles. The Children/Teens group faces the
+highest proportional risk for the most severe outcomes, with 6.0 percent
+of their recorded incidents resulting in high severity (three or more
+casualties). Conversely, the Old Age group records the lowest proportion
+of low severity crashes (zero casualties) at 56.5 percent. This lower
+rate of minor crashes contributes to Old Age having the highest
+proportional risk for middle severity incidents (one or two casualties)
+at 39.6 percent. When combining all injury-resulting crashes (middle and
+high severity), the Old Age group shows the highest overall casualty
+risk at 43.4 percent, indicating that while Children/Teens face the
+greatest proportional risk for the worst-case scenario, Old Age
+individuals are the most likely to sustain any injury or death when
+involved in a collision.</p>
+</div>
+</div>
+<div id="geography-analysis" class="section level2">
+<h2>Geography Analysis:</h2>
+<table>
+<caption>Table 5: Frequency and Proportion of Collisions by Neighborhood
+(Top 10)</caption>
+<thead>
+<tr class="header">
+<th align="left">Neighborhood</th>
+<th align="right">Count</th>
+<th align="right">Proportion</th>
 </tr>
 </thead>
 <tbody>
@@ -538,13 +598,179 @@ are happened to the Young age, secondly are the Middle age.</p>
 </tr>
 </tbody>
 </table>
-<pre><code>## Warning: `fct_reorder()` removing 624 missing values.
-## ℹ Use `.na_rm = TRUE` to silence this message.
-## ℹ Use `.na_rm = FALSE` to preserve NAs.</code></pre>
-<p><img src="Non_Temporal_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<div id="table-5-comment" class="section level4">
+<h4>Table 5 Comment:</h4>
+<p>The geographic analysis confirms that collision incidents are heavily
+concentrated in specific areas. Chelsea and Clinton recorded the highest
+number of collisions at 10,908, representing 0.19 (or 19%) of the listed
+incidents. East Harlem (7,399 incidents, 0.13 proportion) and Gramercy
+Park and Murray Hill (6,550 incidents, 0.11 proportion) follow as
+high-frequency areas. This unequal distribution of incidents highlights
+areas that require focused resource allocation for traffic safety
+interventions, particularly in the top five ranked neighborhoods, which
+each recorded over 6,294 incidents.</p>
+<p><img src="Non_Temporal_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+<div id="figure-3-comment" class="section level4">
+<h4>Figure 3 Comment:</h4>
+<p>The data in Figure 3 confirms the sex imbalance observed in the base
+statistics (72.6% male overall) and reveals how this distribution
+changes across crash roles and neighborhoods. Across all neighborhoods,
+male drivers (M) overwhelmingly dominate the collision counts, though
+the counts for male and female passengers (F) are much closer,
+indicating the sex disparity is less pronounced in the passenger role.
+Geographically, the figure reinforces the findings from Table 5: Chelsea
+and Clinton consistently record the highest number of collisions for
+both drivers (over 6,000) and passengers (over 1,000), making it the
+primary collision hotspot. East Harlem is reliably the second-highest
+neighborhood for both roles, while Lower Manhattan shows the lowest
+counts. I think reason for the severe concentration in Chelsea and
+Clinton is attributable to its role as a high-volume transit corridor
+with dense commercial traffic intersecting with heavy pedestrian
+activity, creating numerous high-conflict points.</p>
+<p><img src="Non_Temporal_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>
+<div id="figure-4-comment" class="section level4">
+<h4>Figure 4 Comment:</h4>
+<p>While Chelsea and Clinton lead in raw volume, Figure 4 reveals a
+different picture for proportional risk of severe crashes (High Severity
+Accident Rate, where Casualty &gt;= 3): East Harlem (6.5%) and Inwood
+and Washington Heights (6.0%) top the ranking. This indicates that
+although Chelsea and Clinton have the most total accidents, crashes in
+East Harlem are proportionally more likely to be fatal or result in mass
+casualties. Lower Manhattan consistently shows the lowest risk in both
+raw volume (4% total incidents) and proportional severity (<span
+class="math inline">\(1.5\%\)</span> high severity rate).</p>
+</div>
+</div>
+<div id="casualty-analysis" class="section level2">
+<h2>Casualty Analysis:</h2>
+<table>
+<caption>Table 6: Top 5 Most Frequent Vehicle Types in Collision
+Data</caption>
+<thead>
+<tr class="header">
+<th align="left">Vehicle Type</th>
+<th align="right">Count</th>
+<th align="right">Proportion</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Sedan</td>
+<td align="right">24191</td>
+<td align="right">0.417</td>
+</tr>
+<tr class="even">
+<td align="left">Station Wagon/Sport Utility Vehicle</td>
+<td align="right">17504</td>
+<td align="right">0.302</td>
+</tr>
+<tr class="odd">
+<td align="left">Taxi</td>
+<td align="right">4771</td>
+<td align="right">0.082</td>
+</tr>
+<tr class="even">
+<td align="left">Bus</td>
+<td align="right">3321</td>
+<td align="right">0.057</td>
+</tr>
+<tr class="odd">
+<td align="left">Box Truck</td>
+<td align="right">1859</td>
+<td align="right">0.032</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>Table 7: Frequency and Proportion of Seatbelt Use in
+Collisions</caption>
+<thead>
+<tr class="header">
+<th align="left">Seatbelt Status</th>
+<th align="right">Count</th>
+<th align="right">Proportion</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Not Used</td>
+<td align="right">6039</td>
+<td align="right">0.133</td>
+</tr>
+<tr class="even">
+<td align="left">Used</td>
+<td align="right">39197</td>
+<td align="right">0.867</td>
+</tr>
+</tbody>
+</table>
+<div id="table-6-table-7-comment" class="section level4">
+<h4>Table 6 &amp; Table 7 Comment:</h4>
+<p>The raw collision data contains a large and heterogeneous collection
+of vehicle types. Since the core of the subsequent safety study involves
+analyzing the relationship between seatbelt usage, ejection, and
+casualty outcomes, it is necessary to focus on the dominant passenger
+vehicle categories. Therefore, to ensure robust analysis and maintain
+relevance to typical passenger risk, the dataset was filtered to include
+only the top three most frequent vehicle types by proportion: Sedan
+(41.7%), Station Wagon/Sport Utility Vehicle (SUV) (30.2%), and Taxi
+(8.2%). These three categories account for the vast majority of vehicles
+and form the basis for all models examining the efficacy of safety
+features.</p>
+<table>
+<caption>Table 8: Odds Ratios from Logistic Regression: Ejection Status
+by Seatbelt Use</caption>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">0.0035</td>
+<td align="right">0.2186</td>
+<td align="right">-25.8834</td>
+<td align="right">0.0000</td>
+</tr>
+<tr class="even">
+<td align="left">seatbelt_used</td>
+<td align="right">0.7330</td>
+<td align="right">0.2404</td>
+<td align="right">-1.2920</td>
+<td align="right">0.1963</td>
+</tr>
+</tbody>
+</table>
+<p><img src="Non_Temporal_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+</div>
+<div id="table-8-figure-5-figure-6-comment" class="section level4">
+<h4>Table 8, Figure 5 &amp; Figure 6 Comment:</h4>
+<p>The Logistic Regression (Table 8) indicates that using a seatbelt
+trends toward reducing the odds of ejection/entrapment by 26.7% (OR
+equals 0.733), though this effect is not statistically significant (p
+equals 0.1963). This reduction is visualized in Figure 5, which shows
+the absolute predicted probability of ejection dropping from 0.35% (No
+Seatbelt) to 0.26% (Seatbelt Used). Crucially, Figure 6 shows the
+consequence of that intermediate outcome: if an individual is ejected or
+trapped, the fatal incident rate is drastically higher at 0.83%,
+compared to only 0.12% for those not ejected/trapped. This signifies
+that while seatbelt use provides a small reduction in the absolute
+probability of the event (ejection), successfully avoiding ejection
+results in a risk of fatality that is almost seven times lower.</p>
+</div>
+</div>
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -576,7 +802,41 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
