@@ -1,7 +1,10 @@
 name: "P8105 final project"
 output_dir: "."
 navbar:
-  title: "Home"
+ title: "Manhattan Collisions"
+  left:
+    - text: "Home"
+      href: index.html
   right:
     - text: "Temporal Analysis"
       menu:
@@ -18,5 +21,5 @@ navbar:
 
 
 output:
-  html_document: 
-    theme: flatly
+  html_document:
+    theme: !expr bslib::bs_theme(bootswatch = "cosmo", version = 5)
