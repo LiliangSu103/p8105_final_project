@@ -5,7 +5,7 @@ output:
   html_document:
     toc: true
     toc_float: true
-    theme: readable
+    theme: !expr bslib::bs_theme(bootswatch = "cosmo", version = 5)
     code_folding: hide
 ---
 
