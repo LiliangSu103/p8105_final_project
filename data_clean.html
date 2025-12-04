@@ -13,7 +13,7 @@
 
 <title>Clean data</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -36,6 +36,8 @@
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -325,8 +327,7 @@ div.tocify {
         
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown-header">About</li>
-<li class="dropdown">
+        <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Temporal Analysis
      
@@ -346,6 +347,12 @@ div.tocify {
 </li>
 <li>
   <a href="Non_Temporal.html">Non Temporal Analysis</a>
+</li>
+<li>
+  <a href="https://github.com/LiliangSu103/p8105_final_project/tree/main">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
 </li>
       </ul>
     </div><!--/.nav-collapse -->
@@ -401,11 +408,12 @@ div.tocify {
   # keep predictors of interests
   select(collision_id, year, month, day, hour, day_of_week, crash_time, zip_code, latitude, longitude,  num_injured, num_killed, num_casualty) |&gt; 
   arrange(year, month, day, hour)</code></pre>
-<pre><code>## Warning: One or more parsing issues, call `problems()` on your data frame for details, e.g.:
+<pre><code>## Warning: One or more parsing issues, call `problems()` on your
+## data frame for details, e.g.:
 ##   dat &lt;- vroom(...)
 ##   problems(dat)</code></pre>
 <pre><code>## Rows: 58124 Columns: 29
-## ── Column specification ────────────────────────────────────────────────────────────────────────────────
+## ── Column specification ────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr  (14): CRASH DATE, BOROUGH, LOCATION, ON STREET NAME, CROSS STREET NAME,...
 ## dbl  (12): ZIP CODE, LATITUDE, LONGITUDE, NUMBER OF PERSONS INJURED, NUMBER ...
@@ -426,7 +434,7 @@ div.tocify {
          person_safe_equip = safety_equipment,
          person_id = unique_id)</code></pre>
 <pre><code>## Rows: 189972 Columns: 21
-## ── Column specification ────────────────────────────────────────────────────────────────────────────────
+## ── Column specification ────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr  (16): CRASH_DATE, PERSON_ID, PERSON_TYPE, PERSON_INJURY, EJECTION, EMOT...
 ## dbl   (4): UNIQUE_ID, COLLISION_ID, VEHICLE_ID, PERSON_AGE
@@ -441,7 +449,7 @@ div.tocify {
   # the unqiue_id in vehicle_df is actually the vehicle_id in person_df, rename it for data joining
   rename(vehicle_id = unique_id)</code></pre>
 <pre><code>## Rows: 111199 Columns: 25
-## ── Column specification ────────────────────────────────────────────────────────────────────────────────
+## ── Column specification ────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr  (19): CRASH_DATE, VEHICLE_ID, STATE_REGISTRATION, VEHICLE_TYPE, VEHICLE...
 ## dbl   (4): UNIQUE_ID, COLLISION_ID, VEHICLE_YEAR, VEHICLE_OCCUPANTS
