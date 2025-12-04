@@ -22,4 +22,4 @@ navbar:
 
 output:
   html_document:
-    theme: !expr bslib::bs_theme(bootswatch = "cosmo", version = 5)
+    theme: !expr bslib::bs_theme(bootswatch = "litera", version = 5)
