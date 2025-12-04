@@ -1,10 +1,7 @@
 name: "P8105 final project"
 output_dir: "."
 navbar:
- title: "Manhattan Collisions"
-  left:
-    - text: "Home"
-      href: index.html
+  title: "Home"
   right:
     - text: "Temporal Analysis"
       menu:
