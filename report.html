@@ -595,66 +595,55 @@ href="Linea_Regression.html">here</a>.</p>
 </div>
 <div id="discussion" class="section level1">
 <h1>Discussion</h1>
-<p>In this project, the descriptive and spatial results point to a
-consistent story: traffic harm in Manhattan is not evenly distributed
-across people or place. Across the non-temporal summaries, collisions
-(and person casualties) are concentrated in the adult age ranges, which
-likely reflects exposure that adults make the most daily trips for
-commuting, work, and errands. While the relative share of severe
-outcomes increases with age, consistent with higher vulnerability to
-injury once a crash occurs. Importantly, the casualty composition also
-suggests that a large portion of incidents involve common passenger
-vehicle types (e.g., sedans/SUVs), implying that prevention
-opportunities exist in everyday traffic contexts rather than only rare
-vehicle classes or unusual events.</p>
-<p>The maps reinforce that risk is spatially clustered. Both the
-density/heatmap views and the casualty maps show repeated hotspot
-patterns, high-burden corridors and neighborhoods where crashes and
-casualties accumulate, rather than a uniform spread across the borough.
-This clustering is consistent with built-environment and mobility
-drivers in Manhattan: high intersection density, intense pedestrian
-activity, frequent curbside conflicts (pickups/drop-offs, delivery
-loading), and arterial avenues that encourage higher speeds or turning
-conflicts. The fact that hotspots persist across years and severity
-filters suggests the presence of structural “risk landscapes” (street
-design + traffic volume + land use) that remain relatively stable and
-therefore are actionable targets for intervention.</p>
-<p>From the “risk chain” perspective, the figures support a severity
-mechanism that is well-known in injury epidemiology: rare but
-high-energy crash circumstances and compromised occupant protection are
-disproportionately represented among fatal outcomes. Even if
-ejection/entrapment events are uncommon overall, their strong
-association with fatalities highlights how prevention can be layered:
-(1) reduce the probability of high-energy crashes through speed
-management and safer intersection design, and (2) reduce injury
-conditional on a crash through occupant protection (restraint use,
-vehicle safety) and rapid post-crash response. The practical implication
-is that strategies should not only aim to reduce the total number of
-crashes, but also specifically target the pathways that produce the most
-severe outcomes.</p>
-<p>These results have several concrete implications for policy and
-planning. First, the geographic concentration argues for place-based
-safety investments (corridor redesigns, signal timing changes, protected
-turns, daylighting, protected bike/ped infrastructure) focused on
-consistently high-burden locations. Second, because severe outcomes are
-sparse but consequential, evaluation should track severity-weighted
-metrics (e.g., serious injury/fatality rates) alongside collision
-counts. Third, the age pattern suggests that interventions protecting
-older adults and other vulnerable road users—safer crossings, longer
-pedestrian phases, refuge islands, and speed reduction—may yield
-outsized benefits in reducing severe harm.</p>
-<p>Finally, there are important limitations when interpreting these
-visuals. Map comparisons across years can be affected by different color
-scales, reporting practices, missingness in geocoding, and changing
-exposure (traffic volume, tourism, construction, seasonal patterns), and
-the latest year may represent a partial year depending on the data cut.
-In addition, these analyses are descriptive and do not establish
-causality; hotspots may reflect where people travel, not only where
-streets are “dangerous.” A natural next step is to model outcomes with
-exposure proxies (e.g., traffic counts, land-use intensity) and roadway
-features, and to quantify hotspot stability with consistent spatial
-units (grid cells or intersections) so that the map patterns translate
-directly into a prioritized, testable intervention plan.</p>
+<p>Across years, the casualty maps suggest a consistent “high-frequency
+/ low-severity” pattern in Manhattan: minor (non-injury) and medium
+(injury-only) incidents are widespread and dense across the street grid,
+while severe (death-involved) collisions are rare and appear as
+scattered points rather than broad clusters. This gap in intensity is
+important for interpretation: most of the spatial signal in the maps is
+driven by everyday crashes (exposure and traffic volume), whereas the
+severe-outcome map reflects a much smaller set of events that can look
+“patchy” even if underlying risk factors are similar. Visually, the
+highest-density areas repeatedly align with the most active parts of
+Manhattan (major avenues, business districts, and high-mobility
+corridors), supporting the idea that where people and vehicles
+concentrate, total casualties accumulate.</p>
+<p>The temporal modeling results reinforce this story. The hourly
+scatter and day×hour heat map show clear daily rhythms, with incidents
+increasing from the morning into the day and peaking during typical
+commuting and high-activity windows (roughly late morning through
+evening), especially on weekdays. Adding time structure (hour, weekday,
+month, and year) improves model performance only modestly:
+cross-validation shows similar RMSE (~3.0) and very low R^2 (~0.02)
+across candidate models, implying that time-of-day effects exist but
+explain only a small fraction of the hour-to-hour variation. The
+bootstrap distribution for the hour coefficient is tight (about
+0.04–0.055 additional crashes per hour), indicating a stable but small
+marginal effect; practically, this suggests that broad temporal patterns
+are reliable, but much of the risk depends on unmodeled factors
+(weather, special events, street design, enforcement, congestion shocks,
+etc.).</p>
+<p>Spatially, the incident hotspot (KDE) map shows persistent “hot
+zones” rather than uniform risk, consistent with repeated exposure in
+dense commercial and high-traffic areas. Interpreting hotspots alongside
+the rarity of fatal outcomes suggests two parallel prevention targets:
+(1) system-wide reductions in frequent minor/injury crashes in
+high-volume corridors, and (2) severity prevention (speed management,
+daylighting, protected crossings, turn calming) in locations where the
+built environment and conflict points make rare events more likely to
+become catastrophic.</p>
+<p>Finally, the descriptive “causality” summaries (vehicle/person
+characteristics and safety-equipment use) provide plausible mechanisms:
+the data appear dominated by common vehicle types and driver/passenger
+roles, and most people report using safety equipment, with a meaningful
+minority not using it. Taken together, the results support a coherent
+conclusion: Manhattan crash casualties are driven primarily by exposure
+(where/when travel concentrates), while severe outcomes are too sparse
+to form large clusters and likely depend on context-specific conditions
+such as speed, road design, and protection. Future work should model
+severity explicitly (e.g., logistic/Poisson/negative binomial with
+exposure proxies) and incorporate richer covariates to move beyond the
+low R^2 ceiling observed in purely time-based linear models.</p>
 <p>Go back to the <a href="index.html">homepage</a>.</p>
 </div>
 
