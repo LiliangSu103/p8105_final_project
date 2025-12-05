@@ -19,9 +19,3 @@ New York City's streets support intense, around-the-clock movement of vehicles, 
 
 Understanding when and where collisions happen most can help translate raw incident records into actionable insights. For city agencies and communities, identifying time windows of high risk and hotspot locations can support targeted interventions, including adjusting enforcement schedules, improving signage and street design, refining public safety messaging, and optimizing emergency response planning.
 
-
-## Introduction
-
-For this project, the NYC Open Data sets for motor vehicle collisions (Crashes, Vehicles, and Persons) are utilized, and the inquiry is confined to the city of Manhattan for the most recently available five years, from 01/01/21 through 10/31/25. A repeatable workflow based on the R programming language and environment will be developed to (1) investigate the characteristics of the temporal distribution of collisions (by hour, day of week, and seasonal distribution), (2) identify the geographic distribution of high-frequency areas using density visualization, and (3) examine the potential use of forecasting as an effective method for estimating the number of collisions for smaller periods such as one day or one week, optionally adding additional information such as the influence of inclement weather.
-
-
