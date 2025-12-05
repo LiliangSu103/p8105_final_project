@@ -2,8 +2,10 @@
 title: "Linear Regression"
 date: "2025-12-02"
 output:
-  html_document: default
-  github_document: default
+  html_document: 
+    code_folding: hide
+    toc: true
+    toc_float: true
 ---
 
 ```{r setup, include=FALSE}
@@ -18,12 +20,13 @@ library(tidymodels)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Download Data
+We use the Manhattan traffic collision records in `collision` as our study data. We first convert the original `crash_time` variable into a standard time format and construct a `datetime` variable, from which we extract date, hour, weekday, month, and a weekend indicator. Based on the cleaned dataset `Data_clean`, we then round `datetime` down to the hour and count the number of collisions in each time interval, obtaining a dataset that contains daily/hourly collision counts and their associated time features (year, month, weekday, weekend, etc.). Using this dataset, we fit time-related linear regression models to investigate the daily patterns of collision events in Manhattan.
+
 ```{r}
 Data<-read_csv("./Data/collision_df.csv")
 ```
 
-## data.tidy
+
 ```{r}
 Data_clean <- Data %>%
 mutate(
@@ -42,7 +45,7 @@ drop_na(datetime)
 
 
 
-## Hourly Accident Statistics
+
 ```{r}
 hourly_df <- Data_clean %>%
 mutate(datetime_hour = floor_date(datetime, "hour")) %>%
