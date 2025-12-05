@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Anny Ding, Liliang Su, Haohua Chen, Chenhao Zheng, Yan Duan" />
+
+
+<title>Report</title>
+
+<script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link href="site_libs/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-5.3.1/bootstrap.bundle.min.js"></script>
+<script src="site_libs/bs3compat-0.9.0/transition.js"></script>
+<script src="site_libs/bs3compat-0.9.0/tabs.js"></script>
+<script src="site_libs/bs3compat-0.9.0/bs3compat.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="report.html">Report</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Temporal Analysis
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="https://ls4236-shiny.shinyapps.io/Temporal_trend_shiny/">Temporal Trend Overview (Shiny)</a>
+    </li>
+    <li>
+      <a href="Temporal_data_analysis.html">Data Analysis</a>
+    </li>
+    <li>
+      <a href="Predictive_model.html">Predictive Model</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="Non_Temporal.html">Non Temporal Analysis</a>
+</li>
+<li>
+  <a href="Linea_Regression.html">Linear Regression</a>
+</li>
+<li>
+  <a href="https://github.com/LiliangSu103/p8105_final_project/tree/main">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Report</h1>
+<h4 class="author">Anny Ding, Liliang Su, Haohua Chen, Chenhao Zheng,
+Yan Duan</h4>
+
+</div>
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<div id="motivation" class="section level2">
+<h2>Motivation</h2>
+<p>Traffic collisions are a persistent public-health and urban-planning
+issue in New York City. In addition to the number of traffic accidents,
+it is important to understand who is impacted by traffic accidents, what
+are the areas at which traffic accidents are most and least common, and
+what are areas of disparity regarding traffic accident severity. Our
+project focuses on Manhattan (Jan. 2021- Oct. 2025), and aims to produce
+an interactive tool and accompanied analysis that highlight collision
+patterns by year and severity. Furthermore, clear descriptive summaries
+(age, sex, role, ejection status, and neighborhood hotspots) are also
+provided. The overarching motivation is to support discussion of
+targeted interventions (e.g., location-based safety improvements) and to
+practice rigorous data cleaning, reproducible analysis, and effective
+risk communication.</p>
+</div>
+<div id="inspiration" class="section level2">
+<h2>Inspiration</h2>
+<p>Living near Times Square, it is hard not to think about traffic
+safety. On most weekdays, the area is packed with cars, buses, delivery
+trucks, cyclists, and huge crowds of pedestrians, who often all
+competing for the same intersections. Even when nothing “major” happens,
+you see constant near-miss moments: sudden turns, cars inching into
+crosswalks, people stepping off the curb while the signal is changing,
+and drivers getting impatient in stop-and-go congestion. This everyday
+experience is what pushed us toward this topic: we wanted to use data to
+answer where collisions concentrate in Manhattan, whether severe crashes
+cluster differently from all crashes, and which groups (age/sex/role)
+show different patterns.</p>
+<p>We were also influenced by the fact that New York City already treats
+traffic injury prevention as a policy priority through <a
+href="https://www.nyc.gov/content/visionzero/pages/">Vision Zero</a>.
+This policy frames deaths and serious injuries as preventable and tracks
+progress through engineering, enforcement, education, and legislation.
+Because Vision Zero emphasizes identifying high-risk locations and
+focusing interventions, it naturally fits our decision to build an
+interactive Shiny map that lets users filter by year and severity and
+visually inspect hotspots. For context and validation, we also drew on
+the public-facing Vision Zero View site, which explains how NYC
+aggregates and maps injury/fatality crash data and highlights important
+caveats.</p>
+</div>
+<div id="initial-questions" class="section level2">
+<h2>Initial Questions</h2>
+<ol style="list-style-type: decimal">
+<li><p>When do collisions in Manhattan happen most frequently
+(hour-of-day, day-of-week, seasonal patterns)?</p></li>
+<li><p>Where are collision hotspots in Manhattan, and do hotspots differ
+by time window?</p></li>
+<li><p>Can we move beyond simple counts to identify high-risk windows
+that could support traffic management and safety planning?</p></li>
+</ol>
+<ul>
+<li>How the questions evolved during the project
+<ul>
+<li>From “all NYC” to “Manhattan only (recent years)”: to align with our
+lived motivation (Times Square / Midtown area).</li>
+<li>From crash counts only → to severity- and person-oriented questions:
+once we examined person-level attributes (sex, age, role) and outcome
+rarity (ejection/entrapment), we added questions about who is involved
+and how severe the outcomes are, not only where/when crashes occur.</li>
+</ul></li>
+</ul>
+</div>
+<div id="new-questions-considered-during-analysis"
+class="section level2">
+<h2>New questions considered during analysis</h2>
+<ol style="list-style-type: decimal">
+<li><p>How do injury severity patterns differ across age groups (e.g.,
+do children/teens have a higher share of severe outcomes even if they
+appear less often overall)?</p></li>
+<li><p>Are there strong composition patterns (e.g., sex distribution,
+driver vs passenger distribution) that remain stable across
+neighborhoods?</p></li>
+<li><p>Do “high-count” neighborhoods also appear as spatial clusters on
+the map, and does that change when filtering to “injury only” vs “death
+involved” events?</p></li>
+<li><p>Given that severe outcomes (and especially ejection/entrapment)
+are rare events, what analytical strategies are appropriate (e.g.,
+focusing on descriptive risk profiles vs. formal modeling with methods
+robust to class imbalance)?</p></li>
+</ol>
+</div>
+</div>
+<div id="methods" class="section level1">
+<h1>Methods</h1>
+<div id="data" class="section level2">
+<h2>Data</h2>
+<p>We used 3 NYC Motor Vehicle Collisions related dataset (Crashes,
+Vehicles, Person) collected from <a
+href="https://data.cityofnewyork.us/browse?sortBy=relevance&amp;pageSize=20&amp;limitTo=datasets&amp;q=NYC+Traffic+Accidents&amp;page=1">NYC
+Open Data</a>, but we only focused on the data of Manhanttan from
+Jan. 2021 to Oct.2025.</p>
+</div>
+<div id="cleaning-process" class="section level2">
+<h2>Cleaning Process</h2>
+</div>
+</div>
+<div id="results" class="section level1">
+<h1>Results</h1>
+<div id="temporal-analysis" class="section level2">
+<h2>Temporal Analysis</h2>
+<p><strong>1) <a
+href="https://ls4236-shiny.shinyapps.io/Temporal_trend_shiny/#section-collision-incidence-bar">Collision
+Incidence</a></strong></p>
+<p>Across 2021–2025, collision incidence in Manhattan shows strong and
+highly consistent temporal structure rather than random fluctuation.
+Monthly trends are lowest in winter (especially January–February), rise
+through spring, and peak in late spring/early summer (around May–June)
+with another high period in early fall (around September–October) before
+declining toward year-end.Weekly patterns are stable: weekdays,
+especially Tuesday through Friday, have the highest average collisions
+per day, while weekends are lower and Sunday is consistently the safest
+day. Hourly patterns show the clearest “rush-hour” signature: collisions
+are minimal overnight (roughly 1–5am), increase sharply during the
+morning commute, and peak in the late afternoon/early evening (about
+3–5pm) before tapering off at night. Minor- and medium-injury crashes
+closely follow these same patterns, while severe (fatal) crashes are
+rare and noisier but tend to occur either during high-exposure peak
+periods or occasionally in late-night hours where risk per exposure may
+be elevated.</p>
+<p><strong>2) <a
+href="https://ls4236-shiny.shinyapps.io/Temporal_trend_shiny/#section-casualty-persons-boxplot">Casualty
+Persons</a></strong></p>
+<p>Across 2021–2025, the casualty distributions are strongly
+right-skewed: in most months, weekdays, and hours the typical incident
+involves ~1 casualty (tight medians/IQRs), but a small number of
+incidents create large outliers (multi-casualty events). The monthly
+plots suggest a seasonal pattern, with wider spreads and higher maxima
+in mid-year (especially summer months) and occasional late-year spikes,
+meaning the biggest casualty events are concentrated in a few periods
+rather than evenly across the calendar. By day of week, the central
+tendency is fairly similar, but certain days (commonly Monday and
+Sunday) show heavier upper tails, indicating more frequent high-casualty
+outliers. The hourly plots show low typical casualties throughout the
+day, while the most extreme events tend to cluster in late
+afternoon/evening (roughly 15–20h) with some early-morning spikes,
+consistent with time-of-day exposure patterns; overall, the pattern is
+stable across years, with recent years showing similar structure but
+differing in how extreme the outliers get.</p>
+<p><strong>3) <a
+href="https://ls4236-shiny.shinyapps.io/Temporal_trend_shiny/#section-incidence-heatmap">Incidence
+HeatMap</a></strong></p>
+<p>Across the 21 heatmaps (2021–2025 × severity), collision risk is
+highly spatially persistent: every year shows the same two dominant
+hotspots—one in lower/central Manhattan (roughly long. −74.00 to −73.97,
+lat. 40.72–40.76) and another in the upper/east-midtown area (roughly
+−73.96 to −73.93, 40.79–40.82)—with a clear north–south “ridge” of
+elevated density connecting them along the island’s main traffic spine.
+Stratifying by severity sharpens this story: Minor (non-injury)
+collisions largely mirror the “All incidents” pattern but spread more
+broadly (many low-severity events across many intersections), while
+Medium (injury-only) collisions concentrate more tightly in the two
+hotspots and the connecting corridor, suggesting that the busiest
+conflict points are also where injuries cluster. Severe (death-involved)
+collisions are comparatively sparse, so the density surface becomes
+smoother and often collapses into one dominant “blob” (frequently
+centered mid-island around −73.98, 40.75–40.77) with weaker secondary
+structure—consistent with rare events being driven by a smaller set of
+high-risk corridors. Overall, the locations of risk stay stable
+year-to-year, while the intensity/extent fluctuates (and 2025 looks less
+extensive, plausibly because it’s a partial year), implying that the
+“where” of collision risk is persistent even as the “how much”
+changes.</p>
+<p><strong>4) <a
+href="https://ls4236-shiny.shinyapps.io/Temporal_trend_shiny/#section-casualty-map">Casualty
+Map</a></strong></p>
+</div>
+<div id="non-temporal-analysis" class="section level2">
+<h2>Non-temporal Analysis</h2>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
