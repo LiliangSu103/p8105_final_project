@@ -1,5 +1,5 @@
 ---
-title: "Clean data"
+title: "Data cleaning process"
 output: 
   html_document: 
     code_folding: hide
@@ -7,13 +7,45 @@ output:
     toc_float: true
 ---
 
+---
+
 ```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE
+)
+
 library(tidyverse)
 library(leaflet)
 
 ```
 
-### Import and clean raw data
+## Introduction
+
+This page provides a detailed explanation of the project’s data cleaning and merging process, outlining the logic behind each step, including filtering, feature engineering, and joining.
+
+### Raw data Overview
+
+The data cleaning process involves three distinct NYC Motor Vehicle Collisions datasets. The goal is to produce a unified dataset representing all collisions in the Manhattan borough between January 1, 2021, and October 31, 2025.
+
+The raw data consists of three separate CSV files:
+
+- Crashes: Incident-level details (location, time, summary stats).
+- Persons: Details on individuals involved (drivers, passengers, pedestrians).
+- Vehicles: Details on the vehicles involved.
+
+### Crash Data Processing
+
+The crash dataset serves as the backbone of the analysis. We perform significant filtering and feature engineering here to establish the scope of the study.
+
+Key Cleaning Steps:
+
+- Scope Filtering: We restrict records strictly to `borough == "MANHATTAN"`.
+- Date Parsing: The `crash_date` string is split into numeric components (`month`, `day`, `year`) and converted into a proper Date object.
+- Temporal Filtering: We filter for records from 2021 through October 31, 2025.
+- Metric Calculation: We aggregate injuries and fatalities into a total `num_casualty` metric.
+- Missing Values: Standard placeholders (e.g., "Unspecified", "Unknown") are converted to `NA`.
 
 ```{r}
 crash_df = read_csv("./data/Motor_Vehicle_Collisions_-_Crashes_20251031.csv", na = c("Unspecified", "Does Not Apply", "Unknown", "NA", ".", "")) |> 
@@ -21,12 +53,13 @@ crash_df = read_csv("./data/Motor_Vehicle_Collisions_-_Crashes_20251031.csv", na
   # Keep only Manhattan records
   filter(borough == "MANHATTAN") |>
   
-  # Separate the crash_date column (creates character columns)
+  # Date Decomposition
   separate(
     crash_date,
     into = c("month", "day", "year"),
     sep = "/"
   ) |> 
+  # Feature Engineering
   mutate(year = as.numeric(year),
          month = as.numeric(month),
          day = as.numeric(day),
@@ -37,17 +70,26 @@ crash_df = read_csv("./data/Motor_Vehicle_Collisions_-_Crashes_20251031.csv", na
          crash_date_full = make_date(year, month, day), 
          day_of_week = wday(crash_date_full, label = TRUE, abbr = FALSE)
          ) |>
-  # keep data from Jan 1, 2021 up to October 31, 2025. 
+  # Temporal Filtering: keep data from Jan 1, 2021 up to October 31, 2025. 
   filter(
     year %in% 2021:2025 &
     !(year == 2025 & month == 11),
   ) |> 
   relocate(collision_id, year, month, day, hour, day_of_week) |> 
-  # keep predictors of interests
+  # Column Selection & Ordering
   select(collision_id, year, month, day, hour, day_of_week, crash_time, zip_code, latitude, longitude,  num_injured, num_killed, num_casualty) |> 
   arrange(year, month, day, hour)
 ```
 
+### Person Data Processing
+
+The person dataset provides granular detail about the individuals involved.
+
+Key Cleaning Steps:
+
+- Role Standardization: We filter `ped_role` to keep only "Driver", "Passenger", or "Pedestrian", removing ambiguous or administrative roles.
+- Renaming: Variables are renamed for clarity (e.g., `ejection` becomes `person_eje`) to prevent confusion after joining.
+- Selection: Only demographics (`age`, `sex`) and safety variables are retained.
 
 ```{r}
 person_df = read_csv("./data/Motor_Vehicle_Collisions_-_Person_20251031.csv", na = c("Unspecified", "Does Not Apply", "Unknown", "NA", ".", "")) |> 
@@ -63,6 +105,13 @@ person_df = read_csv("./data/Motor_Vehicle_Collisions_-_Person_20251031.csv", na
          person_id = unique_id)
 ```
 
+### Vehicle Data Processing
+The vehicle dataset links specific cars to the crash.
+
+Key Cleaning Steps:
+
+- ID Alignment: Crucially, `unique_id` in this dataset corresponds to `vehicle_id` in the Person dataset. We rename this immediately to facilitate the join key.
+- Selection: We retain `vehicle_type`, `year`, and `license_jurisdiction.`
 
 ```{r}
 vehicle_df = read_csv("./data/Motor_Vehicle_Collisions_-_Vehicles_20251031.csv", na = c("Unspecified", "Does Not Apply", "Unknown", "NA", ".", "")) |> 
@@ -74,7 +123,15 @@ vehicle_df = read_csv("./data/Motor_Vehicle_Collisions_-_Vehicles_20251031.csv",
 ```
 
 
-### Join the three datasets
+### Data Integration (Joining Strategy)
+
+To create the final analytic dataset, we perform a sequential Left Join strategy starting from crash_df.
+
+- Crash + Person: Joined by `collision_id.`
+  - Note: This expands the dataset rows. A single crash with 3 people involved will result in 3 rows.
+
+- Result + Vehicle: Joined by `collision_id` AND `vehicle_id.`
+  - Note: This links the specific vehicle characteristics to the driver/passenger in that vehicle.
 
 ```{r}
 

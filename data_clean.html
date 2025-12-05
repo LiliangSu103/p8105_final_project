@@ -11,24 +11,16 @@
 
 
 
-<title>Clean data</title>
+<title>Data cleaning process</title>
 
-<script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
-<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<style>h1 {font-size: 34px;}
-       h1.title {font-size: 38px;}
-       h2 {font-size: 30px;}
-       h3 {font-size: 24px;}
-       h4 {font-size: 18px;}
-       h5 {font-size: 16px;}
-       h6 {font-size: 12px;}
-       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
-       pre:not([class]) { background-color: white }</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link href="site_libs/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-5.3.1/bootstrap.bundle.min.js"></script>
+<script src="site_libs/bs3compat-0.9.0/transition.js"></script>
+<script src="site_libs/bs3compat-0.9.0/tabs.js"></script>
+<script src="site_libs/bs3compat-0.9.0/bs3compat.js"></script>
 <script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
@@ -327,7 +319,10 @@ div.tocify {
         
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown">
+        <li>
+  <a href="report.html">Report</a>
+</li>
+<li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Temporal Analysis
      
@@ -347,6 +342,9 @@ div.tocify {
 </li>
 <li>
   <a href="Non_Temporal.html">Non Temporal Analysis</a>
+</li>
+<li>
+  <a href="Linea_Regression.html">Linear Regression</a>
 </li>
 <li>
   <a href="https://github.com/LiliangSu103/p8105_final_project/tree/main">
@@ -371,24 +369,63 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Clean data</h1>
+<h1 class="title toc-ignore">Data cleaning process</h1>
 
 </div>
 
 
-<div id="import-and-clean-raw-data" class="section level3">
-<h3>Import and clean raw data</h3>
+<hr />
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This page provides a detailed explanation of the project’s data
+cleaning and merging process, outlining the logic behind each step,
+including filtering, feature engineering, and joining.</p>
+<div id="raw-data-overview" class="section level3">
+<h3>Raw data Overview</h3>
+<p>The data cleaning process involves three distinct NYC Motor Vehicle
+Collisions datasets. The goal is to produce a unified dataset
+representing all collisions in the Manhattan borough between January 1,
+2021, and October 31, 2025.</p>
+<p>The raw data consists of three separate CSV files:</p>
+<ul>
+<li>Crashes: Incident-level details (location, time, summary
+stats).</li>
+<li>Persons: Details on individuals involved (drivers, passengers,
+pedestrians).</li>
+<li>Vehicles: Details on the vehicles involved.</li>
+</ul>
+</div>
+<div id="crash-data-processing" class="section level3">
+<h3>Crash Data Processing</h3>
+<p>The crash dataset serves as the backbone of the analysis. We perform
+significant filtering and feature engineering here to establish the
+scope of the study.</p>
+<p>Key Cleaning Steps:</p>
+<ul>
+<li>Scope Filtering: We restrict records strictly to
+<code>borough == "MANHATTAN"</code>.</li>
+<li>Date Parsing: The <code>crash_date</code> string is split into
+numeric components (<code>month</code>, <code>day</code>,
+<code>year</code>) and converted into a proper Date object.</li>
+<li>Temporal Filtering: We filter for records from 2021 through October
+31, 2025.</li>
+<li>Metric Calculation: We aggregate injuries and fatalities into a
+total <code>num_casualty</code> metric.</li>
+<li>Missing Values: Standard placeholders (e.g., “Unspecified”,
+“Unknown”) are converted to <code>NA</code>.</li>
+</ul>
 <pre class="r"><code>crash_df = read_csv(&quot;./data/Motor_Vehicle_Collisions_-_Crashes_20251031.csv&quot;, na = c(&quot;Unspecified&quot;, &quot;Does Not Apply&quot;, &quot;Unknown&quot;, &quot;NA&quot;, &quot;.&quot;, &quot;&quot;)) |&gt; 
   janitor::clean_names() |&gt; 
   # Keep only Manhattan records
   filter(borough == &quot;MANHATTAN&quot;) |&gt;
   
-  # Separate the crash_date column (creates character columns)
+  # Date Decomposition
   separate(
     crash_date,
     into = c(&quot;month&quot;, &quot;day&quot;, &quot;year&quot;),
     sep = &quot;/&quot;
   ) |&gt; 
+  # Feature Engineering
   mutate(year = as.numeric(year),
          month = as.numeric(month),
          day = as.numeric(day),
@@ -399,29 +436,31 @@ div.tocify {
          crash_date_full = make_date(year, month, day), 
          day_of_week = wday(crash_date_full, label = TRUE, abbr = FALSE)
          ) |&gt;
-  # keep data from Jan 1, 2021 up to October 31, 2025. 
+  # Temporal Filtering: keep data from Jan 1, 2021 up to October 31, 2025. 
   filter(
     year %in% 2021:2025 &amp;
     !(year == 2025 &amp; month == 11),
   ) |&gt; 
   relocate(collision_id, year, month, day, hour, day_of_week) |&gt; 
-  # keep predictors of interests
+  # Column Selection &amp; Ordering
   select(collision_id, year, month, day, hour, day_of_week, crash_time, zip_code, latitude, longitude,  num_injured, num_killed, num_casualty) |&gt; 
   arrange(year, month, day, hour)</code></pre>
-<pre><code>## Warning: One or more parsing issues, call `problems()` on your
-## data frame for details, e.g.:
-##   dat &lt;- vroom(...)
-##   problems(dat)</code></pre>
-<pre><code>## Rows: 58124 Columns: 29
-## ── Column specification ────────────────────────────────
-## Delimiter: &quot;,&quot;
-## chr  (14): CRASH DATE, BOROUGH, LOCATION, ON STREET NAME, CROSS STREET NAME,...
-## dbl  (12): ZIP CODE, LATITUDE, LONGITUDE, NUMBER OF PERSONS INJURED, NUMBER ...
-## lgl   (2): CONTRIBUTING FACTOR VEHICLE 4, CONTRIBUTING FACTOR VEHICLE 5
-## time  (1): CRASH TIME
-## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div id="person-data-processing" class="section level3">
+<h3>Person Data Processing</h3>
+<p>The person dataset provides granular detail about the individuals
+involved.</p>
+<p>Key Cleaning Steps:</p>
+<ul>
+<li>Role Standardization: We filter <code>ped_role</code> to keep only
+“Driver”, “Passenger”, or “Pedestrian”, removing ambiguous or
+administrative roles.</li>
+<li>Renaming: Variables are renamed for clarity (e.g.,
+<code>ejection</code> becomes <code>person_eje</code>) to prevent
+confusion after joining.</li>
+<li>Selection: Only demographics (<code>age</code>, <code>sex</code>)
+and safety variables are retained.</li>
+</ul>
 <pre class="r"><code>person_df = read_csv(&quot;./data/Motor_Vehicle_Collisions_-_Person_20251031.csv&quot;, na = c(&quot;Unspecified&quot;, &quot;Does Not Apply&quot;, &quot;Unknown&quot;, &quot;NA&quot;, &quot;.&quot;, &quot;&quot;)) |&gt; 
   janitor::clean_names() |&gt; 
   # keep predictors of interests
@@ -433,34 +472,42 @@ div.tocify {
          person_eje = ejection,
          person_safe_equip = safety_equipment,
          person_id = unique_id)</code></pre>
-<pre><code>## Rows: 189972 Columns: 21
-## ── Column specification ────────────────────────────────
-## Delimiter: &quot;,&quot;
-## chr  (16): CRASH_DATE, PERSON_ID, PERSON_TYPE, PERSON_INJURY, EJECTION, EMOT...
-## dbl   (4): UNIQUE_ID, COLLISION_ID, VEHICLE_ID, PERSON_AGE
-## time  (1): CRASH_TIME
-## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div id="vehicle-data-processing" class="section level3">
+<h3>Vehicle Data Processing</h3>
+<p>The vehicle dataset links specific cars to the crash.</p>
+<p>Key Cleaning Steps:</p>
+<ul>
+<li>ID Alignment: Crucially, <code>unique_id</code> in this dataset
+corresponds to <code>vehicle_id</code> in the Person dataset. We rename
+this immediately to facilitate the join key.</li>
+<li>Selection: We retain <code>vehicle_type</code>, <code>year</code>,
+and <code>license_jurisdiction.</code></li>
+</ul>
 <pre class="r"><code>vehicle_df = read_csv(&quot;./data/Motor_Vehicle_Collisions_-_Vehicles_20251031.csv&quot;, na = c(&quot;Unspecified&quot;, &quot;Does Not Apply&quot;, &quot;Unknown&quot;, &quot;NA&quot;, &quot;.&quot;, &quot;&quot;)) |&gt; 
   janitor::clean_names() |&gt; 
   # keep predictors of interests
   select(collision_id, unique_id, vehicle_type, vehicle_year, driver_license_status, driver_license_jurisdiction) |&gt; 
   # the unqiue_id in vehicle_df is actually the vehicle_id in person_df, rename it for data joining
   rename(vehicle_id = unique_id)</code></pre>
-<pre><code>## Rows: 111199 Columns: 25
-## ── Column specification ────────────────────────────────
-## Delimiter: &quot;,&quot;
-## chr  (19): CRASH_DATE, VEHICLE_ID, STATE_REGISTRATION, VEHICLE_TYPE, VEHICLE...
-## dbl   (4): UNIQUE_ID, COLLISION_ID, VEHICLE_YEAR, VEHICLE_OCCUPANTS
-## lgl   (1): VEHICLE_MODEL
-## time  (1): CRASH_TIME
-## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
-<div id="join-the-three-datasets" class="section level3">
-<h3>Join the three datasets</h3>
+<div id="data-integration-joining-strategy" class="section level3">
+<h3>Data Integration (Joining Strategy)</h3>
+<p>To create the final analytic dataset, we perform a sequential Left
+Join strategy starting from crash_df.</p>
+<ul>
+<li>Crash + Person: Joined by <code>collision_id.</code>
+<ul>
+<li>Note: This expands the dataset rows. A single crash with 3 people
+involved will result in 3 rows.</li>
+</ul></li>
+<li>Result + Vehicle: Joined by <code>collision_id</code> AND
+<code>vehicle_id.</code>
+<ul>
+<li>Note: This links the specific vehicle characteristics to the
+driver/passenger in that vehicle.</li>
+</ul></li>
+</ul>
 <pre class="r"><code># links every person to their crash details using &#39;collision_id&#39;.
 collision_df = crash_df |&gt;
   left_join(person_df, by = &quot;collision_id&quot;) |&gt; 
@@ -469,6 +516,7 @@ collision_df = crash_df |&gt;
   relocate(collision_id, vehicle_id, person_id, year, month, day, hour, day_of_week, crash_time, zip_code, latitude, longitude,  num_injured, num_killed, num_casualty, vehicle_type, vehicle_year, driver_license_status, driver_license_jurisdiction, person_type, person_role, person_age, person_sex, person_eje, person_safe_equip)
 
 write_csv(collision_df, &quot;./data/collision_df.csv&quot;)</code></pre>
+</div>
 </div>
 
 
