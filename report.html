@@ -560,25 +560,102 @@ conclusions.</p>
 </div>
 <div id="non-temporal-analysis" class="section level2">
 <h2>Non-temporal Analysis</h2>
-<ul>
-<li>Overall, the results suggest collisions are concentrated in adult
-age groups, while more severe outcomes become relatively more common
-with increasing age. Spatially, crashes cluster in a few high-burden
+<p>Overall, the results suggest collisions are concentrated in adult age
+groups, while more severe outcomes become relatively more common with
+increasing age. Spatially, crashes cluster in a few high-burden
 Manhattan neighborhoods (e.g., areas like East Harlem / Lower East Side
 appearing near the top), indicating clear geographic hotspots. In terms
 of context, most incidents involve sedans and SUVs, and the risk-chain
 visuals indicate that ejection/entrapment—though uncommon—is strongly
 associated with fatal outcomes, consistent with safety factors being
 linked to lower severity. Details can be seen <a
-href="Non_Temporal.html">here</a></li>
-</ul>
+href="Non_Temporal.html">here</a>.</p>
 </div>
 <div id="linear-regression" class="section level2">
 <h2>Linear Regression</h2>
+<p>Across ~112k Manhattan collision records, you engineered time
+features (hour/weekday/month/year) and modeled hourly collision counts
+to characterize when and where crashes cluster. The scatter/LOESS and
+the day×hour heatmap both show a clear diurnal pattern: collisions are
+relatively low overnight/early morning, rise after the morning commute,
+stay elevated through the daytime, and peak again in the late
+afternoon/early evening (with the strongest bands on weekdays). In model
+comparison, adding time structure improves prediction only
+modestly—cross-validation RMSE is ~3.03 with very low R^2 (~0.02), but
+the “fit3” model (hour + weekday + month + year) performs best overall.
+The bootstrap results suggest the hour effect is small but consistently
+positive and stable (hourly coefficient concentrated around
+~0.04–0.055). Spatially, the hotspot density map indicates crashes are
+not evenly distributed: they concentrate in a few high-traffic
+corridors/areas (notably in Lower Manhattan and a Midtown cluster),
+consistent with collisions being driven by sustained activity and
+congestion rather than random spatial spread. Details can be seen <a
+href="Linea_Regression.html">here</a>.</p>
 </div>
 </div>
 <div id="discussion" class="section level1">
 <h1>Discussion</h1>
+<p>In this project, the descriptive and spatial results point to a
+consistent story: traffic harm in Manhattan is not evenly distributed
+across people or place. Across the non-temporal summaries, collisions
+(and person casualties) are concentrated in the adult age ranges, which
+likely reflects exposure that adults make the most daily trips for
+commuting, work, and errands. While the relative share of severe
+outcomes increases with age, consistent with higher vulnerability to
+injury once a crash occurs. Importantly, the casualty composition also
+suggests that a large portion of incidents involve common passenger
+vehicle types (e.g., sedans/SUVs), implying that prevention
+opportunities exist in everyday traffic contexts rather than only rare
+vehicle classes or unusual events.</p>
+<p>The maps reinforce that risk is spatially clustered. Both the
+density/heatmap views and the casualty maps show repeated hotspot
+patterns, high-burden corridors and neighborhoods where crashes and
+casualties accumulate, rather than a uniform spread across the borough.
+This clustering is consistent with built-environment and mobility
+drivers in Manhattan: high intersection density, intense pedestrian
+activity, frequent curbside conflicts (pickups/drop-offs, delivery
+loading), and arterial avenues that encourage higher speeds or turning
+conflicts. The fact that hotspots persist across years and severity
+filters suggests the presence of structural “risk landscapes” (street
+design + traffic volume + land use) that remain relatively stable and
+therefore are actionable targets for intervention.</p>
+<p>From the “risk chain” perspective, the figures support a severity
+mechanism that is well-known in injury epidemiology: rare but
+high-energy crash circumstances and compromised occupant protection are
+disproportionately represented among fatal outcomes. Even if
+ejection/entrapment events are uncommon overall, their strong
+association with fatalities highlights how prevention can be layered:
+(1) reduce the probability of high-energy crashes through speed
+management and safer intersection design, and (2) reduce injury
+conditional on a crash through occupant protection (restraint use,
+vehicle safety) and rapid post-crash response. The practical implication
+is that strategies should not only aim to reduce the total number of
+crashes, but also specifically target the pathways that produce the most
+severe outcomes.</p>
+<p>These results have several concrete implications for policy and
+planning. First, the geographic concentration argues for place-based
+safety investments (corridor redesigns, signal timing changes, protected
+turns, daylighting, protected bike/ped infrastructure) focused on
+consistently high-burden locations. Second, because severe outcomes are
+sparse but consequential, evaluation should track severity-weighted
+metrics (e.g., serious injury/fatality rates) alongside collision
+counts. Third, the age pattern suggests that interventions protecting
+older adults and other vulnerable road users—safer crossings, longer
+pedestrian phases, refuge islands, and speed reduction—may yield
+outsized benefits in reducing severe harm.</p>
+<p>Finally, there are important limitations when interpreting these
+visuals. Map comparisons across years can be affected by different color
+scales, reporting practices, missingness in geocoding, and changing
+exposure (traffic volume, tourism, construction, seasonal patterns), and
+the latest year may represent a partial year depending on the data cut.
+In addition, these analyses are descriptive and do not establish
+causality; hotspots may reflect where people travel, not only where
+streets are “dangerous.” A natural next step is to model outcomes with
+exposure proxies (e.g., traffic counts, land-use intensity) and roadway
+features, and to quantify hotspot stability with consistent spatial
+units (grid cells or intersections) so that the map patterns translate
+directly into a prioritized, testable intervention plan.</p>
+<p>Go back to the <a href="index.html">homepage</a>.</p>
 </div>
 
 
