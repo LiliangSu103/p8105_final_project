@@ -9,7 +9,7 @@ Data<-read_csv("./Data/collision_df.csv")
 ```
 
     ## Rows: 112451 Columns: 25
-    ## ── Column specification ────────────────────────────────────────────────────────────────────────────────
+    ## ── Column specification ─────────────────────────────────────────────────────
     ## Delimiter: ","
     ## chr   (9): day_of_week, vehicle_type, driver_license_status, driver_license_...
     ## dbl  (15): collision_id, vehicle_id, person_id, year, month, day, hour, zip_...
@@ -166,7 +166,7 @@ three.
 
 ``` r
 boot_df <- hourly_df %>%
-rsample::bootstraps(times = 3) %>%
+rsample::bootstraps(times = 1000) %>%
 mutate(
 model = map(splits, ~ lm(num_crash ~ hour + weekday + month, data = analysis(.x))),
 coef = map(model, broom::tidy)

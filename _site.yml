@@ -13,6 +13,8 @@ navbar:
         href: Predictive_model.html
     - text: "Non Temporal Analysis"
       href: Non_Temporal.html
+    - text: "Linear Regression"
+      href: Linear_Regression.html 
     - icon: fa-github fa-lg
       href: https://github.com/LiliangSu103/p8105_final_project/tree/main
 

@@ -131,7 +131,7 @@ Ans: Among the three models, fit3 (containing hour + weekday + month + year) is 
 
 ```{r}
 boot_df <- hourly_df %>%
-rsample::bootstraps(times = 3) %>%
+rsample::bootstraps(times = 1000) %>%
 mutate(
 model = map(splits, ~ lm(num_crash ~ hour + weekday + month, data = analysis(.x))),
 coef = map(model, broom::tidy)
