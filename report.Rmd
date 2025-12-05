@@ -73,7 +73,11 @@ Across the 21 heatmaps (2021–2025 × severity), collision risk is highly spati
 Across the person-casualty maps (2021–2025), the spatial pattern is very consistent: events are spread across Manhattan’s street grid but are densest in the more traffic-intense central/southern portions of the island and along major north–south corridors, while areas with fewer intersections/roads (e.g., large park/waterfront stretches) show noticeably fewer cells. When you stratify by severity, the “Minor (Non-Injury)” layer essentially has 0 person casualties by definition (the legend collapses to 0), so it functions more as a map of where non-injury crashes happen rather than where injury burden concentrates; those locations are widespread and closely follow road exposure. In contrast, “Medium (Injury Only)” produces fewer, more localized hotspots (suggesting injuries cluster at particular high-flow intersections/arterials), and the “Severe (Death Involved)” layer is the sparsest—fatal-involved events appear as scattered hotspots rather than a continuous band, consistent with their rarity. Year-to-year, the footprint of hotspots largely persists, but the apparent intensity changes (e.g., some years show higher maximum per-cell casualty counts than others), and 2025 looks lighter/patchier, which may reflect partial-year data. Because the color scales differ across panels, the safest interpretation is stable geography of risk with variable magnitude, and any strict “which year is worse” comparison should standardize the legend/range (or use rates per exposure) before drawing conclusions.
 
 ## Non-temporal Analysis
-- 
 
-## 
+Overall, the results suggest collisions are concentrated in adult age groups, while more severe outcomes become relatively more common with increasing age. Spatially, crashes cluster in a few high-burden Manhattan neighborhoods (e.g., areas like East Harlem / Lower East Side appearing near the top), indicating clear geographic hotspots. In terms of context, most incidents involve sedans and SUVs, and the risk-chain visuals indicate that ejection/entrapment—though uncommon—is strongly associated with fatal outcomes, consistent with safety factors being linked to lower severity. Details can be seen [here](Non_Temporal.html)
+
+## Linear Regression
+
+
+# Discussion
 
