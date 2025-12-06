@@ -17,6 +17,8 @@ navbar:
       href: Non_Temporal.html
     - text: "Linear Regression"
       href: Linea_Regression.html 
+    - icon: fa-solid fa-envelope
+      href: mailto:<ls4236@cumc.columbia.edu, cd3591@cumc.columbia.edu, hc3654@cumc.columbia.edu, cz2955@cumc.columbia.edu, yd2865@cumc.columbia.edu>
     - icon: fa-github fa-lg
       href: https://github.com/LiliangSu103/p8105_final_project/tree/main
       
