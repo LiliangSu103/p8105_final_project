@@ -10,9 +10,8 @@
 
 
 
-<meta name="date" content="2025-12-02" />
 
-<title>Linear Regression</title>
+<title>Linea_Regression</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -22,15 +21,9 @@
 <script src="site_libs/bs3compat-0.9.0/transition.js"></script>
 <script src="site_libs/bs3compat-0.9.0/tabs.js"></script>
 <script src="site_libs/bs3compat-0.9.0/bs3compat.js"></script>
-<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
-<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
-<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -215,73 +208,7 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
-<style type="text/css">
-.code-folding-btn { margin-bottom: 4px; }
-</style>
 
-
-
-<style type="text/css">
-
-#TOC {
-  margin: 25px 0px 20px 0px;
-}
-@media (max-width: 768px) {
-#TOC {
-  position: relative;
-  width: 100%;
-}
-}
-
-@media print {
-.toc-content {
-  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
-  float: right;
-}
-}
-
-.toc-content {
-  padding-left: 30px;
-  padding-right: 40px;
-}
-
-div.main-container {
-  max-width: 1200px;
-}
-
-div.tocify {
-  width: 20%;
-  max-width: 260px;
-  max-height: 85%;
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-  div.tocify {
-    width: 25%;
-  }
-}
-
-@media (max-width: 767px) {
-  div.tocify {
-    width: 100%;
-    max-width: none;
-  }
-}
-
-.tocify ul, .tocify li {
-  line-height: 20px;
-}
-
-.tocify-subheader .tocify-item {
-  font-size: 0.90em;
-}
-
-.tocify .list-group-item {
-  border-radius: 0px;
-}
-
-
-</style>
 
 
 
@@ -291,16 +218,6 @@ div.tocify {
 
 
 <div class="container-fluid main-container">
-
-
-<!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row">
-<div class="col-xs-12 col-sm-4 col-md-3">
-<div id="TOC" class="tocify">
-</div>
-</div>
-
-<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -320,7 +237,10 @@ div.tocify {
         
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown">
+        <li>
+  <a href="report.html">Report</a>
+</li>
+<li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Temporal Analysis
      
@@ -357,34 +277,17 @@ div.tocify {
 
 <div id="header">
 
-<div class="btn-group pull-right float-right">
-<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
-<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
-<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
-<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
-</ul>
-</div>
 
 
-
-<h1 class="title toc-ignore">Linear Regression</h1>
-<h4 class="date">2025-12-02</h4>
 
 </div>
 
 
-<p>We use the Manhattan traffic collision records in
-<code>collision</code> as our study data. We first convert the original
-<code>crash_time</code> variable into a standard time format and
-construct a <code>datetime</code> variable, from which we extract date,
-hour, weekday, month, and a weekend indicator. Based on the cleaned
-dataset <code>Data_clean</code>, we then round <code>datetime</code>
-down to the hour and count the number of collisions in each time
-interval, obtaining a dataset that contains daily/hourly collision
-counts and their associated time features (year, month, weekday,
-weekend, etc.). Using this dataset, we fit time-related linear
-regression models to investigate the daily patterns of collision events
-in Manhattan.</p>
+<div id="linear-regression" class="section level1">
+<h1>Linear Regression</h1>
+<p>2025-12-02</p>
+<div id="download-data" class="section level2">
+<h2>Download Data</h2>
 <pre class="r"><code>Data&lt;-read_csv(&quot;./Data/collision_df.csv&quot;)</code></pre>
 <pre><code>## Rows: 112451 Columns: 25
 ## ── Column specification ─────────────────────────────────────────────────────
@@ -395,6 +298,9 @@ in Manhattan.</p>
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div id="data.tidy" class="section level2">
+<h2>data.tidy</h2>
 <pre class="r"><code>Data_clean &lt;- Data %&gt;%
 mutate(
 crash_time = as.character(crash_time),
@@ -407,6 +313,9 @@ weekend = ifelse(weekday %in% c(&quot;Saturday&quot;,&quot;Sunday&quot;), 1, 0),
 date = date(datetime)
 ) %&gt;%
 drop_na(datetime)</code></pre>
+</div>
+<div id="hourly-accident-statistics" class="section level2">
+<h2>Hourly Accident Statistics</h2>
 <pre class="r"><code>hourly_df &lt;- Data_clean %&gt;%
 mutate(datetime_hour = floor_date(datetime, &quot;hour&quot;)) %&gt;%
 count(datetime_hour, name = &quot;num_crash&quot;) %&gt;%
@@ -417,6 +326,7 @@ month = month(datetime_hour, label = TRUE, abbr = FALSE, locale = &quot;en_US&qu
 year = year(datetime_hour),
 weekend = ifelse(weekday %in% c(&quot;Saturday&quot;,&quot;Sunday&quot;), 1, 0)
 )</code></pre>
+</div>
 <div id="linear-regression-models" class="section level2">
 <h2>Linear Regression Models</h2>
 <pre class="r"><code>ggplot(hourly_df, aes(hour, num_crash)) +
@@ -428,7 +338,8 @@ x = &quot;Hour&quot;,
 y = &quot;Number of incidents&quot;
 )</code></pre>
 <pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
-<p><img src="Linea_Regression_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img
+src="Linea_Regression_files/figure-gfm/unnamed-chunk-4-1.png" /><!-- --></p>
 <pre class="r"><code>hour_weekday_heat &lt;- hourly_df %&gt;%
 group_by(weekday, hour) %&gt;%
 summarise(mean_crash = mean(num_crash), .groups = &quot;drop&quot;)
@@ -437,7 +348,8 @@ ggplot(hour_weekday_heat, aes(hour, weekday, fill = mean_crash)) +
 geom_tile() +
 scale_fill_viridis_c() +
 labs(title = &quot;Day × Hour Accident Heat Map&quot;, x = &quot;Hour&quot;, y = &quot;Day&quot;, fill = &quot;Average number of accidents&quot;)</code></pre>
-<p><img src="Linea_Regression_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
+<p><img
+src="Linea_Regression_files/figure-gfm/unnamed-chunk-4-2.png" /><!-- --></p>
 <p>Ans: fit1: base model: hour, weekday, month. fit2: add the
 interaction between hour and weekday. fit3: add the year variable.</p>
 <p>Conclusion: Multiple incidents primarily occurred during the morning
@@ -523,7 +435,8 @@ ggplot(aes(x = estimate)) +
 geom_density(fill = &quot;steelblue&quot;, alpha = 0.5) +
 geom_vline(xintercept = 0, color = &quot;red&quot;, linetype = &quot;dashed&quot;) +
 labs(title = &quot;Bootstrap Distribution: Hourly Coefficient&quot;, x = &quot;Hourly coefficient estimation&quot;, y = &quot;Density&quot;)</code></pre>
-<p><img src="Linea_Regression_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img
+src="Linea_Regression_files/figure-gfm/unnamed-chunk-6-1.png" /><!-- --></p>
 <p>Ans: The hourly coefficient is approximately 0.04–0.055, meaning that
 for every additional hour, the average number of accidents increases by
 about 0.04–0.055 incidents. Based on 1,000 bootstrap resamples, the
@@ -547,18 +460,13 @@ stat_density_2d(aes(fill = ..level..), geom = &quot;polygon&quot;, contour = TRU
 scale_fill_viridis_c(option = &quot;plasma&quot;) +
 coord_fixed() +
 labs(title = &quot;Manhattan Incident Hotspot Map&quot;, x = &quot;Longitude&quot;, y = &quot;Latitude&quot;, fill = &quot;Density&quot;)</code></pre>
-<pre><code>## Warning: The dot-dot notation (`..level..`) was deprecated in ggplot2 3.4.0.
-## ℹ Please use `after_stat(level)` instead.
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-## generated.</code></pre>
-<p><img src="Linea_Regression_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img
+src="Linea_Regression_files/figure-gfm/unnamed-chunk-7-1.png" /><!-- --></p>
+</div>
 </div>
 
 
 
-</div>
-</div>
 
 </div>
 
@@ -590,41 +498,7 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
-<script>
-$(document).ready(function () {
-  window.initializeCodeFolding("hide" === "show");
-});
-</script>
 
-<script>
-$(document).ready(function ()  {
-
-    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
-    $('.unlisted.unnumbered').addClass('toc-ignore')
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
