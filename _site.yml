@@ -19,8 +19,18 @@ navbar:
       href: Linea_Regression.html 
     - icon: fa-github fa-lg
       href: https://github.com/LiliangSu103/p8105_final_project/tree/main
-      
-
+    - icon: fa-envelope fa-lg
+      menu:
+      - text: "Yan Duan"
+        href: mailto:<yd2865@cumc.columbia.edu>
+      - text: "Anny Ding"
+        href: mailto:<cd3591@cumc.columbia.edu>  
+      - text: "Liliang Su"
+        href: mailto:<ls4236@cumc.columbia.edu>
+      - text: "Haohua Chen"
+        href: mailto:<hc3654@cumc.columbia.edu>
+      - text: "Chenhao Zhengn"
+        href: mailto:<cz2955@cumc.columbia.edu>
 
 output:
   html_document:
