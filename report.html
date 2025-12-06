@@ -369,45 +369,45 @@ Yan Duan</h4>
 <h1>Introduction</h1>
 <div id="motivation" class="section level2">
 <h2>Motivation</h2>
-<p>Traffic collisions are a persistent public-health and urban-planning
-issue in New York City. In addition to the number of traffic accidents,
-it is important to understand who is impacted by traffic accidents, what
-are the areas at which traffic accidents are most and least common, and
-what are areas of disparity regarding traffic accident severity. Our
-project focuses on Manhattan (Jan. 2021- Oct. 2025), and aims to produce
-an interactive tool and accompanied analysis that highlight collision
-patterns by year and severity. Furthermore, clear descriptive summaries
-(age, sex, role, ejection status, and neighborhood hotspots) are also
-provided. The overarching motivation is to support discussion of
-targeted interventions (e.g., location-based safety improvements) and to
-practice rigorous data cleaning, reproducible analysis, and effective
-risk communication.</p>
+<p>Traffic accidents in NYC continue to be a problem concerning the
+health of the public as well as urban planners. In relation to the
+number of traffic accidents in NYC, the number of people affected by
+traffic accidents in the NYC area also needs to be established.
+Additionally, the number of locations that have the highest traffic
+accidents in relation to the lowest also needs to be established.
+Additionally, the disparities in the severity of traffic accidents also
+need to be established. Data for our dataset will relate to the
+Manhattan traffic accidents from January 2021 to October 2025. An
+interactive visual tool will also be developed to demonstrate clearly
+the trends of traffic accidents concerning the year. Additionally, the
+descriptive statistics of the affected individuals concerning their
+ages, gender, role in the vehicle, ejection from the vehicle, as well as
+locations in the neighborhood also needs to be established.</p>
 </div>
 <div id="inspiration" class="section level2">
 <h2>Inspiration</h2>
-<p>Living near Times Square, it is hard not to think about traffic
-safety. On most weekdays, the area is packed with cars, buses, delivery
-trucks, cyclists, and huge crowds of pedestrians, who often all
-competing for the same intersections. Even when nothing “major” happens,
-you see constant near-miss moments: sudden turns, cars inching into
-crosswalks, people stepping off the curb while the signal is changing,
-and drivers getting impatient in stop-and-go congestion. This everyday
-experience is what pushed us toward this topic: we wanted to use data to
-answer where collisions concentrate in Manhattan, whether severe crashes
-cluster differently from all crashes, and which groups (age/sex/role)
-show different patterns.</p>
-<p>We were also influenced by the fact that New York City already treats
-traffic injury prevention as a policy priority through <a
+<p>As someone living in the area around Times Square, traffic safety
+cannot be ignored. A typical day of the week involves the intersection
+in the area around Times Square being full of cars, buses, delivery
+trucks, cyclists, and throngs of pedestrians all vying for the same
+intersections. Even before something “significant” happens in the
+vicinity of Times Square, you see a slate of close calls daily: cars
+abruptly turning into intersections, automobiles inching into pedestrian
+paths in intersections, pedestrians entering traffic when the traffic
+signal is changing, or the occasional angry driver in a traffic jam.
+This was the problem we set out to solve.</p>
+<p>We also considered the existing approach in New York City of
+considering traffic injury prevention a high policy goal for <a
 href="https://www.nyc.gov/content/visionzero/pages/">Vision Zero</a>.
-This policy frames deaths and serious injuries as preventable and tracks
-progress through engineering, enforcement, education, and legislation.
-Because Vision Zero emphasizes identifying high-risk locations and
-focusing interventions, it naturally fits our decision to build an
-interactive Shiny map that lets users filter by year and severity and
-visually inspect hotspots. For context and validation, we also drew on
-the public-facing Vision Zero View site, which explains how NYC
-aggregates and maps injury/fatality crash data and highlights important
-caveats.</p>
+This policy considers the loss of lives and serious injuries
+preventable. They also measure their progress in the three Es:
+Engineering, Enforcement, Education, and Legislation. Vision Zero
+considers strategies in pinpointing high injury locations. Naturally for
+our consideration to create an interactive map in Shiny to allow the
+filtering of injuries based on the severity level of the year; for
+purposes of context and validation of the approach taken by NYC in
+Vision Zero View. They offer insights into how NYC makes
+injuries/fatalties aggregated in their map.</p>
 </div>
 <div id="initial-questions" class="section level2">
 <h2>Initial Questions</h2>
@@ -475,178 +475,192 @@ Jan. 2021 to Oct.2025.</p>
 <p><strong>1) <a
 href="https://ls4236-shiny.shinyapps.io/Temporal_trend_shiny/#section-collision-incidence-bar">Collision
 Incidence</a></strong></p>
-<p>Across 2021–2025, collision incidence in Manhattan shows strong and
-highly consistent temporal structure rather than random fluctuation.
-Monthly trends are lowest in winter (especially January–February), rise
-through spring, and peak in late spring/early summer (around May–June)
-with another high period in early fall (around September–October) before
-declining toward year-end.Weekly patterns are stable: weekdays,
-especially Tuesday through Friday, have the highest average collisions
-per day, while weekends are lower and Sunday is consistently the safest
-day. Hourly patterns show the clearest “rush-hour” signature: collisions
-are minimal overnight (roughly 1–5am), increase sharply during the
-morning commute, and peak in the late afternoon/early evening (about
-3–5pm) before tapering off at night. Minor- and medium-injury crashes
-closely follow these same patterns, while severe (fatal) crashes are
-rare and noisier but tend to occur either during high-exposure peak
-periods or occasionally in late-night hours where risk per exposure may
-be elevated.</p>
+<p>Looking at the period of years 2021-2025 in Manhattan, there appear
+to be very strong and very persistent patterns in the number of
+collisions instead of random variation. There appear to be cycles in the
+months when the number of collisions per month is low during the Winter
+months (Jan-Feb in particular) but higher in the Spring months. They are
+highest in the late Spring/early Summer months (roughly around the
+months of May &amp; June) but there also seems to be a peak in the Early
+Fall months (roughly around Sept-Oct) before tapering off at the end of
+the calendar year. There appear to be very steady cycles in the Week
+when the average number of collisions per day per Week day is highest
+for Tuesday to Friday in particular. Weekends show up lower but Sunday
+of all days is the safest day. There appear to be very strong cycles in
+the Hours of the day when the number of collisions per hour of the day
+during the “rush hours” for a day when the number of collisions per hour
+of the day increases dramatically to peak in the late Afternoon &amp;
+Early Evening Hours (roughly around 3-5pm) in particular before tapering
+off in the late hours of the Night. There also seems to exist a strong
+counterpart to the above cycles for the “minor &amp; medium” injury
+collisions. The more severe ones (Fatal) appearing to be relatively
+“rare &amp; noisy” but also appear to occur in the peak hours of maximum
+“Exposure” or sometimes in the later hours of the Night when perhaps the
+“risk per hour of exposure” may be higher.</p>
 <p><strong>2) <a
 href="https://ls4236-shiny.shinyapps.io/Temporal_trend_shiny/#section-casualty-persons-boxplot">Casualty
 Persons</a></strong></p>
-<p>Across 2021–2025, the casualty distributions are strongly
-right-skewed: in most months, weekdays, and hours the typical incident
-involves ~1 casualty (tight medians/IQRs), but a small number of
-incidents create large outliers (multi-casualty events). The monthly
-plots suggest a seasonal pattern, with wider spreads and higher maxima
-in mid-year (especially summer months) and occasional late-year spikes,
-meaning the biggest casualty events are concentrated in a few periods
-rather than evenly across the calendar. By day of week, the central
-tendency is fairly similar, but certain days (commonly Monday and
-Sunday) show heavier upper tails, indicating more frequent high-casualty
-outliers. The hourly plots show low typical casualties throughout the
-day, while the most extreme events tend to cluster in late
-afternoon/evening (roughly 15–20h) with some early-morning spikes,
-consistent with time-of-day exposure patterns; overall, the pattern is
-stable across years, with recent years showing similar structure but
-differing in how extreme the outliers get.</p>
+<p>Over the period 2021-2025, there is a strong right skew in the
+distribution of casualties per event. That is, in all months of the
+year, on all days of the week, and at all hours of the day, the
+median/most common number of casualties per incident is about 1 but
+there occur a few events of multi-casualty nature. Looking at the
+monthly figures, there seems to be a strong seasonality in the
+distribution of casualties in a month. This also seems to reflect a
+strong periodicity in the nature of the biggest events in a month. That
+is, the largest number of casualties tends to occur in a few months of
+the year. Looking at the figures for days of the week, the overall shape
+of the central parts of the distribution remains more or less the same.
+Some days of the week have a long tail compared to the rest. That is,
+some days of the week have a higher number of tail events. Looking at
+the hour of the day figures, the center of the distribution remains more
+or less the same. That is, the number of casualties per event remains
+small. Looking at the tail events of the figures for hours of the day,
+the events peak in the late afternoon to evening hours (15-20h) but
+there occur some morning peaks. That is, there seems to be a periodicity
+in the nature of the biggest events in a day.</p>
 <p><strong>3) <a
 href="https://ls4236-shiny.shinyapps.io/Temporal_trend_shiny/#section-incidence-heatmap">Incidence
 HeatMap</a></strong></p>
-<p>Across the 21 heatmaps (2021–2025 × severity), collision risk is
-highly spatially persistent: every year shows the same two dominant
-hotspots—one in lower/central Manhattan (roughly long. −74.00 to −73.97,
-lat. 40.72–40.76) and another in the upper/east-midtown area (roughly
-−73.96 to −73.93, 40.79–40.82)—with a clear north–south “ridge” of
-elevated density connecting them along the island’s main traffic spine.
-Stratifying by severity sharpens this story: Minor (non-injury)
-collisions largely mirror the “All incidents” pattern but spread more
-broadly (many low-severity events across many intersections), while
-Medium (injury-only) collisions concentrate more tightly in the two
-hotspots and the connecting corridor, suggesting that the busiest
-conflict points are also where injuries cluster. Severe (death-involved)
-collisions are comparatively sparse, so the density surface becomes
-smoother and often collapses into one dominant “blob” (frequently
-centered mid-island around −73.98, 40.75–40.77) with weaker secondary
-structure—consistent with rare events being driven by a smaller set of
-high-risk corridors. Overall, the locations of risk stay stable
-year-to-year, while the intensity/extent fluctuates (and 2025 looks less
-extensive, plausibly because it’s a partial year), implying that the
-“where” of collision risk is persistent even as the “how much”
-changes.</p>
+<p>There is strong spatial persistence in the risk of collision over the
+21 heatmaps (separately for severity in 2021-2025): every year has the
+same main two locations, one in lower/central Manhattan (roughly long.
+between -74.00 &amp; -73.97, lat. between 40.72 &amp; 40.76) &amp;
+another in the upper/east-midtown region (roughly between -73.96 &amp;
+-73.93 long., 40.79-40.82 lat.) and a strong north-south “ridge” of
+higher density connecting them down the main traffic artery. Looking
+more specifically at the map for different severities of collision
+refines the picture: Non-Injury ‘Minor’ collisions follow the “All
+incidents” map pretty well but stretch over a wider area (many small
+events at many intersections around the city) &amp; the ‘Medium’
+Injury-Only events in particular center more tightly around the two main
+locations &amp; the “ridge,” probably translated to meaning the busiest
+realms of intersectional activity also contain the greatest risk of
+injury; Severe ‘Death Involved’ collisions occur relatively rarely &amp;
+the risk surface coalesces into one high point (fairly centrally located
+about mid-island at around long. -73.98 &amp; lats. 40.75-40.77) &amp; a
+somewhat secondary point less clearly separated (again perhaps due to
+sparsity &amp; perhaps a reflection of a ‘few busy streets’ effect) but
+less distinctly differentiated between points. All locations of the
+risk-areas remain the same from one to another year but the degree to
+which they occur deviates annually, in particular seeming less
+widespread for the 2025 occurrence-year.</p>
 <p><strong>4) <a
 href="https://ls4236-shiny.shinyapps.io/Temporal_trend_shiny/#section-casualty-map">Casualty
 Map</a></strong></p>
-<p>Across the person-casualty maps (2021–2025), the spatial pattern is
-very consistent: events are spread across Manhattan’s street grid but
-are densest in the more traffic-intense central/southern portions of the
-island and along major north–south corridors, while areas with fewer
-intersections/roads (e.g., large park/waterfront stretches) show
-noticeably fewer cells. When you stratify by severity, the “Minor
-(Non-Injury)” layer essentially has 0 person casualties by definition
-(the legend collapses to 0), so it functions more as a map of where
-non-injury crashes happen rather than where injury burden concentrates;
-those locations are widespread and closely follow road exposure. In
-contrast, “Medium (Injury Only)” produces fewer, more localized hotspots
-(suggesting injuries cluster at particular high-flow
-intersections/arterials), and the “Severe (Death Involved)” layer is the
-sparsest—fatal-involved events appear as scattered hotspots rather than
-a continuous band, consistent with their rarity. Year-to-year, the
-footprint of hotspots largely persists, but the apparent intensity
-changes (e.g., some years show higher maximum per-cell casualty counts
-than others), and 2025 looks lighter/patchier, which may reflect
-partial-year data. Because the color scales differ across panels, the
-safest interpretation is stable geography of risk with variable
-magnitude, and any strict “which year is worse” comparison should
-standardize the legend/range (or use rates per exposure) before drawing
-conclusions.</p>
+<p>Over the person-casualty events maps (2021-2025), there was a very
+strong geographical pattern of events being distributed over the
+Manhattan grid but being more concentrated in the more traffic-heavy
+central/southern parts of the island, in addition to the north-south
+arterials, but less in regions of lower intersection/roads (such as the
+larger park or waterfront regions) to show less events per cell. When a
+severity filter was applied to the events, the ‘Minor (Non-Injury)’
+events map basically contains 0 person casualties per definition
+(summarized to a 0 map legend) to map the locations of non-injury events
+in place of the injury locations since they are abundant all over the
+place in direct correspondence to road exposure. ‘Medium (Injury Only)’
+offers less but more localized delineations to infer injuries occurring
+in clusters on high-traffic intersections/roads. ‘Severe (Death
+Involved)’ events contain the least events visualized in form of sparse
+localized events dotting the map in form of isolated events for being
+less in number to form a continuous map of traffic events. Regarding
+geographical locations compared per year for all the events for
+2021-2025 years, the events map core locations remain more or less the
+same but vary in strength in terms of the highest number of events per
+cellular location over years since the year 2025 seems less denser.
+Additionally, the legends defining colored intensities vary per map to
+make any comparative analysis strictly in terms of geographical
+locations very unreliable.</p>
 </div>
 <div id="non-temporal-analysis" class="section level2">
 <h2>Non-temporal Analysis</h2>
-<p>Overall, the results suggest collisions are concentrated in adult age
-groups, while more severe outcomes become relatively more common with
-increasing age. Spatially, crashes cluster in a few high-burden
-Manhattan neighborhoods (e.g., areas like East Harlem / Lower East Side
-appearing near the top), indicating clear geographic hotspots. In terms
-of context, most incidents involve sedans and SUVs, and the risk-chain
-visuals indicate that ejection/entrapment—though uncommon—is strongly
-associated with fatal outcomes, consistent with safety factors being
-linked to lower severity. Details can be seen <a
+<p>Taken together, the evidence points to a pattern of collisions for
+adult age groups, followed by more serious injuries becoming
+proportionally more common with increasing age. In terms of location,
+the majority of road traffic accidents occur in a small number of
+high-risk Manhattan communities. With respect to context, the majority
+of the accidents occur for sedan or SUV drivers. The risk chain graphics
+reveal that the factors of ejection/entrapment have a strong positive
+association for the risk of_fatal injuries despite being a relatively
+rare occurrence. Details can be seen <a
 href="Non_Temporal.html">here</a>.</p>
 </div>
 <div id="linear-regression" class="section level2">
 <h2>Linear Regression</h2>
-<p>Across ~112k Manhattan collision records, you engineered time
-features (hour/weekday/month/year) and modeled hourly collision counts
-to characterize when and where crashes cluster. The scatter/LOESS and
-the day×hour heatmap both show a clear diurnal pattern: collisions are
-relatively low overnight/early morning, rise after the morning commute,
-stay elevated through the daytime, and peak again in the late
-afternoon/early evening (with the strongest bands on weekdays). In model
-comparison, adding time structure improves prediction only
-modestly—cross-validation RMSE is ~3.03 with very low R^2 (~0.02), but
-the “fit3” model (hour + weekday + month + year) performs best overall.
-The bootstrap results suggest the hour effect is small but consistently
-positive and stable (hourly coefficient concentrated around
-~0.04–0.055). Spatially, the hotspot density map indicates crashes are
-not evenly distributed: they concentrate in a few high-traffic
-corridors/areas (notably in Lower Manhattan and a Midtown cluster),
-consistent with collisions being driven by sustained activity and
-congestion rather than random spatial spread. Details can be seen <a
+<p>Over approximately 112k Manhattan crash records, you developed the
+time variables (hour/weekday/month/year) to analyze when and where crash
+activity clusters. A scatter/LOESS plot and the day&amp; hour heatmap
+clearly reveal the crash activity cycles: there are relatively few
+crashes at night/early morning hours, a gradual increase in the wake of
+morning traffic, a persistent high level of activity throughout the day,
+followed by a second peak in the late afternoon/early evening hours
+(with the highest activity concentrations on Week-days). Concerning the
+model fitting, the inclusion of the structural temporal information
+makes a small positive difference in prediction quality—cross-validation
+RMSE of about 3.03 points with very small <span
+class="math inline">\(R^2\)</span> values (&lt; 0.02), but the “fit3”
+model ( hour + weekday + month + year) performs best. The boostrap
+analysis indicates a small but positive and robust hour effect (residual
+hour coefficient around approximately 0.04-0.055). Spatially aggregated,
+the hotspot density map clearly detects that crashes occur in a
+non-uniform manner: a significant portion of them occur in a small
+number of high-traffic road links/areas in Lower Manhattan and a hotspot
+in Midtown. That suggests that crash activity results from busy
+activity/congestion, in particular in Week-days. Details can be seen <a
 href="Linea_Regression.html">here</a>.</p>
 </div>
 </div>
 <div id="discussion" class="section level1">
 <h1>Discussion</h1>
-<p>Across years, the casualty maps suggest a consistent “high-frequency
-/ low-severity” pattern in Manhattan: minor (non-injury) and medium
-(injury-only) incidents are widespread and dense across the street grid,
-while severe (death-involved) collisions are rare and appear as
-scattered points rather than broad clusters. This gap in intensity is
-important for interpretation: most of the spatial signal in the maps is
-driven by everyday crashes (exposure and traffic volume), whereas the
-severe-outcome map reflects a much smaller set of events that can look
-“patchy” even if underlying risk factors are similar. Visually, the
-highest-density areas repeatedly align with the most active parts of
-Manhattan (major avenues, business districts, and high-mobility
-corridors), supporting the idea that where people and vehicles
-concentrate, total casualties accumulate.</p>
-<p>The temporal modeling results reinforce this story. The hourly
-scatter and day×hour heat map show clear daily rhythms, with incidents
-increasing from the morning into the day and peaking during typical
-commuting and high-activity windows (roughly late morning through
-evening), especially on weekdays. Adding time structure (hour, weekday,
-month, and year) improves model performance only modestly:
-cross-validation shows similar RMSE (~3.0) and very low R^2 (~0.02)
-across candidate models, implying that time-of-day effects exist but
-explain only a small fraction of the hour-to-hour variation. The
-bootstrap distribution for the hour coefficient is tight (about
-0.04–0.055 additional crashes per hour), indicating a stable but small
-marginal effect; practically, this suggests that broad temporal patterns
-are reliable, but much of the risk depends on unmodeled factors
-(weather, special events, street design, enforcement, congestion shocks,
+<p>Looking at the aggregated maps of casualties over years, there seems
+to be a characteristic “high-frequency/low-severity” distribution in
+Manhattan communities: the location of non-casualty and medium-grade
+incidents (both non-injury and injury-only) is very dense throughout the
+grid, while high severity incidents (death-related) occur sparsely. The
+level of severity makes a big difference in interpreting the
+map-pattern. The present map of severe events contains a significantly
+smaller number of events than the rest of the map set. “Those events may
+appear very patchy,” even if risk factors remain relatively equal.
+Contrasting the metrics of the three types of events whose locations
+have been plotted in the map, there appears to be a clear positive
+correspondence between locations of highest events density and the
+busiest locations in Manhattan.</p>
+<p>These results for temporal modeling support the narrative. The hourly
+scatter plot and day by hour Heat Map illustrate strong activity cycles
+by hour of day, peaking from the morning into the day hours (late
+morning to evening) when commuting hours occur. Including temporal
+indicators for hour of day, weekday vs. weekends, month of year, and the
+year itself improves the model somewhat: Cross-validation yields a very
+small change to the RMSE of around 3.0 for all candidate models, while
+R^2 values remain extremely low (&lt;.02); conversely, a small hour
+effect exists (bootstrap SD of the hour coefficient of around 0.04-0.055
+more per hour) but is small in magnitude. In practical terms, when taken
+together with the strong hour of day effect already mentioned, the hour
+effect may point to the importance of unmodeled factors (enforcement
+activity times, weather conditions, special events, road designs,
 etc.).</p>
-<p>Spatially, the incident hotspot (KDE) map shows persistent “hot
-zones” rather than uniform risk, consistent with repeated exposure in
-dense commercial and high-traffic areas. Interpreting hotspots alongside
-the rarity of fatal outcomes suggests two parallel prevention targets:
-(1) system-wide reductions in frequent minor/injury crashes in
-high-volume corridors, and (2) severity prevention (speed management,
-daylighting, protected crossings, turn calming) in locations where the
-built environment and conflict points make rare events more likely to
-become catastrophic.</p>
-<p>Finally, the descriptive “causality” summaries (vehicle/person
-characteristics and safety-equipment use) provide plausible mechanisms:
-the data appear dominated by common vehicle types and driver/passenger
-roles, and most people report using safety equipment, with a meaningful
-minority not using it. Taken together, the results support a coherent
-conclusion: Manhattan crash casualties are driven primarily by exposure
-(where/when travel concentrates), while severe outcomes are too sparse
-to form large clusters and likely depend on context-specific conditions
-such as speed, road design, and protection. Future work should model
-severity explicitly (e.g., logistic/Poisson/negative binomial with
-exposure proxies) and incorporate richer covariates to move beyond the
-low R^2 ceiling observed in purely time-based linear models.</p>
+<p>Spatially, the hotspot map of the incident hotspot (KDE) exhibits the
+presence of “hot zones” instead of risk uniformity, as in repeatedly
+exposed high-density business districts and high-trauma road locations.
+The analysis of the hotspot locations together with the rarity of the
+occurrence of lethal events identifies two paths for the prevention
+approach: (1) a system-level approach to decrease frequent minor/crash
+events in high-volume roads, and (2) severity prevention measures in
+locations where the topographic characteristics have the tendency to
+transform a rare event into a possible disastrous one. Finally, the
+“descriptive causality” summaries (characteristics of vehicle/person
+type &amp; safety equipment use) offer viable mechanisms: the results
+seem to be dominated by typical vehicle types &amp; person roles in
+them, while the majority of individuals appear to have used safety
+equipment, although a significant proportion have not. Taken together,
+the findings offer a sensible conclusion: Manhattan crash casualties
+relate to exposure (concentration of vehicle travel when &amp; where),
+but less severe injury events are too rare to produce meaningful
+clusters &amp; appear instead to be context-dependent conditions on
+speed &amp; safety measures. Future studies may explicitly model
+severity &amp; allow more robust covariates to conquer the low R^2 of
+the simple exposures of the existing time-scale linear modeling
+approach.</p>
 <p>Go back to the <a href="index.html">homepage</a>.</p>
 </div>
 
