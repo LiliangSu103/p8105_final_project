@@ -26,9 +26,11 @@ We were also influenced by the fact that New York City already treats traffic in
 
 3. Can we move beyond simple counts to identify high-risk windows that could support traffic management and safety planning?
 
-- How the questions evolved during the project
-  - From “all NYC” to “Manhattan only (recent years)”: to align with our lived motivation (Times Square / Midtown area).
-  - From crash counts only → to severity- and person-oriented questions: once we examined person-level attributes (sex, age, role) and outcome rarity (ejection/entrapment), we added questions about who is involved and how severe the outcomes are, not only where/when crashes occur.
+## How the questions evolved during the project
+
+1. From "all NYC" to "Manhanttan only": to align with our lived motivation (Times Sqaure / Midtown area).
+
+2. From crash counts only -> to severity- and person-oriented questions: once we examined person-level atrributes (sex, age, role) and outcome, rarity (ejection/entrapment), we added questions about who is involved and how severe the outcomes are, not only where/when crashes occur.
   
 ## New questions considered during analysis
 
@@ -48,8 +50,7 @@ We used 3 NYC Motor Vehicle Collisions related dataset (Crashes, Vehicles, Perso
 
 ## Cleaning Process
 
-
-
+Details are [here](data_clean.html).
 
 # Results
 
