@@ -10,7 +10,7 @@ output:
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(patchwork) 
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = TRUE)
 ```
 
 

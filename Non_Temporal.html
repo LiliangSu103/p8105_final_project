@@ -15,20 +15,12 @@
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
-<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<style>h1 {font-size: 34px;}
-       h1.title {font-size: 38px;}
-       h2 {font-size: 30px;}
-       h3 {font-size: 24px;}
-       h4 {font-size: 18px;}
-       h5 {font-size: 16px;}
-       h6 {font-size: 12px;}
-       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
-       pre:not([class]) { background-color: white }</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link href="site_libs/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-5.3.1/bootstrap.bundle.min.js"></script>
+<script src="site_libs/bs3compat-0.9.0/transition.js"></script>
+<script src="site_libs/bs3compat-0.9.0/tabs.js"></script>
+<script src="site_libs/bs3compat-0.9.0/bs3compat.js"></script>
 <script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
@@ -327,7 +319,10 @@ div.tocify {
         
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown">
+        <li>
+  <a href="report.html">Report</a>
+</li>
+<li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Temporal Analysis
      
@@ -347,6 +342,9 @@ div.tocify {
 </li>
 <li>
   <a href="Non_Temporal.html">Non Temporal Analysis</a>
+</li>
+<li>
+  <a href="Linea_Regression.html">Linear Regression</a>
 </li>
 <li>
   <a href="https://github.com/LiliangSu103/p8105_final_project/tree/main">
@@ -376,8 +374,30 @@ div.tocify {
 </div>
 
 
+<pre class="r"><code>geo_df &lt;- read.csv(&quot;data/Zip Codes.csv&quot;) |&gt; 
+  janitor::clean_names() |&gt; 
+  select(zip_code, county, neighborhood)
+  
+
+collision_df &lt;- read.csv(&quot;data/collision_df.csv&quot;) |&gt; 
+  janitor::clean_names() |&gt; 
+  drop_na() |&gt; 
+  mutate(person_role = as.factor(person_role))</code></pre>
+<pre class="r"><code>collision_geo_df &lt;- 
+collision_df |&gt; 
+  left_join(geo_df, by = &quot;zip_code&quot;) |&gt; 
+  select(-vehicle_year, -driver_license_jurisdiction)</code></pre>
 <div id="basic-statistics" class="section level2">
 <h2>Basic statistics:</h2>
+<pre class="r"><code># Age
+
+collision_geo_df |&gt; 
+  filter(person_age &lt; 0 | person_age &gt;= 140) |&gt; 
+  summarise(n = n()) |&gt; 
+  knitr::kable(
+    caption = &quot;Table 1: Count of Outlier Ages (Less than 0 or 140+)&quot;,
+    col.names = c(&quot;Outlier Count&quot;)
+  )</code></pre>
 <table>
 <caption>Table 1: Count of Outlier Ages (Less than 0 or 140+)</caption>
 <thead>
@@ -391,6 +411,16 @@ div.tocify {
 </tr>
 </tbody>
 </table>
+<pre class="r"><code># Sex 
+
+collision_geo_df |&gt; 
+  count(person_sex, name = &quot;number&quot;) |&gt; 
+  mutate(prop = number / base::sum(number))|&gt; 
+  knitr::kable(
+    caption = &quot;Table 2: Distribution of Person Sex in Collision Incidents&quot;,
+    col.names = c(&quot;Sex&quot;, &quot;Count&quot;, &quot;Proportion&quot;),
+    digits = 3
+  )</code></pre>
 <table>
 <caption>Table 2: Distribution of Person Sex in Collision
 Incidents</caption>
@@ -419,6 +449,17 @@ Incidents</caption>
 </tr>
 </tbody>
 </table>
+<pre class="r"><code># Role
+
+collision_geo_df |&gt; 
+  mutate(person_role = as.factor(person_role)) |&gt; 
+  count(person_role, name = &quot;number&quot;) |&gt; 
+  mutate(prop = number / base::sum(number))|&gt; 
+  knitr::kable(
+    caption = &quot;Table 3: Distribution of Person Roles in Collision Incidents&quot;,
+    col.names = c(&quot;Role&quot;, &quot;Count&quot;, &quot;Proportion&quot;),
+    digits = 3
+  )</code></pre>
 <table>
 <caption>Table 3: Distribution of Person Roles in Collision
 Incidents</caption>
@@ -442,6 +483,16 @@ Incidents</caption>
 </tr>
 </tbody>
 </table>
+<pre class="r"><code># Eje
+
+collision_geo_df |&gt; 
+  count(person_eje, name = &quot;number&quot;) |&gt; 
+  mutate(prop = number / base::sum(number))|&gt; 
+  knitr::kable(
+    caption = &quot;Table 4: Distribution of Ejection Status (Eje)&quot;,
+    col.names = c(&quot;Ejection Status&quot;, &quot;Count&quot;, &quot;Proportion&quot;),
+    digits = 3
+  )</code></pre>
 <table>
 <caption>Table 4: Distribution of Ejection Status (Eje)</caption>
 <thead>
@@ -496,6 +547,37 @@ event.</p>
 </div>
 <div id="age-analysis" class="section level2">
 <h2>Age Analysis:</h2>
+<pre class="r"><code># reset age
+
+collision_reage_df &lt;-  collision_geo_df|&gt;
+  filter(person_age &gt;= 0 , person_age &lt;= 140) |&gt; 
+  mutate(
+    age_group = case_when(
+      person_age &gt;= 0 &amp; person_age &lt;= 19 ~ &quot;Children/Teens&quot;,
+      person_age &gt;= 20 &amp; person_age &lt;= 39 ~ &quot;Young Age&quot;,
+      person_age &gt;= 40 &amp; person_age &lt;= 64 ~ &quot;Middle Age&quot;,
+      person_age &gt;= 65 ~ &quot;Old Age&quot;
+  ))
+
+
+collision_reage_casualty_df&lt;- collision_reage_df |&gt;
+  mutate(
+    casualty_level = case_when(
+      num_casualty == 0 ~ &quot;low&quot;,              
+      num_casualty %in% c(1, 2) ~ &quot;middle&quot;,    
+      num_casualty &gt;= 3 ~ &quot;high&quot;,              
+      TRUE ~ NA_character_
+    )
+  )
+collision_reage_casualty_df |&gt; 
+  group_by(age_group) |&gt; 
+  summarise(n = n()) |&gt; 
+  ggplot(aes(x = forcats::fct_reorder(age_group, n), y = n)) +
+  geom_col(fill = &quot;darkblue&quot;)+
+  labs(title = &quot;Figure 1: Collision Count by Age Group&quot;,
+       x = &quot;Age Group (Sorted by Count)&quot;,
+       y = &quot;Total Number of People Involved (Count)&quot;)+
+  geom_text(aes(label = n), vjust = -0.5, size = 4)</code></pre>
 <p><img src="Non_Temporal_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <div id="figure-1-comment" class="section level4">
 <h4>Figure 1 Comment:</h4>
@@ -508,6 +590,40 @@ subsequent analysis showed that the largest proportion of individuals
 involved in collision incidents fall into the Young Age group, followed
 by the Middle Age group, highlighting that peak driving and working ages
 carry the highest risk exposure.</p>
+<pre class="r"><code>collision_reage_casualty_df |&gt;
+  filter(!is.na(age_group)) |&gt;
+  group_by(age_group, casualty_level) |&gt;
+  summarise(n = n(), .groups = &#39;drop&#39;) |&gt;
+  ungroup() |&gt;
+  group_by(age_group) |&gt;
+  mutate(prop = n / sum(n)) |&gt;
+  mutate(
+    age_group = factor(
+      age_group,
+      levels = c(&quot;Children/Teens&quot;, &quot;Young Age&quot;, &quot;Middle Age&quot;, &quot;Old Age&quot;)
+    )
+  ) |&gt;
+  ggplot(aes(x = casualty_level, y = age_group, fill = prop)) +
+  geom_tile(color = &quot;darkblue&quot;, linewidth = 0.5) +
+  scale_fill_viridis_c(
+    option = &quot;magma&quot;,
+    labels = scales::percent,
+    direction = -1
+  ) +
+  geom_text(aes(label = scales::percent(prop, accuracy = 0.1)), color = &quot;grey&quot;, size = 3) +
+  labs(
+    title = &quot;Figure 2: Proportional Heatmap of Casualty Level by Age Group&quot;,
+    x = &quot;Casualty Level&quot;,
+    y = &quot;Age Group&quot;,
+    fill = &quot;Proportion&quot;
+  ) +
+  scale_x_discrete(limits = c(&quot;low&quot;, &quot;middle&quot;, &quot;high&quot;)) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )</code></pre>
 <p><img src="Non_Temporal_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
 <div id="figure-2-comment" class="section level4">
@@ -530,6 +646,17 @@ involved in a collision.</p>
 </div>
 <div id="geography-analysis" class="section level2">
 <h2>Geography Analysis:</h2>
+<pre class="r"><code>collision_geo_df |&gt; 
+  count(neighborhood, name = &quot;Count&quot;) |&gt;
+  mutate(
+    Proportion = Count / base::sum(Count)
+  ) |&gt; 
+  arrange(desc(Count)) |&gt; 
+  knitr::kable(
+    caption = &quot;Table 5: Frequency and Proportion of Collisions by Neighborhood (Top 10)&quot;,
+    col.names = c(&quot;Neighborhood&quot;, &quot;Count&quot;, &quot;Proportion&quot;),
+    digits = 2
+  )</code></pre>
 <table>
 <caption>Table 5: Frequency and Proportion of Collisions by Neighborhood
 (Top 10)</caption>
@@ -609,6 +736,17 @@ high-frequency areas. This unequal distribution of incidents highlights
 areas that require focused resource allocation for traffic safety
 interventions, particularly in the top five ranked neighborhoods, which
 each recorded over 6,294 incidents.</p>
+<pre class="r"><code># Visualizes the count of collisions by Neighborhood, separated by Person Role (the facet), and grouped within the bars by Person Sex.
+
+collision_geo_df |&gt; 
+  drop_na(person_role, person_sex) |&gt; 
+  ggplot(aes(x = fct_reorder(neighborhood, neighborhood, .fun = length, .na_rm = TRUE), fill = person_sex))+
+  geom_bar(position = &quot;dodge&quot;)+
+  facet_wrap(~ person_role, scales = &quot;free_y&quot;) +
+  labs(title = &quot;Figure 3: Collision Counts by Neighborhood, Grouped by Sex&quot;,
+       x = &quot;Neighborhood (Sorted by Count)&quot;,
+       y = &quot;Number of Collisions&quot;) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
 <p><img src="Non_Temporal_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 </div>
 <div id="figure-3-comment" class="section level4">
@@ -628,6 +766,51 @@ counts. I think reason for the severe concentration in Chelsea and
 Clinton is attributable to its role as a high-volume transit corridor
 with dense commercial traffic intersecting with heavy pedestrian
 activity, creating numerous high-conflict points.</p>
+<pre class="r"><code>neighborhood_data_ready &lt;- collision_reage_casualty_df |&gt;
+  filter(!is.na(neighborhood), neighborhood != &quot;&quot;) |&gt;
+  group_by(neighborhood) |&gt;
+  summarise(
+    total_incidents = n(),
+    high_casualty_count = sum(casualty_level == &quot;high&quot;, na.rm = TRUE),
+    .groups = &#39;drop&#39;
+  ) |&gt;
+  filter(total_incidents &gt; 500) |&gt; 
+  mutate(
+    high_casualty_rate = high_casualty_count / total_incidents
+  ) |&gt;
+  mutate(
+    neighborhood = forcats::fct_reorder(neighborhood, high_casualty_rate)
+  )
+max_incidents &lt;- max(neighborhood_data_ready$total_incidents)
+max_rate &lt;- max(neighborhood_data_ready$high_casualty_rate)
+plot_neighborhood_casualty &lt;- neighborhood_data_ready |&gt;
+  ggplot(aes(x = neighborhood, y = high_casualty_rate)) +
+  geom_col(aes(fill = high_casualty_rate), show.legend = FALSE, alpha = 0.9) +
+  geom_text(aes(label = scales::percent(high_casualty_rate, accuracy = 0.1)), hjust = -0.1, size = 3) +
+  
+  coord_flip() + 
+  
+  labs(
+    title = &quot;Figure 4: Neighborhood Ranking by High Level\n Casualty Collision Rate&quot;,
+    x = &quot;Neighborhood&quot;,
+    y = &quot;High Severity Accident Rate (Incidents with Casualty &gt;= 3)&quot;
+  ) +
+  scale_y_continuous(
+    labels = scales::percent, 
+    limits = c(0, max_rate * 1.25)
+  ) +
+  scale_fill_viridis_c(option = &quot;magma&quot;) +
+  
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0, face = &quot;bold&quot;, size = 14),
+    plot.subtitle = element_text(hjust = 0, size = 10, color = &quot;grey50&quot;),
+    axis.title = element_text(size = 10, color = &quot;grey30&quot;),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+plot_neighborhood_casualty</code></pre>
 <p><img src="Non_Temporal_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 </div>
 <div id="figure-4-comment" class="section level4">
@@ -645,6 +828,18 @@ class="math inline">\(1.5\%\)</span> high severity rate).</p>
 </div>
 <div id="casualty-analysis" class="section level2">
 <h2>Casualty Analysis:</h2>
+<pre class="r"><code>#Type of car
+
+collision_geo_df |&gt; 
+  count(vehicle_type, name = &quot;number&quot;) |&gt; 
+  mutate(prop = number / base::sum(number)) |&gt; 
+  arrange(desc(number)) |&gt; 
+  head(5) |&gt; 
+  knitr::kable(
+    caption = &quot;Table 6: Top 5 Most Frequent Vehicle Types in Collision Data&quot;,
+    col.names = c(&quot;Vehicle Type&quot;, &quot;Count&quot;, &quot;Proportion&quot;),
+    digits = 3
+  )</code></pre>
 <table>
 <caption>Table 6: Top 5 Most Frequent Vehicle Types in Collision
 Data</caption>
@@ -683,6 +878,48 @@ Data</caption>
 </tr>
 </tbody>
 </table>
+<pre class="r"><code># Person Ejected and Person_Safe_Equip regroup
+
+collision_popcar_df &lt;- collision_reage_casualty_df |&gt;
+  filter(vehicle_type == &quot;Sedan&quot; | vehicle_type == &quot;Station Wagon/Sport Utility Vehicle&quot;| vehicle_type == &quot;Taxi&quot;) |&gt; 
+  mutate(
+    ejected_binary = case_when(
+      person_eje %in% c(&quot;Ejected&quot;, &quot;Partially Ejected&quot;, &quot;Trapped&quot;) ~1,
+      person_eje == &quot;Not Ejected&quot; ~ 0,
+    )
+  ) |&gt;
+  mutate(
+    seatbelt_used = case_when(
+      person_safe_equip %in% c(
+        &quot;Lap Belt&quot;, 
+        &quot;Harness&quot;, 
+        &quot;Lap Belt &amp; Harness&quot;,
+        &quot;Air Bag Deployed/Lap Belt&quot;, 
+        &quot;Air Bag Deployed/Lap Belt/Harness&quot;,
+        &quot;Child Restraint Only&quot;,
+        &quot;Air Bag Deployed/Child Restraint&quot;
+      ) ~ 1, 
+      person_safe_equip %in% c(&quot;None&quot;) ~ 0
+    )
+  ) |&gt; 
+  drop_na() 
+
+collision_popcar_df |&gt;
+  group_by(seatbelt_used) |&gt;
+  summarise(Count = n(), .groups = &#39;drop&#39;) |&gt;
+  mutate(Proportion = Count / sum(Count)) |&gt;
+  mutate(
+    Seatbelt_Status = case_when(
+      seatbelt_used == 1 ~ &quot;Used&quot;,
+      seatbelt_used == 0 ~ &quot;Not Used&quot;,
+      TRUE ~ as.character(seatbelt_used)
+    )
+  ) |&gt;
+  select(Seatbelt_Status, Count, Proportion) |&gt;
+  knitr::kable(
+    caption = &quot;Table 7: Frequency and Proportion of Seatbelt Use in Collisions&quot;,
+    col.names = c(&quot;Seatbelt Status&quot;, &quot;Count&quot;, &quot;Proportion&quot;),
+    digits = 3)</code></pre>
 <table>
 <caption>Table 7: Frequency and Proportion of Seatbelt Use in
 Collisions</caption>
@@ -719,6 +956,15 @@ only the top three most frequent vehicle types by proportion: Sedan
 (8.2%). These three categories account for the vast majority of vehicles
 and form the basis for all models examining the efficacy of safety
 features.</p>
+<pre class="r"><code>logistic_fit &lt;- 
+  glm(ejected_binary ~ seatbelt_used, 
+  data = collision_popcar_df, 
+  family = binomial()
+)
+
+broom::tidy(logistic_fit, exponentiate = TRUE) |&gt; 
+  knitr::kable(caption = &quot;Table 8: Odds Ratios from Logistic Regression: Ejection Status by Seatbelt Use&quot;,
+               digits = 4)</code></pre>
 <table>
 <caption>Table 8: Odds Ratios from Logistic Regression: Ejection Status
 by Seatbelt Use</caption>
@@ -748,6 +994,94 @@ by Seatbelt Use</caption>
 </tr>
 </tbody>
 </table>
+<pre class="r"><code>collision_popcar_df &lt;- collision_popcar_df |&gt; 
+  select(vehicle_id, person_id, num_injured, num_killed, num_casualty, vehicle_type, driver_license_status, person_role, person_age, person_sex,age_group,seatbelt_used, ejected_binary, casualty_level)</code></pre>
+<pre class="r"><code># plot A
+
+predict_data &lt;- data.frame(seatbelt_used = c(0, 1))
+predict_data$predicted_prob &lt;- predict(logistic_fit, newdata = predict_data, type = &quot;response&quot;)
+
+plot_seatbelt_ejection &lt;- ggplot(predict_data, aes(x = factor(seatbelt_used), y = predicted_prob, fill = factor(seatbelt_used))) +
+  geom_col(width = 0.6, alpha = 0.9) +
+  geom_text(
+    aes(label = scales::percent(predicted_prob, accuracy = 0.01)),
+    vjust = -0.5, size = 3.5, color = &quot;black&quot;
+  ) +
+  scale_x_discrete(
+    labels = c(&quot;0&quot; = &quot;No Seatbelt Used&quot;, &quot;1&quot; = &quot;Seatbelt Used&quot;)
+  ) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, max(predict_data$predicted_prob) * 1.3)) +
+  scale_fill_manual(values = c(&quot;0&quot; = &quot;#E74C3C&quot;, &quot;1&quot; = &quot;#2ECC71&quot;), guide = &quot;none&quot;) +
+  labs(
+    title = &quot;Figure 5: Predicted Probability\n of Ejection/Entrapment&quot;,
+    subtitle = &quot;Based on Univariate Logistic Regression&quot;,
+    x = &quot;Seatbelt Use Status&quot;,
+    y = &quot;Predicted Probability&quot;
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = &quot;bold&quot;, size = 12),
+    plot.subtitle = element_text(hjust = 0.5, size = 9, color = &quot;grey50&quot;),
+    axis.title = element_text(size = 9, color = &quot;grey30&quot;),
+    axis.text = element_text(size = 8),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+# Plot 2
+
+ejection_fatal_rate_data &lt;- collision_popcar_df |&gt;
+  mutate(
+    is_fatal = if_else(num_killed &gt;= 1, 1, 0),
+    ejection_status = factor(
+      ejected_binary, 
+      levels = c(0, 1), 
+      labels = c(&quot;Not Ejected/Trapped&quot;, &quot;Ejected/Trapped&quot;)
+    )
+  ) |&gt;
+  group_by(ejection_status) |&gt;
+  summarise(
+    fatal_rate = mean(is_fatal, na.rm = TRUE),
+    .groups = &#39;drop&#39;
+  )
+
+max_rate &lt;- max(ejection_fatal_rate_data$fatal_rate)
+
+plot_ejection_fatal_rate &lt;- ejection_fatal_rate_data |&gt;
+  ggplot(aes(x = ejection_status, y = fatal_rate, fill = ejection_status)) +
+  geom_col(show.legend = FALSE, width = 0.6) +
+  geom_text(
+    aes(label = scales::percent(fatal_rate, accuracy = 0.01)), 
+    vjust = -0.5, 
+    size = 3.5, 
+    color = &quot;black&quot;
+  ) +
+  labs(
+    title = &quot;Figure 6: Fatal Incident Rate\n by Ejection Status&quot;,
+    subtitle = &quot;Proportion of individuals involved in incidents\n with at least 1 fatality&quot;,
+    x = &quot;Ejection Status&quot;,
+    y = &quot;Fatal Incident Rate (Proportion)&quot;
+  ) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, max_rate * 1.3)) +
+  scale_fill_manual(values = c(&quot;Not Ejected/Trapped&quot; = &quot;#2ECC71&quot;, &quot;Ejected/Trapped&quot; = &quot;#E74C3C&quot;)) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = &quot;bold&quot;, size = 12),
+    plot.subtitle = element_text(hjust = 0.5, size = 9, color = &quot;grey50&quot;),
+    axis.title = element_text(size = 9, color = &quot;grey30&quot;),
+    axis.text = element_text(size = 8),
+    panel.grid.major.x = element_blank()
+  )
+
+# combination
+
+composite_plot &lt;- (plot_seatbelt_ejection + plot_ejection_fatal_rate) + 
+  plot_annotation(
+    title = &#39;Risk Chain Analysis: Safety Equipment to Accident Outcome&#39;,
+    theme = theme(plot.title = element_text(size = 14, face = &quot;bold&quot;, hjust = 0.5))
+  )
+
+composite_plot</code></pre>
 <p><img src="Non_Temporal_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 </div>
 <div id="table-8-figure-5-figure-6-comment" class="section level4">
