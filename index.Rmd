@@ -1,19 +1,21 @@
 ---
 title: "**Motor Vehicle Collisions in Manhattan**"
-subtitle: "Peak-risk times, seasonal patterns, and crash hotspots (Jan. 2021 – Oct.2025)"
+subtitle: "Jan. 2021 – Oct.2025"
 output:
   html_document:
     toc: true
     toc_float: true
     code_folding: hide
 ---
-
+::: {style="text-align:center;"}
 ![](https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExc25oaGNuY3o0YjdieDgzaGV4bnl2MGRneXc2Z2RiNjhlZmdqMHR3ciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l2JdTgoRHDCDsrEuk/giphy.gif)
+:::
 
 ## Background
 
 New York City's streets support intense, around-the-clock movement of vehicles, cyclists, and pedestrians. In Manhattan especially, high traffic density combines with frequent intersections and mixed road users to create persistent safety challenges. Even in years when the raw number of collisions does or does not change, risk is rarely uniform: Collisions may cluster in commute hours, late nights, weekends, or particular seasons; they can also concentrate in specific corridors and intersections.
 
+![](Times-Square-New-York-At-Night.jpg)
 
 ## Why this matters
 
