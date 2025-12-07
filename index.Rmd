@@ -21,3 +21,20 @@ New York City's streets support intense, around-the-clock movement of vehicles, 
 
 Understanding when and where collisions happen most can help translate raw incident records into actionable insights. For city agencies and communities, identifying time windows of high risk and hotspot locations can support targeted interventions, including adjusting enforcement schedules, improving signage and street design, refining public safety messaging, and optimizing emergency response planning.
 
+## Report
+You can Visit [here](report.html) to review detailed report.
+
+
+###### Now click the video to learn more about our project!
+
+<iframe width="800" height="450"
+        src="https://www.youtube.com/embed/P2b7snWdeOE"
+        title="YouTube video of presentation"
+        frameborder="0"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+</iframe>
+
+
+

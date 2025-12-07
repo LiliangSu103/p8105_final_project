@@ -17,8 +17,6 @@ navbar:
       href: Non_Temporal.html
     - text: "Linear Regression"
       href: Linea_Regression.html 
-    - icon: fa-github fa-lg
-      href: https://github.com/LiliangSu103/p8105_final_project/tree/main
     - icon: fa-envelope fa-lg
       menu:
       - text: "Yan Duan"
@@ -31,6 +29,9 @@ navbar:
         href: mailto:<hc3654@cumc.columbia.edu>
       - text: "Chenhao Zheng"
         href: mailto:<cz2955@cumc.columbia.edu>
+    - icon: fa-github fa-lg
+      href: https://github.com/LiliangSu103/p8105_final_project/tree/main
+    
 
 output:
   html_document:
