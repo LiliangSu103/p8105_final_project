@@ -56,22 +56,46 @@ Details are [here](data_clean.html).
 
 ## Temporal Analysis
 
-**1) [Collision Incidence](https://ls4236-shiny.shinyapps.io/Temporal_trend_shiny/#section-collision-incidence-bar)**
+**1) Collision Incidence**
+
+For more details of hourly,monthly, yearly collision incidence for each severity, shiny graphs are shown [here](https://ls4236-shiny.shinyapps.io/Temporal_trend_shiny/#section-collision-incidence-bar).
 
 Looking at the period of years 2021-2025 in Manhattan, there appear to be very strong and very persistent patterns in the number of collisions instead of random variation. There appear to be cycles in the months when the number of collisions per month is low during the Winter months (Jan-Feb in particular) but higher in the Spring months. They are highest in the late Spring/early Summer months (roughly around the months of May & June) but there also seems to be a peak in the Early Fall months (roughly around Sept-Oct) before tapering off at the end of the calendar year. There appear to be very steady cycles in the Week when the average number of collisions per day per Week day is highest for Tuesday to Friday in particular. Weekends show up lower but Sunday of all days is the safest day. There appear to be very strong cycles in the Hours of the day when the number of collisions per hour of the day during the “rush hours” for a day when the number of collisions per hour of the day increases dramatically to peak in the late Afternoon & Early Evening Hours (roughly around 3-5pm) in particular before tapering off in the late hours of the Night. There also seems to exist a strong counterpart to the above cycles for the “minor & medium” injury collisions. The more severe ones (Fatal) appearing to be relatively “rare & noisy” but also appear to occur in the peak hours of maximum “Exposure” or sometimes in the later hours of the Night when perhaps the “risk per hour of exposure” may be higher.
 
+**2) Casualty Persons**
 
-**2) [Casualty Persons](https://ls4236-shiny.shinyapps.io/Temporal_trend_shiny/#section-casualty-persons-boxplot)**
+For more details of hourly,monthly, yearly casualty persons boxplots for each severity, shiny graphs are shown [here](https://ls4236-shiny.shinyapps.io/Temporal_trend_shiny/#section-casualty-persons-boxplot).
 
 Over the period 2021-2025, there is a strong right skew in the distribution of casualties per event. That is, in all months of the year, on all days of the week, and at all hours of the day, the median/most common number of casualties per incident is about 1 but there occur a few events of multi-casualty nature. Looking at the monthly figures, there seems to be a strong seasonality in the distribution of casualties in a month. This also seems to reflect a strong periodicity in the nature of the biggest events in a month. That is, the largest number of casualties tends to occur in a few months of the year. Looking at the figures for days of the week, the overall shape of the central parts of the distribution remains more or less the same. Some days of the week have a long tail compared to the rest. That is, some days of the week have a higher number of tail events. Looking at the hour of the day figures, the center of the distribution remains more or less the same. That is, the number of casualties per event remains small. Looking at the tail events of the figures for hours of the day, the events peak in the late afternoon to evening hours (15-20h) but there occur some morning peaks. That is, there seems to be a periodicity in the nature of the biggest events in a day.
 
-**3) [Incidence HeatMap](https://ls4236-shiny.shinyapps.io/Temporal_trend_shiny/#section-incidence-heatmap)**
+
+**3) Incidence HeatMap**
+
+For more details of hourly,monthly, yearly incidence heatmaps for each severity, shiny graphs are shown [here](https://ls4236-shiny.shinyapps.io/Temporal_trend_shiny/#section-incidence-heatmap).
 
 There is strong spatial persistence in the risk of collision over the 21 heatmaps (separately for severity in 2021-2025): every year has the same main two locations, one in lower/central Manhattan (roughly long. between -74.00 & -73.97, lat. between 40.72 & 40.76) & another in the upper/east-midtown region (roughly between -73.96 & -73.93 long., 40.79-40.82 lat.) and a strong north-south “ridge” of higher density connecting them down the main traffic artery. Looking more specifically at the map for different severities of collision refines the picture: Non-Injury ‘Minor’ collisions follow the “All incidents” map pretty well but stretch over a wider area (many small events at many intersections around the city) & the ‘Medium’ Injury-Only events in particular center more tightly around the two main locations & the “ridge,” probably translated to meaning the busiest realms of intersectional activity also contain the greatest risk of injury; Severe ‘Death Involved’ collisions occur relatively rarely & the risk surface coalesces into one high point (fairly centrally located about mid-island at around long. -73.98 & lats. 40.75-40.77) & a somewhat secondary point less clearly separated (again perhaps due to sparsity & perhaps a reflection of a ‘few busy streets’ effect) but less distinctly differentiated between points. All locations of the risk-areas remain the same from one to another year but the degree to which they occur deviates annually, in particular seeming less widespread for the 2025 occurrence-year.
 
-**4) [Casualty Map](https://ls4236-shiny.shinyapps.io/Temporal_trend_shiny/#section-casualty-map)**
+**4) Casualty Map**
+
+For more details of hourly,monthly, yearly causalty maps for each severity, shiny graphs are shown [here](https://ls4236-shiny.shinyapps.io/Temporal_trend_shiny/#section-casualty-map).
 
 Over the person-casualty events maps (2021-2025), there was a very strong geographical pattern of events being distributed over the Manhattan grid but being more concentrated in the more traffic-heavy central/southern parts of the island, in addition to the north-south arterials, but less in regions of lower intersection/roads (such as the larger park or waterfront regions) to show less events per cell. When a severity filter was applied to the events, the 'Minor (Non-Injury)' events map basically contains 0 person casualties per definition (summarized to a 0 map legend) to map the locations of non-injury events in place of the injury locations since they are abundant all over the place in direct correspondence to road exposure. 'Medium (Injury Only)' offers less but more localized delineations to infer injuries occurring in clusters on high-traffic intersections/roads. 'Severe (Death Involved)' events contain the least events visualized in form of sparse localized events dotting the map in form of isolated events for being less in number to form a continuous map of traffic events. Regarding geographical locations compared per year for all the events for 2021-2025 years, the events map core locations remain more or less the same but vary in strength in terms of the highest number of events per cellular location over years since the year 2025 seems less denser. Additionally, the legends defining colored intensities vary per map to make any comparative analysis strictly in terms of geographical locations very unreliable.
+
+**5) Data Analysis**
+
+This temporal analysis of Manhattan vehicle collisions from 2021 to 2025 demonstrates that accident frequency is highly predictable and strongly correlated with human activity patterns rather than random chance.
+
+The data indicates a "Volume-Based Risk" model in which the collisions are most frequent at the times when the city is most alive: during the evening rush hours, towards the end of the workweek, during the warmer autumn months, and in years following the return of regular economic activity. Because of the parallel trends for Minor and Medium incidents, one might reason that interventions that simply reduced overall traffic volume or congestion during peak periods-specifically, the 4 PM-6 PM window and Thursday evenings-could effectively reduce the number of nuisance accidents and injury-causing crashes simultaneously.
+
+Detailed long-term, seasonal, weekly, diurnal analysis are shown [here](https://liliangsu103.github.io/p8105_final_project/Temporal_data_analysis.html).
+
+**6) Predictive Model**
+
+The result of the cross-validation process showed that the model with the additional lagged variables is the best for predicting the number of collisions per day. This is supported by the fact that the distribution of the RMSE for the model with the additional lagged variables is lower than that of the Baseline Model.
+
+This enhancement on model performance is again reinforced by the comparison between the models on a more formal basis. From the ANOVA test result, inclusion of lag features is significant at p < 0.05, and therefore the features do incorporate relevant information above and beyond what is included in typical time series models. As a final assertion on the superiority and quality of the Improved Model for this task, beyond relative improvements, note that the AIC and BIC statistics being lower for the Improved Model imply that while the model has additional parameters, its efficiency is superior.
+
+More details are shown [here](https://liliangsu103.github.io/p8105_final_project/Predictive_model.html).
 
 ## Non-temporal Analysis
 
