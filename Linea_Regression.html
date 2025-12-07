@@ -347,6 +347,31 @@ div.tocify {
 <li>
   <a href="Linea_Regression.html">Linear Regression</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-envelope fa-lg"></span>
+     
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mailto:&lt;yd2865@cumc.columbia.edu&gt;">Yan Duan</a>
+    </li>
+    <li>
+      <a href="mailto:&lt;cd3591@cumc.columbia.edu&gt;">Anny Ding</a>
+    </li>
+    <li>
+      <a href="mailto:&lt;ls4236@cumc.columbia.edu&gt;">Liliang Su</a>
+    </li>
+    <li>
+      <a href="mailto:&lt;hc3654@cumc.columbia.edu&gt;">Haohua Chen</a>
+    </li>
+    <li>
+      <a href="mailto:&lt;cz2955@cumc.columbia.edu&gt;">Chenhao Zheng</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="https://github.com/LiliangSu103/p8105_final_project/tree/main">
     <span class="fa fa-github fa-lg"></span>
@@ -390,7 +415,7 @@ regression models to investigate the daily patterns of collision events
 in Manhattan.</p>
 <pre class="r"><code>Data&lt;-read_csv(&quot;./Data/collision_df.csv&quot;)</code></pre>
 <pre><code>## Rows: 112451 Columns: 25
-## ── Column specification ──────────────────────────────────────────────────────────────────────────────
+## ── Column specification ─────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr   (9): day_of_week, vehicle_type, driver_license_status, driver_license_...
 ## dbl  (15): collision_id, vehicle_id, person_id, year, month, day, hour, zip_...
@@ -553,7 +578,8 @@ labs(title = &quot;Manhattan Incident Hotspot Map&quot;, x = &quot;Longitude&quo
 <pre><code>## Warning: The dot-dot notation (`..level..`) was deprecated in ggplot2 3.4.0.
 ## ℹ Please use `after_stat(level)` instead.
 ## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.</code></pre>
 <p><img src="Linea_Regression_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 </div>
 
