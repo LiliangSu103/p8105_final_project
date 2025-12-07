@@ -14,7 +14,7 @@
 
 <title>Report</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link href="site_libs/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet" />
@@ -657,13 +657,13 @@ morning to evening) when commuting hours occur. Including temporal
 indicators for hour of day, weekday vs. weekends, month of year, and the
 year itself improves the model somewhat: Cross-validation yields a very
 small change to the RMSE of around 3.0 for all candidate models, while
-R^2 values remain extremely low (&lt;.02); conversely, a small hour
-effect exists (bootstrap SD of the hour coefficient of around 0.04-0.055
-more per hour) but is small in magnitude. In practical terms, when taken
-together with the strong hour of day effect already mentioned, the hour
-effect may point to the importance of unmodeled factors (enforcement
-activity times, weather conditions, special events, road designs,
-etc.).</p>
+<span class="math inline">\(R^2\)</span> values remain extremely low
+(&lt;.02); conversely, a small hour effect exists (bootstrap SD of the
+hour coefficient of around 0.04-0.055 more per hour) but is small in
+magnitude. In practical terms, when taken together with the strong hour
+of day effect already mentioned, the hour effect may point to the
+importance of unmodeled factors (enforcement activity times, weather
+conditions, special events, road designs, etc.).</p>
 <p>Spatially, the hotspot map of the incident hotspot (KDE) exhibits the
 presence of “hot zones” instead of risk uniformity, as in repeatedly
 exposed high-density business districts and high-trauma road locations.
@@ -683,9 +683,9 @@ relate to exposure (concentration of vehicle travel when &amp; where),
 but less severe injury events are too rare to produce meaningful
 clusters &amp; appear instead to be context-dependent conditions on
 speed &amp; safety measures. Future studies may explicitly model
-severity &amp; allow more robust covariates to conquer the low R^2 of
-the simple exposures of the existing time-scale linear modeling
-approach.</p>
+severity &amp; allow more robust covariates to conquer the low <span
+class="math inline">\(R^2\)</span> of the simple exposures of the
+existing time-scale linear modeling approach.</p>
 <p>Go back to the <a href="index.html">homepage</a>.</p>
 </div>
 
