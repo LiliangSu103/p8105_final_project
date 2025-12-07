@@ -87,7 +87,16 @@ This temporal analysis of Manhattan vehicle collisions from 2021 to 2025 demonst
 
 The data indicates a "Volume-Based Risk" model in which the collisions are most frequent at the times when the city is most alive: during the evening rush hours, towards the end of the workweek, during the warmer autumn months, and in years following the return of regular economic activity. Because of the parallel trends for Minor and Medium incidents, one might reason that interventions that simply reduced overall traffic volume or congestion during peak periods-specifically, the 4 PM-6 PM window and Thursday evenings-could effectively reduce the number of nuisance accidents and injury-causing crashes simultaneously.
 
-<img src="Temporal_data_analysis_files/figure-html/temporal_data.png" style="width:100%">
+<div style="display:flex; justify-content:space-between;">
+  <img src="Temporal_data_analysis_files/figure-html/unnamed-chunk-2-1.png" style="width:48%;">
+  <img src="Temporal_data_analysis_files/figure-html/unnamed-chunk-3-1.png" style="width:48%;">
+</div>
+
+<div style="display:flex; justify-content:space-between;">
+  <img src="Temporal_data_analysis_files/figure-html/unnamed-chunk-4-1.png" style="width:48%;">
+  <img src="Temporal_data_analysis_files/figure-html/unnamed-chunk-5-1.png" style="width:48%;">
+</div>
+
 
 Detailed long-term, seasonal, weekly, diurnal analysis are shown [here](https://liliangsu103.github.io/p8105_final_project/Temporal_data_analysis.html).
 
